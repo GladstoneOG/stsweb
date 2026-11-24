@@ -200,8 +200,8 @@ setInterval(() => {
       for (const s of r.sockets) {
         if (s.readyState === WebSocket.OPEN) {
           try {
-            s.send(JSON.stringify({ type: "ERROR", message: "Room dissolved after 1 minute of inactivity." }));
-            s.close(4000, "Room dissolved due to inactivity");
+            s.send(JSON.stringify({ type: "ERROR", message: "Room closed due to inactivity." }));
+            s.close(4000, "Room closed due to inactivity");
           } catch (_) {}
         }
       }

@@ -129,11 +129,11 @@
       lastCloudSyncAt = res.updated_at || Date.now();
       cloudSyncState = "saved";
       if (!silent) {
-        accountStatusMsg = `Saved ${bundle.fileCount} profile & run file(s) to "${authUser}".`;
+        accountStatusMsg = "Saved to cloud.";
       }
     } catch (e) {
       cloudSyncState = "error";
-      if (!silent) accountStatusMsg = `Auto-save failed: ${e.message}`;
+      if (!silent) accountStatusMsg = `Save failed: ${e.message}`;
     } finally {
       autoSaveInFlight = false;
       updateAccountStrip();
@@ -165,18 +165,18 @@
         syncNameEverywhere(authUser);
         lastCloudSyncAt = res.updated_at || Date.now();
         cloudSyncState = "saved";
-        accountStatusMsg = `Signed in as ${authUser}. Loaded ${count} portable save file(s) from Cloudflare SQLite.`;
+        accountStatusMsg = `Signed in as ${authUser}. Cloud saves loaded.`;
       } else {
         syncNameEverywhere(authUser);
         await saveAccountBundleNow(true);
-        accountStatusMsg = `Signed in as ${authUser}. Your saves will now auto-sync to this account.`;
+        accountStatusMsg = `Signed in as ${authUser}.`;
       }
       await refreshCloudSlots();
     } catch (e) {
       if (String(e.message).includes("401") || String(e.message).includes("Unauthorized")) {
         signOutAccount(true);
       } else {
-        accountStatusMsg = `Cloud restore warning: ${e.message}`;
+        accountStatusMsg = `Could not load cloud saves: ${e.message}`;
       }
     }
     updateAccountStrip();
@@ -191,13 +191,13 @@
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
     cloudSlotsCache = [];
-    if (!silent) accountStatusMsg = "Signed out of portable cloud account.";
+    if (!silent) accountStatusMsg = "Signed out.";
     updateAccountStrip();
     if (modalOpen) renderModal();
   }
 
   async function accountAuth(mode, username, password) {
-    accountStatusMsg = mode === "register" ? "Creating Spire account..." : "Signing into Spire account...";
+    accountStatusMsg = mode === "register" ? "Creating account..." : "Signing in...";
     renderModal();
     try {
       const res = await apiFetch(`/api/auth/${mode}`, {
@@ -262,7 +262,7 @@
   function exportAllLocalBundle() {
     const bundle = buildLocalSaveBundle();
     if (!bundle) {
-      saveStatusMsg = "Wait for Spire engine boot to finish before exporting.";
+      saveStatusMsg = "Wait for the game to finish loading.";
       renderModal();
       return;
     }
@@ -272,7 +272,7 @@
     a.download = `stsweb-${(window.StsNetBridge.getState().playerName || "save").toLowerCase()}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
-    saveStatusMsg = `Exported ${bundle.fileCount} save/preference file(s).`;
+    saveStatusMsg = "Save backup exported.";
     renderModal();
   }
 
@@ -292,7 +292,7 @@
   async function importFileList(fileList) {
     const hooks = getHooks();
     if (!hooks) {
-      saveStatusMsg = "Engine still booting — try again in a moment.";
+      saveStatusMsg = "Game is still loading — try again in a moment.";
       renderModal();
       return;
     }
@@ -318,9 +318,9 @@
     if (imported > 0) {
       hooks.reloadPrefs();
       scheduleAccountAutoSave();
-      saveStatusMsg = `Imported ${imported} Steam save/preference file(s) and reloaded game.`;
+      saveStatusMsg = "Saves imported.";
     } else {
-      saveStatusMsg = "No recognized Slay the Spire preference or .autosave files found.";
+      saveStatusMsg = "No recognized save files found.";
     }
     renderModal();
   }
@@ -360,7 +360,7 @@
     }
     hooks.reloadPrefs();
     scheduleAccountAutoSave();
-    saveStatusMsg = "Unlocked all 4 characters, cards, relics, Act 4 & Ascension 20!";
+    saveStatusMsg = "Unlocked all characters, cards, relics, and Ascension 20.";
     renderModal();
   }
 
@@ -384,15 +384,15 @@
   async function uploadCloudSlot(slot) {
     const bundle = buildLocalSaveBundle();
     if (!bundle) return;
-    const label = `${window.StsNetBridge.getState().playerName || authUser} (${bundle.fileCount} files)`;
-    saveStatusMsg = `Uploading Snapshot Slot ${slot}...`;
+    const label = window.StsNetBridge.getState().playerName || authUser || "Save";
+    saveStatusMsg = `Saving Slot ${slot}...`;
     renderModal();
     try {
       await apiFetch(`/api/saves/${slot}`, { method: "PUT", body: JSON.stringify({ label, payload: bundle }) });
-      saveStatusMsg = `Saved snapshot to Cloud Slot ${slot}.`;
+      saveStatusMsg = `Saved to Slot ${slot}.`;
       await refreshCloudSlots();
     } catch (e) {
-      saveStatusMsg = `Upload failed: ${e.message}`;
+      saveStatusMsg = `Save failed: ${e.message}`;
       renderModal();
     }
   }
@@ -400,7 +400,7 @@
   async function downloadCloudSlot(slot) {
     const hooks = getHooks();
     if (!hooks) return;
-    saveStatusMsg = `Restoring Snapshot Slot ${slot}...`;
+    saveStatusMsg = `Restoring Slot ${slot}...`;
     renderModal();
     try {
       const res = await apiFetch(`/api/saves/${slot}`);
@@ -411,7 +411,7 @@
       }
       hooks.reloadPrefs();
       scheduleAccountAutoSave();
-      saveStatusMsg = `Restored ${count} files from Cloud Slot ${slot}.`;
+      saveStatusMsg = `Restored Slot ${slot}.`;
       renderModal();
     } catch (e) {
       saveStatusMsg = `Restore failed: ${e.message}`;
@@ -517,7 +517,7 @@
     const badge = document.getElementById("sts-hud-room");
     const inviteBtn = document.getElementById("sts-hud-invite");
     if (net.connected) {
-      badge.textContent = `${net.mode} · ${net.roomCode} (${net.players.filter((p) => p.connected).length}P)`;
+      badge.textContent = `${net.roomCode} · ${net.players.filter((p) => p.connected).length}P`;
       badge.className = "sts-badge online";
       inviteBtn.style.display = "inline-flex";
     } else if (net.connecting) {
@@ -525,7 +525,7 @@
       badge.className = "sts-badge warn";
       inviteBtn.style.display = "none";
     } else {
-      badge.textContent = `${net.playerName} · Solo`;
+      badge.textContent = "Solo";
       badge.className = "sts-badge";
       inviteBtn.style.display = "none";
     }
@@ -548,24 +548,24 @@
     if (!strip) return;
     const net = window.StsNetBridge.getState();
     const syncLabel = !authToken
-      ? `<span class="sts-tag">LOCAL PROFILE</span>`
+      ? `<span class="sts-tag">LOCAL</span>`
       : cloudSyncState === "saving"
-        ? `<span class="sts-tag gold">SYNCING TO SQLITE...</span>`
+        ? `<span class="sts-tag gold">SAVING...</span>`
         : cloudSyncState === "error"
-          ? `<span class="sts-tag red">SYNC WARNING</span>`
-          : `<span class="sts-tag green">SQLITE AUTO-SYNC ✓${lastCloudSyncAt ? ` · ${new Date(lastCloudSyncAt).toLocaleTimeString()}` : ""}</span>`;
+          ? `<span class="sts-tag red">SYNC ERROR</span>`
+          : `<span class="sts-tag green">CLOUD SYNCED</span>`;
 
     strip.innerHTML = `
       <div class="sts-row">
-        <span class="sts-muted">Active Save Name:</span>
+        <span class="sts-muted">Profile:</span>
         <strong style="color:var(--gold)">${escHtml(net.playerName)}</strong>
-        ${authUser ? `<span class="sts-muted">· Account: <strong>${escHtml(authUser)}</strong></span>` : ""}
+        ${authUser && authUser !== net.playerName ? `<span class="sts-muted">· Account: <strong>${escHtml(authUser)}</strong></span>` : ""}
         ${syncLabel}
       </div>
       <div class="sts-row">
         ${authToken
-          ? `<button id="sts-btn-sync-now" class="sts-btn small primary">Sync Save Now</button>`
-          : `<button id="sts-btn-go-account" class="sts-btn small gold">Sign In for Portable Saves</button>`}
+          ? `<button id="sts-btn-sync-now" class="sts-btn small primary">Sync Now</button>`
+          : `<button id="sts-btn-go-account" class="sts-btn small gold">Sign In</button>`}
       </div>`;
 
     document.getElementById("sts-btn-sync-now")?.addEventListener("click", () => saveAccountBundleNow(false));
@@ -621,7 +621,7 @@
     const me = net.players.find((p) => p.playerId === net.playerId);
     if (!net.connected) {
       const roomsRows = roomsCache.length === 0
-        ? `<div class="sts-empty sts-italic">No active Spire parties yet. Host a room to begin!</div>`
+        ? `<div class="sts-empty sts-italic">No open rooms.</div>`
         : roomsCache.map((r) => `
             <div class="sts-room-row">
               <div>
@@ -640,9 +640,9 @@
       return `
         <div class="sts-grid-2">
           <div class="sts-card">
-            <h3>Host Co-op / Race</h3>
+            <h3>Host Room</h3>
             <label class="sts-field">
-              <span>Player Name (Synced with STS Save Slot)</span>
+              <span>Player Name</span>
               <div class="sts-row">
                 <input id="sts-in-name" type="text" maxlength="16" value="${escHtml(net.playerName)}" style="flex:1" />
                 <button id="sts-btn-save-name" class="sts-btn small">Apply</button>
@@ -652,8 +652,8 @@
               <label class="sts-field" style="flex:1">
                 <span>Mode</span>
                 <select id="sts-in-mode">
-                  <option value="COOP" ${net.mode === "COOP" ? "selected" : ""}>Shared-Battlefield Co-op (1-6P)</option>
-                  <option value="RACE" ${net.mode === "RACE" ? "selected" : ""}>Seeded Race / Versus</option>
+                  <option value="COOP" ${net.mode === "COOP" ? "selected" : ""}>Co-op</option>
+                  <option value="RACE" ${net.mode === "RACE" ? "selected" : ""}>Seed Race</option>
                 </select>
               </label>
               <label class="sts-field" style="width:110px">
@@ -662,20 +662,20 @@
               </label>
             </div>
             <label class="sts-field">
-              <span>Custom Seed (optional)</span>
-              <input id="sts-in-seed" type="text" maxlength="24" placeholder="Random seeded run" value="${escHtml(net.seedText)}" />
+              <span>Seed</span>
+              <input id="sts-in-seed" type="text" maxlength="24" placeholder="Optional" value="${escHtml(net.seedText)}" />
             </label>
-            <button id="sts-btn-create" class="sts-btn gold full">Create &amp; Host Room</button>
+            <button id="sts-btn-create" class="sts-btn gold full">Create Room</button>
           </div>
 
           <div class="sts-card">
             <h3>Join Room</h3>
             <div class="sts-row">
-              <input id="sts-in-join-code" type="text" maxlength="16" placeholder="Room Code (e.g. X7K9P)" style="flex:1;text-transform:uppercase" />
+              <input id="sts-in-join-code" type="text" maxlength="16" placeholder="Room code" style="flex:1;text-transform:uppercase" />
               <button id="sts-btn-join-code" class="sts-btn primary">Join</button>
             </div>
             <div class="sts-row" style="justify-content:space-between;margin-top:14px">
-              <span class="sts-muted">Public Spire Parties</span>
+              <span class="sts-muted">Open Rooms</span>
               <button id="sts-btn-refresh-rooms" class="sts-btn small">Refresh</button>
             </div>
             <div class="sts-room-list">${roomsRows}</div>
@@ -720,14 +720,14 @@
       <div class="sts-card">
         <div class="sts-row" style="justify-content:space-between;align-items:center;margin-bottom:12px">
           <div>
-            <h3 style="margin:0">Room ${escHtml(net.roomCode)} · ${escHtml(net.mode)}</h3>
+            <h3 style="margin:0">Room ${escHtml(net.roomCode)} · ${net.mode === "RACE" ? "Seed Race" : "Co-op"}</h3>
             <div class="sts-muted">
               <img class="sts-ico" src="/ui-assets/icon-ascension.png" alt="" />Ascension ${net.ascension} ·
-              ${net.runState === "IN_RUN" ? `Act ${net.actNum} · Floor ${net.floorNum} · Seed ${escHtml(net.seedLong)}` : "Waiting in Spire Camp"}
+              ${net.runState === "IN_RUN" ? `Act ${net.actNum} · Floor ${net.floorNum}` : "In Lobby"}
             </div>
           </div>
           <div class="sts-row">
-            <button id="sts-btn-copy-invite" class="sts-btn primary">Copy Invite Link</button>
+            <button id="sts-btn-copy-invite" class="sts-btn primary">Invite Link</button>
             <button id="sts-btn-leave" class="sts-btn danger">Leave Room</button>
           </div>
         </div>
@@ -740,36 +740,33 @@
             ${net.isHost ? `
               <div class="sts-row">
                 <select id="sts-host-mode" class="sts-select-sm">
-                  <option value="COOP" ${net.mode === "COOP" ? "selected" : ""}>Shared Co-op</option>
+                  <option value="COOP" ${net.mode === "COOP" ? "selected" : ""}>Co-op</option>
                   <option value="RACE" ${net.mode === "RACE" ? "selected" : ""}>Seed Race</option>
                 </select>
-                <input id="sts-host-asc" type="number" min="0" max="20" value="${net.ascension}" style="width:66px" title="Ascension Level" />
-                <button id="sts-btn-start-run" class="sts-btn gold">Embark Together!</button>
+                <input id="sts-host-asc" type="number" min="0" max="20" value="${net.ascension}" style="width:66px" title="Ascension" />
+                <button id="sts-btn-start-run" class="sts-btn gold">Start Run</button>
               </div>
-            ` : `<span class="sts-italic">Waiting for host to embark...</span>`}
+            ` : `<span class="sts-italic">Waiting for host...</span>`}
           </div>
-        ` : `<div class="sts-alert">Shared adventure in progress — if anyone refreshes, rejoining <strong>?room=${escHtml(net.roomCode)}</strong> restores them seamlessly.</div>`}
+        ` : ""}
       </div>`;
   }
 
   function renderAccountAndSavesTab(net) {
-    const hooks = getHooks();
-    const count = hooks ? hooks.listFiles().length : 0;
-
     const accountHtml = !authToken ? `
       <div class="sts-card">
-        <h3>Portable Spire Account</h3>
-        <p class="sts-italic">Sign in with any username &amp; password. Your profile name and all saves automatically follow your account via Cloudflare SQLite.</p>
+        <h3>Cloud Saves</h3>
+        <p class="sts-italic">Sign in to sync your progress across devices.</p>
         <label class="sts-field">
-          <span>Account Username (Syncs with STS Save Slot)</span>
-          <input id="sts-auth-user" type="text" maxlength="16" placeholder="Letters, numbers, _ . -" value="${escHtml(net.playerName !== "SpirePlayer" ? net.playerName : "")}" />
+          <span>Username</span>
+          <input id="sts-auth-user" type="text" maxlength="16" placeholder="Username" value="${escHtml(net.playerName !== "SpirePlayer" ? net.playerName : "")}" />
         </label>
         <label class="sts-field">
           <span>Password</span>
           <input id="sts-auth-pass" type="password" placeholder="Min 4 characters" />
         </label>
         <div class="sts-row">
-          <button id="sts-btn-login" class="sts-btn primary" style="flex:1">Sign In &amp; Load</button>
+          <button id="sts-btn-login" class="sts-btn primary" style="flex:1">Sign In</button>
           <button id="sts-btn-register" class="sts-btn gold" style="flex:1">Create Account</button>
         </div>
         ${accountStatusMsg ? `<div class="sts-alert">${escHtml(accountStatusMsg)}</div>` : ""}
@@ -779,12 +776,12 @@
           <h3 style="margin:0">Account: ${escHtml(authUser)}</h3>
           <button id="sts-btn-logout" class="sts-btn small danger">Sign Out</button>
         </div>
-        <p class="sts-italic">All unlocks, preferences &amp; active runs are automatically saved to Cloudflare SQLite whenever Slay the Spire writes a save.</p>
+        <p class="sts-italic">Progress syncs automatically while signed in.</p>
         <div class="sts-row" style="margin-bottom:10px">
-          <button id="sts-btn-acc-push" class="sts-btn primary small">Force Save to Cloud</button>
-          <button id="sts-btn-acc-pull" class="sts-btn small">Reload From Cloud</button>
+          <button id="sts-btn-acc-push" class="sts-btn primary small">Save Now</button>
+          <button id="sts-btn-acc-pull" class="sts-btn small">Load Cloud Save</button>
         </div>
-        ${cloudSlotsCache.length > 0 ? `<div class="sts-muted" style="margin-bottom:6px">Manual Backup Slots:</div>` : ""}
+        ${cloudSlotsCache.length > 0 ? `<div class="sts-muted" style="margin-bottom:6px">Backup Slots:</div>` : ""}
         <div class="sts-room-list">
           ${[1, 2, 3].map((slot) => {
             const info = cloudSlotsCache.find((s) => s.slot === slot);
@@ -792,7 +789,7 @@
               <div class="sts-room-row" style="padding:6px 10px">
                 <div>
                   <strong>Slot ${slot}</strong>
-                  <span class="sts-muted">${info ? `${(info.bytes / 1024).toFixed(1)} KB` : "Empty"}</span>
+                  <span class="sts-muted">${info ? "Saved" : "Empty"}</span>
                 </div>
                 <div class="sts-row">
                   <button class="sts-btn small" data-cloud-put="${slot}">Backup</button>
@@ -808,15 +805,15 @@
       <div class="sts-grid-2">
         ${accountHtml}
         <div class="sts-card">
-          <h3>Steam Save Import &amp; Unlocks</h3>
-          <p class="sts-italic">Drop Steam files (<code>STSPlayer</code>, <code>STSUnlockProgress</code>, <code>STSData*</code>, <code>*.autosave</code>) or an exported <code>.json</code> bundle. Currently tracking <strong>${count}</strong> local VFS file(s).</p>
+          <h3>Local Saves</h3>
+          <p class="sts-italic">Import Steam save files or a backup file.</p>
           <label id="sts-dropzone" class="sts-dropzone">
             <input id="sts-import-input" type="file" multiple hidden />
-            <span>Drop Steam Save / Pref files here or <u>Click to Browse</u></span>
+            <span>Drop save files here or <u>Click to Browse</u></span>
           </label>
           <div class="sts-row" style="margin-top:12px">
-            <button id="sts-btn-export" class="sts-btn primary">Export Bundle (.json)</button>
-            <button id="sts-btn-unlock-all" class="sts-btn gold">Unlock All + A20</button>
+            <button id="sts-btn-export" class="sts-btn primary">Export Saves</button>
+            <button id="sts-btn-unlock-all" class="sts-btn gold">Unlock All</button>
           </div>
           ${saveStatusMsg ? `<div class="sts-alert">${escHtml(saveStatusMsg)}</div>` : ""}
         </div>
@@ -824,23 +821,20 @@
   }
 
   function renderSettingsTab(net) {
-    const assetStatus = window.StsAssetLoader ? window.StsAssetLoader.getStatus() : {};
     return `
       <div class="sts-card">
-        <h3><img class="sts-ico" src="/ui-assets/icon-settings.png" alt="" /> Browser &amp; HUD Settings</h3>
+        <h3><img class="sts-ico" src="/ui-assets/icon-settings.png" alt="" /> Settings</h3>
         <label class="sts-check">
           <input id="sts-chk-webrtc" type="checkbox" ${net.webrtcEnabled ? "checked" : ""} />
-          <span>Enable WebRTC P2P DataChannel for ally cursor previews (falls back silently if blocked)</span>
+          <span>Show teammate cursors</span>
         </label>
         <div class="sts-row" style="margin-top:16px">
-          <button id="sts-btn-reset-hud" class="sts-btn primary">Reset HUD Pill Position (Left Edge)</button>
-          <button id="sts-btn-fullscreen" class="sts-btn">Toggle Fullscreen (F11)</button>
-          <button id="sts-btn-clear-cache" class="sts-btn danger">Clear Asset Cache &amp; Reload</button>
+          <button id="sts-btn-reset-hud" class="sts-btn primary">Reset HUD Position</button>
+          <button id="sts-btn-fullscreen" class="sts-btn">Fullscreen (F11)</button>
+          <button id="sts-btn-clear-cache" class="sts-btn danger">Reload Game Data</button>
         </div>
         <p class="sts-muted" style="margin-top:14px">
-          Asset Packs: ${assetStatus.actsLoaded ? "Core + Acts II–IV Cached ✓" : "Core Ready (Acts streaming)"} ·
-          WebRTC Peers Open: ${net.webrtcOpenPeers || 0} ·
-          Hotkeys: <code>F2</code> Spire Net · <code>F9</code> Hide HUD Tab · <code>F11</code> Fullscreen
+          Shortcuts: <code>F2</code> Multiplayer · <code>F9</code> Toggle HUD · <code>F11</code> Fullscreen
         </p>
       </div>`;
   }
@@ -943,7 +937,7 @@
         const url = window.StsNetBridge.getState().inviteUrl;
         try { await navigator.clipboard.writeText(url); } catch (_) {}
         byId("sts-btn-copy-invite").textContent = "Copied!";
-        setTimeout(() => { if (byId("sts-btn-copy-invite")) byId("sts-btn-copy-invite").textContent = "Copy Invite Link"; }, 1600);
+        setTimeout(() => { if (byId("sts-btn-copy-invite")) byId("sts-btn-copy-invite").textContent = "Invite Link"; }, 1600);
       };
     }
 

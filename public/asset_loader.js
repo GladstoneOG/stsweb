@@ -22,7 +22,7 @@
 
   const statusState = {
     phase: "init",
-    message: "Checking cached Spire assets...",
+    message: "Loading...",
     percent: 0,
     downloadedBytes: 0,
     totalBytes: 0,
@@ -185,13 +185,12 @@
   }
 
   async function loadPack(db, packMeta, isBoot) {
-    const label = isBoot ? "Core Spire Pack" : "Acts II-IV Pack";
     const cached = await idbGet(db, packMeta.name);
     if (cached && cached.sha256 === packMeta.sha256 && cached.raw instanceof ArrayBuffer) {
       if (isBoot) {
         emitStatus({
           phase: "mounting",
-          message: `Loaded ${label} from IndexedDB cache`,
+          message: "Loading game data...",
           percent: 78,
           downloadedBytes: packMeta.compressedSize,
           totalBytes: packMeta.compressedSize,
@@ -203,7 +202,7 @@
     if (isBoot) {
       emitStatus({
         phase: "downloading",
-        message: `Downloading ${label} (${(packMeta.compressedSize / 1048576).toFixed(1)} MiB)...`,
+        message: `Downloading game data (${(packMeta.compressedSize / 1048576).toFixed(0)} MB)...`,
         percent: 5,
         downloadedBytes: 0,
         totalBytes: packMeta.compressedSize,
@@ -215,7 +214,7 @@
         const pct = Math.min(72, Math.round((loaded / Math.max(1, total)) * 67) + 5);
         emitStatus({
           phase: "downloading",
-          message: `Downloading ${label}: ${(loaded / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(1)} MiB`,
+          message: `Downloading game data (${(loaded / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB)...`,
           percent: pct,
           downloadedBytes: loaded,
           totalBytes: total,
@@ -226,7 +225,7 @@
     if (isBoot) {
       emitStatus({
         phase: "decompressing",
-        message: `Decompressing ${label}...`,
+        message: "Unpacking game data...",
         percent: 76,
       });
     }
@@ -268,7 +267,7 @@
     const pct = 78 + Math.min(18, Math.round((mounted / total) * 18));
     emitStatus({
       phase: "mounting",
-      message: `Mounting assets (${mounted} / ${total})...`,
+      message: "Loading assets...",
       percent: pct,
       mountedFiles: mounted,
       totalBootFiles: total,
@@ -277,7 +276,7 @@
   window.__STS_ON_ENGINE_READY = function () {
     emitStatus({
       phase: "ready",
-      message: "Spire Ready!",
+      message: "Ready",
       percent: 100,
     });
   };
@@ -292,9 +291,9 @@
         })
         .catch(() => {});
 
-      emitStatus({ phase: "manifest", message: "Fetching asset manifest...", percent: 2 });
+      emitStatus({ phase: "manifest", message: "Preparing...", percent: 2 });
       const manifestResp = await fetch("/assets/manifest.json", { cache: "no-store" });
-      if (!manifestResp.ok) throw new Error("Failed to fetch /assets/manifest.json");
+      if (!manifestResp.ok) throw new Error("Failed to load game data");
       const manifest = await manifestResp.json();
       const db = await openDb();
 
@@ -304,7 +303,7 @@
       bootReady = true;
       emitStatus({
         phase: "mounting",
-        message: `Initializing FreeType & ${bootTotalFiles} Spire assets...`,
+        message: "Starting Slay the Spire...",
         percent: 80,
         totalBootFiles: bootTotalFiles,
       });

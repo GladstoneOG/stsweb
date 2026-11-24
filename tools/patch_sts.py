@@ -1578,6 +1578,29 @@ def patch_coop_hooks() -> None:
     write_patched(rel, src)
 
 
+def patch_vfx_power_lifecycle() -> None:
+    for rel in (
+        "com/megacrit/cardcrawl/vfx/combat/GainPowerEffect.java",
+        "com/megacrit/cardcrawl/vfx/combat/SilentGainPowerEffect.java",
+    ):
+        src = read_pristine(rel)
+        src = replace_once(
+            src,
+            "      } else {\n"
+            "         this.color.a = Interpolation.fade.apply(0.5F, 0.0F, 1.0F - this.duration);\n"
+            "      }",
+            "      } else {\n"
+            "         this.color.a = Interpolation.fade.apply(0.5F, 0.0F, 1.0F - this.duration);\n"
+            "      }\n"
+            "      if (this.duration < 0.0F) {\n"
+            "         this.isDone = true;\n"
+            "         this.color.a = 0.0F;\n"
+            "      }",
+            f"{rel}:isDoneGuard",
+        )
+        write_patched(rel, src)
+
+
 def main() -> int:
     if not os.path.isdir(os.path.join(CORE_JAVA, "com", "megacrit", "cardcrawl", "core")):
         print("Decompiled source missing. Run tools/decompile_sts.py first.", file=sys.stderr)
@@ -1596,6 +1619,7 @@ def main() -> int:
     patch_decompiler_quirks()
     patch_web_scanner()
     patch_coop_hooks()
+    patch_vfx_power_lifecycle()
 
     print("[patch] Successfully patched core STS sources (single-player + Co-op) for LibGDX 1.14.2 + TeaVM web.")
     return 0

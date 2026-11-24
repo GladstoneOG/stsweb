@@ -4087,7 +4087,7 @@ cbgssu_ProgressBar_draw = ($this, $batch, $parentAlpha) => {
             $width = $width - ($bgLeftWidth + $bgLeftWidth);
         }
         $total = $width - $knobWidth;
-        $beforeWidth = cbgm_MathUtils_clamp($total * $percent, 0.0, $total);
+        $beforeWidth = cbgm_MathUtils_clamp0($total * $percent, 0.0, $total);
         $this.$position4 = $bgLeftWidth + $beforeWidth;
         $knobWidthHalf = $knobWidth * 0.5;
         if ($knobBefore !== null) {
@@ -4114,7 +4114,7 @@ cbgssu_ProgressBar_draw = ($this, $batch, $parentAlpha) => {
             $height = $height - ($parentAlpha + $bgBottomHeight);
         }
         $total = $height - $knobHeight;
-        $beforeHeight = cbgm_MathUtils_clamp($total * $percent, 0.0, $total);
+        $beforeHeight = cbgm_MathUtils_clamp0($total * $percent, 0.0, $total);
         $this.$position4 = $bgBottomHeight + $beforeHeight;
         $knobHeightHalf = $knobHeight * 0.5;
         if ($knobBefore !== null) {
@@ -4158,7 +4158,7 @@ cbgssu_ProgressBar_getBackgroundDrawable = $this => {
 },
 cbgssu_ProgressBar_setValue = ($this, $value) => {
     let $oldValue, $oldVisualValue, $changeEvent, $cancelled;
-    $value = cbgm_MathUtils_clamp(jl_Math_round($value / $this.$stepSize) * $this.$stepSize, $this.$min3, $this.$max2);
+    $value = cbgm_MathUtils_clamp0(jl_Math_round($value / $this.$stepSize) * $this.$stepSize, $this.$min3, $this.$max2);
     $oldValue = $this.$value8;
     if ($value === $oldValue)
         return 0;
@@ -9928,10 +9928,10 @@ let cbgg_Color_hashCode = $this => {
     return $result + (var$3 === 0.0 ? 0 : jl_Float_floatToIntBits(var$3)) | 0;
 },
 cbgg_Color_toFloatBits = $this => {
-    return cbgu_NumberUtils_intToFloatColor((255.0 * $this.$a | 0) << 24 | (255.0 * $this.$b | 0) << 16 | (255.0 * $this.$g | 0) << 8 | 255.0 * $this.$r | 0);
+    return cbgu_NumberUtils_intToFloatColor(cbgm_MathUtils_clamp(255.0 * $this.$a | 0, 0, 255) << 24 | cbgm_MathUtils_clamp(255.0 * $this.$b | 0, 0, 255) << 16 | cbgm_MathUtils_clamp(255.0 * $this.$g | 0, 0, 255) << 8 | cbgm_MathUtils_clamp(255.0 * $this.$r | 0, 0, 255));
 },
 cbgg_Color_toIntBits = $this => {
-    return (255.0 * $this.$a | 0) << 24 | (255.0 * $this.$b | 0) << 16 | (255.0 * $this.$g | 0) << 8 | 255.0 * $this.$r | 0;
+    return cbgm_MathUtils_clamp(255.0 * $this.$a | 0, 0, 255) << 24 | cbgm_MathUtils_clamp(255.0 * $this.$b | 0, 0, 255) << 16 | cbgm_MathUtils_clamp(255.0 * $this.$g | 0, 0, 255) << 8 | cbgm_MathUtils_clamp(255.0 * $this.$r | 0, 0, 255);
 },
 cbgg_Color_toString = $this => {
     let $value, var$2;
@@ -9939,8 +9939,8 @@ cbgg_Color_toString = $this => {
     while ($value.$nativeString.length < 8) {
         var$2 = new jl_StringBuilder;
         jl_AbstractStringBuilder__init_(var$2);
-        jl_AbstractStringBuilder_append1(var$2, $rt_s(86));
-        jl_AbstractStringBuilder_append1(var$2, $value);
+        jl_AbstractStringBuilder_append0(var$2, 48);
+        jl_StringBuilder_append(var$2, $value);
         $value = jl_AbstractStringBuilder_toString(var$2);
     }
     return $value;
@@ -15972,6 +15972,14 @@ cbgm_MathUtils_nextPowerOfTwo = $value => {
     return ($value | $value >> 16) + 1 | 0;
 },
 cbgm_MathUtils_clamp = ($value, $min, $max) => {
+    cbgm_MathUtils_$callClinit();
+    if ($value < $min)
+        return $min;
+    if ($value <= $max)
+        return $value;
+    return $max;
+},
+cbgm_MathUtils_clamp0 = ($value, $min, $max) => {
     cbgm_MathUtils_$callClinit();
     if ($value < $min)
         return $min;
@@ -82570,7 +82578,7 @@ cmcso_InputSettingsScreen_update = $this => {
     if (var$2 !== var$1) {
         var$2 = cmch_MathHelper_scrollSnapLerpSpeed(var$1, var$2);
         $this.$targetScrollOffset = var$2;
-        $this.$targetScrollOffset = cbgm_MathUtils_clamp(var$2, 0.0, $this.$maxScrollAmount);
+        $this.$targetScrollOffset = cbgm_MathUtils_clamp0(var$2, 0.0, $this.$maxScrollAmount);
     }
     a: {
         var$2 = cmch_MathHelper_percentFromValueBetween(0.0, $this.$maxScrollAmount, $this.$targetScrollOffset);
@@ -141747,7 +141755,7 @@ ces_Animation$CurveTimeline_setCurve = ($this, $frameIndex, $cx1, $cy1, $cx2, $c
 },
 ces_Animation$CurveTimeline_getCurvePercent = ($this, $frameIndex, $percent) => {
     let $curves, $i, $type, $x, $n, $prevX, $prevY, $y;
-    $percent = cbgm_MathUtils_clamp($percent, 0.0, 1.0);
+    $percent = cbgm_MathUtils_clamp0($percent, 0.0, 1.0);
     $curves = $this.$curves.data;
     $i = $frameIndex * 19 | 0;
     $type = $curves[$i];
@@ -178910,7 +178918,9 @@ cbgm_Interpolation$2 = $rt_classWithoutFields(cbgm_Interpolation),
 cbgm_Interpolation$3 = $rt_classWithoutFields(cbgm_Interpolation),
 cbgm_Interpolation$4 = $rt_classWithoutFields(cbgm_Interpolation),
 cbgm_Interpolation$4_apply = ($this, $a) => {
-    return $a * $a * $a * ($a * ($a * 6.0 - 15.0) + 10.0);
+    let var$2;
+    var$2 = cbgm_MathUtils_clamp0($a, 0.0, 1.0);
+    return cbgm_MathUtils_clamp0(var$2 * var$2 * var$2 * (var$2 * (var$2 * 6.0 - 15.0) + 10.0), 0.0, 1.0);
 };
 function cbgm_Interpolation$Pow() {
     cbgm_Interpolation.call(this);
@@ -179130,8 +179140,7 @@ let cbgm_Interpolation$BounceOut__init_ = ($this, $bounces) => {
     var$5 = new jl_IllegalArgumentException;
     var$6 = new jl_StringBuilder;
     jl_AbstractStringBuilder__init_(var$6);
-    jl_AbstractStringBuilder_append1(var$6, $rt_s(6450));
-    jl_AbstractStringBuilder_append(var$6, $bounces);
+    jl_AbstractStringBuilder_append(jl_StringBuilder_append(var$6, $rt_s(6450)), $bounces);
     jl_Throwable__init_(var$5, jl_AbstractStringBuilder_toString(var$6));
     $rt_throw(var$5);
 },
@@ -188944,51 +188953,6 @@ function ju_IdentityHashMap$HashEntry() {
     a.$origKeyHash0 = 0;
     a.$next9 = null;
 }
-let jnci_AsciiDecoder = $rt_classWithoutFields(jnci_BufferedDecoder),
-jnci_AsciiDecoder_arrayDecode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
-    let $result, var$9, var$10, $b, var$12;
-    $result = null;
-    a: {
-        while ($inPos < $inSize) {
-            if ($outPos >= $outSize)
-                break a;
-            var$9 = $inArray.data;
-            var$10 = $inPos + 1 | 0;
-            $b = var$9[$inPos] & 255;
-            if ($b & 128) {
-                $result = jnc_CoderResult_malformedForLength(1);
-                $inPos = var$10 + (-1) | 0;
-                break a;
-            }
-            var$9 = $outArray.data;
-            var$12 = $outPos + 1 | 0;
-            var$9[$outPos] = $b & 65535;
-            $inPos = var$10;
-            $outPos = var$12;
-        }
-    }
-    $controller.$inPosition = $inPos;
-    $controller.$outPosition = $outPos;
-    return $result;
-},
-jnci_Iso8859Decoder = $rt_classWithoutFields(jnci_BufferedDecoder),
-jnci_Iso8859Decoder_arrayDecode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
-    let $result, var$9, var$10, var$11, $b, var$13;
-    $result = null;
-    while ($inPos < $inSize && $outPos < $outSize) {
-        var$9 = $inArray.data;
-        var$10 = $outArray.data;
-        var$11 = $inPos + 1 | 0;
-        $b = var$9[$inPos] & 255;
-        var$13 = $outPos + 1 | 0;
-        var$10[$outPos] = $b & 65535;
-        $inPos = var$11;
-        $outPos = var$13;
-    }
-    $controller.$inPosition = $inPos;
-    $controller.$outPosition = $outPos;
-    return $result;
-};
 function jnci_UTF16Decoder() {
     let a = this; jnci_BufferedDecoder.call(a);
     a.$bom = 0;
@@ -189154,6 +189118,51 @@ jnci_UTF16Decoder_decodeBE = ($this, $inArray, $inPos, $inSize, $outArray, $outP
                 $outPos = $b2 + 1 | 0;
                 var$9[$b2] = $next;
             }
+        }
+    }
+    $controller.$inPosition = $inPos;
+    $controller.$outPosition = $outPos;
+    return $result;
+},
+jnci_Iso8859Decoder = $rt_classWithoutFields(jnci_BufferedDecoder),
+jnci_Iso8859Decoder_arrayDecode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
+    let $result, var$9, var$10, var$11, $b, var$13;
+    $result = null;
+    while ($inPos < $inSize && $outPos < $outSize) {
+        var$9 = $inArray.data;
+        var$10 = $outArray.data;
+        var$11 = $inPos + 1 | 0;
+        $b = var$9[$inPos] & 255;
+        var$13 = $outPos + 1 | 0;
+        var$10[$outPos] = $b & 65535;
+        $inPos = var$11;
+        $outPos = var$13;
+    }
+    $controller.$inPosition = $inPos;
+    $controller.$outPosition = $outPos;
+    return $result;
+},
+jnci_AsciiDecoder = $rt_classWithoutFields(jnci_BufferedDecoder),
+jnci_AsciiDecoder_arrayDecode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
+    let $result, var$9, var$10, $b, var$12;
+    $result = null;
+    a: {
+        while ($inPos < $inSize) {
+            if ($outPos >= $outSize)
+                break a;
+            var$9 = $inArray.data;
+            var$10 = $inPos + 1 | 0;
+            $b = var$9[$inPos] & 255;
+            if ($b & 128) {
+                $result = jnc_CoderResult_malformedForLength(1);
+                $inPos = var$10 + (-1) | 0;
+                break a;
+            }
+            var$9 = $outArray.data;
+            var$12 = $outPos + 1 | 0;
+            var$9[$outPos] = $b & 65535;
+            $inPos = var$10;
+            $outPos = var$12;
         }
     }
     $controller.$inPosition = $inPos;
@@ -195765,7 +195774,7 @@ cbggg_ImmediateModeRenderer20_color = ($this, $r, $g, $b, $a) => {
     var$5 = $this.$vertices2.data;
     var$6 = $this.$vertexIdx + $this.$colorOffset | 0;
     cbgg_Color_$callClinit();
-    var$5[var$6] = cbgu_NumberUtils_intToFloatColor((255.0 * $a | 0) << 24 | (255.0 * $b | 0) << 16 | (255.0 * $g | 0) << 8 | 255.0 * $r | 0);
+    var$5[var$6] = cbgu_NumberUtils_intToFloatColor(cbgm_MathUtils_clamp(255.0 * $a | 0, 0, 255) << 24 | cbgm_MathUtils_clamp(255.0 * $b | 0, 0, 255) << 16 | cbgm_MathUtils_clamp(255.0 * $g | 0, 0, 255) << 8 | cbgm_MathUtils_clamp(255.0 * $r | 0, 0, 255));
 },
 cbggg_ImmediateModeRenderer20_color0 = ($this, $colorBits) => {
     $this.$vertices2.data[$this.$vertexIdx + $this.$colorOffset | 0] = $colorBits;
@@ -196495,8 +196504,8 @@ cmcv_PlayerTurnEffect__clinit_ = () => {
     cmcv_PlayerTurnEffect_MAIN_MSG_OFFSET_Y = 20.0 * var$1;
     cmcv_PlayerTurnEffect_TURN_MSG_OFFSET_Y = (-30.0) * var$1;
 },
-jnci_AsciiEncoder = $rt_classWithoutFields(jnci_BufferedEncoder),
-jnci_AsciiEncoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
+jnci_Iso8859Encoder = $rt_classWithoutFields(jnci_BufferedEncoder),
+jnci_Iso8859Encoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
     let $result, var$9, var$10, $c, $next;
     $result = null;
     a: {
@@ -196509,7 +196518,7 @@ jnci_AsciiEncoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $o
             var$9 = $inPos + 1 | 0;
             $c = var$10[$inPos];
             if (jl_Character_isHighSurrogate($c)) {
-                if (var$9 >= $inSize) {
+                if (var$9 == $inSize) {
                     if (jnci_BufferedEncoder$Controller_hasMoreInput($controller, 2)) {
                         var$9 = var$9 + (-1) | 0;
                         break a;
@@ -196528,9 +196537,9 @@ jnci_AsciiEncoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $o
             }
             if (jl_Character_isLowSurrogate($c))
                 $result = jnc_CoderResult_malformedForLength(1);
-            if ($c >= 128) {
-                $result = jnc_CoderResult_unmappableForLength(1);
+            if ($c >= 256) {
                 var$9 = var$9 + (-1) | 0;
+                $result = jnc_CoderResult_unmappableForLength(1);
                 break a;
             }
             var$10 = $outArray.data;
@@ -196719,8 +196728,8 @@ jnci_UTF16Encoder_arrayEncodeBE = ($this, $inArray, $inPos, $inSize, $outArray, 
     $controller.$outPosition0 = $outPos;
     return $result;
 },
-jnci_Iso8859Encoder = $rt_classWithoutFields(jnci_BufferedEncoder),
-jnci_Iso8859Encoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
+jnci_AsciiEncoder = $rt_classWithoutFields(jnci_BufferedEncoder),
+jnci_AsciiEncoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, $outPos, $outSize, $controller) => {
     let $result, var$9, var$10, $c, $next;
     $result = null;
     a: {
@@ -196733,7 +196742,7 @@ jnci_Iso8859Encoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, 
             var$9 = $inPos + 1 | 0;
             $c = var$10[$inPos];
             if (jl_Character_isHighSurrogate($c)) {
-                if (var$9 == $inSize) {
+                if (var$9 >= $inSize) {
                     if (jnci_BufferedEncoder$Controller_hasMoreInput($controller, 2)) {
                         var$9 = var$9 + (-1) | 0;
                         break a;
@@ -196752,9 +196761,9 @@ jnci_Iso8859Encoder_arrayEncode = ($this, $inArray, $inPos, $inSize, $outArray, 
             }
             if (jl_Character_isLowSurrogate($c))
                 $result = jnc_CoderResult_malformedForLength(1);
-            if ($c >= 256) {
-                var$9 = var$9 + (-1) | 0;
+            if ($c >= 128) {
                 $result = jnc_CoderResult_unmappableForLength(1);
+                var$9 = var$9 + (-1) | 0;
                 break a;
             }
             var$10 = $outArray.data;
@@ -221255,6 +221264,101 @@ cmcac_SetMoveAction__init_4 = (var_0, var_1, var_2) => {
 cmcac_SetMoveAction_update = $this => {
     cmcm_AbstractMonster_setMove4($this.$monster0, $this.$theNextName, $this.$theNextMove, $this.$theNextIntent, $this.$theNextDamage, $this.$theMultiplier, $this.$isMultiplier);
     $this.$isDone0 = 1;
+};
+function cmcau_TextAboveCreatureAction() {
+    let a = this; cmca_AbstractGameAction.call(a);
+    a.$used = 0;
+    a.$msg1 = null;
+}
+let cmcau_TextAboveCreatureAction__init_ = ($this, $source, $type) => {
+    cmca_AbstractGameAction__init_($this);
+    $this.$used = 0;
+    cmcau_TextAboveCreatureAction$TextType_$callClinit();
+    if ($type === cmcau_TextAboveCreatureAction$TextType_STUNNED) {
+        cmca_AbstractGameAction_setValues1($this, $source, $source);
+        cmcc_AbstractCreature_$callClinit();
+        $this.$msg1 = cmcc_AbstractCreature_TEXT.data[3];
+        cmca_AbstractGameAction$ActionType_$callClinit();
+        $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
+        cmcc_Settings_$callClinit();
+        $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
+    } else if ($type !== cmcau_TextAboveCreatureAction$TextType_INTERRUPTED)
+        $this.$isDone0 = 1;
+    else {
+        cmca_AbstractGameAction_setValues1($this, $source, $source);
+        cmcc_AbstractCreature_$callClinit();
+        $this.$msg1 = cmcc_AbstractCreature_TEXT.data[4];
+        cmca_AbstractGameAction$ActionType_$callClinit();
+        $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
+        cmcc_Settings_$callClinit();
+        $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
+    }
+},
+cmcau_TextAboveCreatureAction__init_2 = (var_0, var_1) => {
+    let var_2 = new cmcau_TextAboveCreatureAction();
+    cmcau_TextAboveCreatureAction__init_(var_2, var_0, var_1);
+    return var_2;
+},
+cmcau_TextAboveCreatureAction__init_0 = ($this, $source, $text) => {
+    cmca_AbstractGameAction__init_($this);
+    $this.$used = 0;
+    cmca_AbstractGameAction_setValues1($this, $source, $source);
+    $this.$msg1 = $text;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
+    cmcc_Settings_$callClinit();
+    $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
+},
+cmcau_TextAboveCreatureAction__init_1 = (var_0, var_1) => {
+    let var_2 = new cmcau_TextAboveCreatureAction();
+    cmcau_TextAboveCreatureAction__init_0(var_2, var_0, var_1);
+    return var_2;
+},
+cmcau_TextAboveCreatureAction_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5, var$6;
+    if (!$this.$used) {
+        cmcd_AbstractDungeon_$callClinit();
+        var$1 = cmcd_AbstractDungeon_effectList;
+        var$2 = new cmcv_TextAboveCreatureEffect;
+        var$3 = $this.$source;
+        var$4 = var$3.$hb;
+        var$5 = var$4.$cX - var$3.$animX;
+        var$6 = var$4.$cY + $this.$target.$hb.$height0 / 2.0;
+        var$4 = $this.$msg1;
+        cbgg_Color_$callClinit();
+        cmcv_TextAboveCreatureEffect__init_(var$2, var$5, var$6, var$4, cbgg_Color_cpy(cbgg_Color_WHITE));
+        ju_ArrayList_add(var$1, var$2);
+        $this.$used = 1;
+    }
+    cmca_AbstractGameAction_tickDuration($this);
+},
+cmcau_TextAboveCreatureAction$TextType = $rt_classWithoutFields(jl_Enum),
+cmcau_TextAboveCreatureAction$TextType_STUNNED = null,
+cmcau_TextAboveCreatureAction$TextType_INTERRUPTED = null,
+cmcau_TextAboveCreatureAction$TextType_$VALUES = null,
+cmcau_TextAboveCreatureAction$TextType_$callClinit = () => {
+    cmcau_TextAboveCreatureAction$TextType_$callClinit = $rt_eraseClinit(cmcau_TextAboveCreatureAction$TextType);
+    cmcau_TextAboveCreatureAction$TextType__clinit_();
+},
+cmcau_TextAboveCreatureAction$TextType__init_0 = ($this, var$1, var$2) => {
+    cmcau_TextAboveCreatureAction$TextType_$callClinit();
+    jl_Enum__init_($this, var$1, var$2);
+},
+cmcau_TextAboveCreatureAction$TextType__init_ = (var_0, var_1) => {
+    let var_2 = new cmcau_TextAboveCreatureAction$TextType();
+    cmcau_TextAboveCreatureAction$TextType__init_0(var_2, var_0, var_1);
+    return var_2;
+},
+cmcau_TextAboveCreatureAction$TextType__clinit_ = () => {
+    let var$1, var$2, var$3;
+    cmcau_TextAboveCreatureAction$TextType_STUNNED = cmcau_TextAboveCreatureAction$TextType__init_($rt_s(7195), 0);
+    var$1 = cmcau_TextAboveCreatureAction$TextType__init_($rt_s(7196), 1);
+    cmcau_TextAboveCreatureAction$TextType_INTERRUPTED = var$1;
+    var$2 = $rt_createArray(cmcau_TextAboveCreatureAction$TextType, 2);
+    var$3 = var$2.data;
+    var$3[0] = cmcau_TextAboveCreatureAction$TextType_STUNNED;
+    var$3[1] = var$1;
+    cmcau_TextAboveCreatureAction$TextType_$VALUES = var$2;
 },
 cmca_ClearCardQueueAction = $rt_classWithoutFields(cmca_AbstractGameAction),
 cmca_ClearCardQueueAction_update = $this => {
@@ -221365,6 +221469,32 @@ cmcaa_ShoutAction_update = $this => {
         $this.$used3 = 1;
     }
     cmca_AbstractGameAction_tickDuration($this);
+};
+function cmcac_ChangeStateAction() {
+    let a = this; cmca_AbstractGameAction.call(a);
+    a.$called = 0;
+    a.$m8 = null;
+    a.$stateName = null;
+}
+let cmcac_ChangeStateAction__init_0 = ($this, $monster, $stateName) => {
+    cmca_AbstractGameAction__init_($this);
+    $this.$called = 0;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_SPECIAL;
+    $this.$m8 = $monster;
+    $this.$stateName = $stateName;
+},
+cmcac_ChangeStateAction__init_ = (var_0, var_1) => {
+    let var_2 = new cmcac_ChangeStateAction();
+    cmcac_ChangeStateAction__init_0(var_2, var_0, var_1);
+    return var_2;
+},
+cmcac_ChangeStateAction_update = $this => {
+    if (!$this.$called) {
+        $this.$m8.$changeState($this.$stateName);
+        $this.$called = 1;
+        $this.$isDone0 = 1;
+    }
 };
 function cmcaa_VFXAction() {
     let a = this; cmca_AbstractGameAction.call(a);
@@ -221511,173 +221641,150 @@ cmcvc_IntenseZoomEffect_render = ($this, $sb) => {
 cmcvc_IntenseZoomEffect_dispose = $this => {
     return;
 };
-function cmcac_ChangeStateAction() {
+function cmcac_SpawnMonsterAction() {
     let a = this; cmca_AbstractGameAction.call(a);
-    a.$called = 0;
-    a.$m8 = null;
-    a.$stateName = null;
+    a.$used1 = 0;
+    a.$m = null;
+    a.$minion = 0;
+    a.$targetSlot = 0;
+    a.$useSmartPositioning = 0;
 }
-let cmcac_ChangeStateAction__init_0 = ($this, $monster, $stateName) => {
+let cmcac_SpawnMonsterAction__init_0 = ($this, $m, $isMinion) => {
     cmca_AbstractGameAction__init_($this);
-    $this.$called = 0;
+    $this.$used1 = 0;
     cmca_AbstractGameAction$ActionType_$callClinit();
     $this.$actionType = cmca_AbstractGameAction$ActionType_SPECIAL;
-    $this.$m8 = $monster;
-    $this.$stateName = $stateName;
+    $this.$duration0 = 0.10000000149011612;
+    $this.$m = $m;
+    $this.$minion = $isMinion;
+    $this.$targetSlot = (-99);
+    $this.$useSmartPositioning = 0;
+    $this.$useSmartPositioning = 1;
 },
-cmcac_ChangeStateAction__init_ = (var_0, var_1) => {
-    let var_2 = new cmcac_ChangeStateAction();
-    cmcac_ChangeStateAction__init_0(var_2, var_0, var_1);
+cmcac_SpawnMonsterAction__init_ = (var_0, var_1) => {
+    let var_2 = new cmcac_SpawnMonsterAction();
+    cmcac_SpawnMonsterAction__init_0(var_2, var_0, var_1);
     return var_2;
 },
-cmcac_ChangeStateAction_update = $this => {
-    if (!$this.$called) {
-        $this.$m8.$changeState($this.$stateName);
-        $this.$called = 1;
-        $this.$isDone0 = 1;
-    }
-};
-function cmcau_TextAboveCreatureAction() {
-    let a = this; cmca_AbstractGameAction.call(a);
-    a.$used = 0;
-    a.$msg1 = null;
-}
-let cmcau_TextAboveCreatureAction__init_ = ($this, $source, $type) => {
-    cmca_AbstractGameAction__init_($this);
-    $this.$used = 0;
-    cmcau_TextAboveCreatureAction$TextType_$callClinit();
-    if ($type === cmcau_TextAboveCreatureAction$TextType_STUNNED) {
-        cmca_AbstractGameAction_setValues1($this, $source, $source);
-        cmcc_AbstractCreature_$callClinit();
-        $this.$msg1 = cmcc_AbstractCreature_TEXT.data[3];
-        cmca_AbstractGameAction$ActionType_$callClinit();
-        $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
-        cmcc_Settings_$callClinit();
-        $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
-    } else if ($type !== cmcau_TextAboveCreatureAction$TextType_INTERRUPTED)
-        $this.$isDone0 = 1;
-    else {
-        cmca_AbstractGameAction_setValues1($this, $source, $source);
-        cmcc_AbstractCreature_$callClinit();
-        $this.$msg1 = cmcc_AbstractCreature_TEXT.data[4];
-        cmca_AbstractGameAction$ActionType_$callClinit();
-        $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
-        cmcc_Settings_$callClinit();
-        $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
-    }
-},
-cmcau_TextAboveCreatureAction__init_2 = (var_0, var_1) => {
-    let var_2 = new cmcau_TextAboveCreatureAction();
-    cmcau_TextAboveCreatureAction__init_(var_2, var_0, var_1);
-    return var_2;
-},
-cmcau_TextAboveCreatureAction__init_0 = ($this, $source, $text) => {
-    cmca_AbstractGameAction__init_($this);
-    $this.$used = 0;
-    cmca_AbstractGameAction_setValues1($this, $source, $source);
-    $this.$msg1 = $text;
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
-    cmcc_Settings_$callClinit();
-    $this.$duration0 = cmcc_Settings_ACTION_DUR_FASTER;
-},
-cmcau_TextAboveCreatureAction__init_1 = (var_0, var_1) => {
-    let var_2 = new cmcau_TextAboveCreatureAction();
-    cmcau_TextAboveCreatureAction__init_0(var_2, var_0, var_1);
-    return var_2;
-},
-cmcau_TextAboveCreatureAction_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5, var$6;
-    if (!$this.$used) {
+cmcac_SpawnMonsterAction_update = $this => {
+    let var$1, $mo, $position, $r;
+    if (!$this.$used1) {
         cmcd_AbstractDungeon_$callClinit();
-        var$1 = cmcd_AbstractDungeon_effectList;
-        var$2 = new cmcv_TextAboveCreatureEffect;
-        var$3 = $this.$source;
-        var$4 = var$3.$hb;
-        var$5 = var$4.$cX - var$3.$animX;
-        var$6 = var$4.$cY + $this.$target.$hb.$height0 / 2.0;
-        var$4 = $this.$msg1;
-        cbgg_Color_$callClinit();
-        cmcv_TextAboveCreatureEffect__init_(var$2, var$5, var$6, var$4, cbgg_Color_cpy(cbgg_Color_WHITE));
-        ju_ArrayList_add(var$1, var$2);
-        $this.$used = 1;
+        var$1 = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$relics);
+        while (ju_AbstractList$1_hasNext(var$1)) {
+            (ju_AbstractList$1_next(var$1)).$onSpawnMonster($this.$m);
+        }
+        cmcm_AbstractMonster_init($this.$m);
+        $mo = $this.$m;
+        cmcc_CoopCombatSync_$callClinit();
+        if (cmcc_CoopManager_isActiveCoop())
+            cmcc_CoopCombatSync_scaleMonsterIfNeeded($mo);
+        cmcm_AbstractMonster_applyPowers($this.$m);
+        if (!$this.$useSmartPositioning)
+            cmcm_MonsterGroup_addMonster((cmcd_AbstractDungeon_getCurrRoom()).$monsters0, $this.$targetSlot, $this.$m);
+        else {
+            $position = 0;
+            var$1 = ju_AbstractList_iterator((cmcd_AbstractDungeon_getCurrRoom()).$monsters0.$monsters);
+            while (ju_AbstractList$1_hasNext(var$1)) {
+                $mo = ju_AbstractList$1_next(var$1);
+                if ($this.$m.$drawX > $mo.$drawX)
+                    $position = $position + 1 | 0;
+            }
+            cmcm_MonsterGroup_addMonster((cmcd_AbstractDungeon_getCurrRoom()).$monsters0, $position, $this.$m);
+        }
+        cmcc_AbstractCreature_showHealthBar($this.$m);
+        if (cmch_ModHelper_isModEnabled($rt_s(2828))) {
+            $mo = new cmcac_ApplyPowerAction;
+            $r = $this.$m;
+            cmcac_ApplyPowerAction__init_($mo, $r, $r, cmcp_StrengthPower__init_($r, 3), 3);
+            cmca_AbstractGameAction_addToBot($this, $mo);
+        }
+        if (cmch_ModHelper_isModEnabled($rt_s(2818))) {
+            $mo = new cmcac_ApplyPowerAction;
+            $r = $this.$m;
+            cmcac_ApplyPowerAction__init_2($mo, $r, $r, cmcp_SlowPower__init_($r, 0));
+            cmca_AbstractGameAction_addToBot($this, $mo);
+        }
+        if ($this.$minion) {
+            $r = new cmcac_ApplyPowerAction;
+            var$1 = $this.$m;
+            cmcac_ApplyPowerAction__init_2($r, var$1, var$1, cmcp_MinionPower__init_(var$1));
+            cmca_AbstractGameAction_addToTop($this, $r);
+        }
+        $this.$used1 = 1;
     }
     cmca_AbstractGameAction_tickDuration($this);
 },
-cmcau_TextAboveCreatureAction$TextType = $rt_classWithoutFields(jl_Enum),
-cmcau_TextAboveCreatureAction$TextType_STUNNED = null,
-cmcau_TextAboveCreatureAction$TextType_INTERRUPTED = null,
-cmcau_TextAboveCreatureAction$TextType_$VALUES = null,
-cmcau_TextAboveCreatureAction$TextType_$callClinit = () => {
-    cmcau_TextAboveCreatureAction$TextType_$callClinit = $rt_eraseClinit(cmcau_TextAboveCreatureAction$TextType);
-    cmcau_TextAboveCreatureAction$TextType__clinit_();
-},
-cmcau_TextAboveCreatureAction$TextType__init_0 = ($this, var$1, var$2) => {
-    cmcau_TextAboveCreatureAction$TextType_$callClinit();
-    jl_Enum__init_($this, var$1, var$2);
-},
-cmcau_TextAboveCreatureAction$TextType__init_ = (var_0, var_1) => {
-    let var_2 = new cmcau_TextAboveCreatureAction$TextType();
-    cmcau_TextAboveCreatureAction$TextType__init_0(var_2, var_0, var_1);
-    return var_2;
-},
-cmcau_TextAboveCreatureAction$TextType__clinit_ = () => {
-    let var$1, var$2, var$3;
-    cmcau_TextAboveCreatureAction$TextType_STUNNED = cmcau_TextAboveCreatureAction$TextType__init_($rt_s(7195), 0);
-    var$1 = cmcau_TextAboveCreatureAction$TextType__init_($rt_s(7196), 1);
-    cmcau_TextAboveCreatureAction$TextType_INTERRUPTED = var$1;
-    var$2 = $rt_createArray(cmcau_TextAboveCreatureAction$TextType, 2);
-    var$3 = var$2.data;
-    var$3[0] = cmcau_TextAboveCreatureAction$TextType_STUNNED;
-    var$3[1] = var$1;
-    cmcau_TextAboveCreatureAction$TextType_$VALUES = var$2;
-};
-function cmcau_SFXAction() {
-    let a = this; cmca_AbstractGameAction.call(a);
-    a.$key7 = null;
-    a.$pitchVar = 0.0;
-    a.$adjust = 0;
-}
-let cmcau_SFXAction__init_3 = ($this, $key) => {
-    cmcau_SFXAction__init_2($this, $key, 0.0, 0);
-},
-cmcau_SFXAction__init_ = var_0 => {
-    let var_1 = new cmcau_SFXAction();
-    cmcau_SFXAction__init_3(var_1, var_0);
-    return var_1;
-},
-cmcau_SFXAction__init_4 = ($this, $key, $pitchVar) => {
-    cmcau_SFXAction__init_2($this, $key, $pitchVar, 0);
-},
-cmcau_SFXAction__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcau_SFXAction();
-    cmcau_SFXAction__init_4(var_2, var_0, var_1);
-    return var_2;
-},
-cmcau_SFXAction__init_2 = ($this, $key, $pitchVar, $pitchAdjust) => {
+cmcau_HideHealthBarAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcau_HideHealthBarAction__init_0 = ($this, $owner) => {
     cmca_AbstractGameAction__init_($this);
-    $this.$pitchVar = 0.0;
-    $this.$adjust = 0;
-    $this.$key7 = $key;
-    $this.$pitchVar = $pitchVar;
-    $this.$adjust = $pitchAdjust;
     cmca_AbstractGameAction$ActionType_$callClinit();
     $this.$actionType = cmca_AbstractGameAction$ActionType_WAIT;
+    $this.$source = $owner;
 },
-cmcau_SFXAction__init_1 = (var_0, var_1, var_2) => {
-    let var_3 = new cmcau_SFXAction();
-    cmcau_SFXAction__init_2(var_3, var_0, var_1, var_2);
-    return var_3;
+cmcau_HideHealthBarAction__init_ = var_0 => {
+    let var_1 = new cmcau_HideHealthBarAction();
+    cmcau_HideHealthBarAction__init_0(var_1, var_0);
+    return var_1;
 },
-cmcau_SFXAction_update = $this => {
-    if ($this.$adjust) {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $this.$key7, $this.$pitchVar);
-    } else {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_play0(cmcc_CardCrawlGame_sound, $this.$key7, $this.$pitchVar);
-    }
+cmcau_HideHealthBarAction_update = $this => {
+    cmcc_AbstractCreature_hideHealthBar($this.$source);
     $this.$isDone0 = 1;
+};
+function cmcac_SuicideAction() {
+    let a = this; cmca_AbstractGameAction.call(a);
+    a.$m2 = null;
+    a.$relicTrigger = 0;
+}
+let cmcac_SuicideAction__init_2 = ($this, $target) => {
+    cmcac_SuicideAction__init_1($this, $target, 1);
+},
+cmcac_SuicideAction__init_ = var_0 => {
+    let var_1 = new cmcac_SuicideAction();
+    cmcac_SuicideAction__init_2(var_1, var_0);
+    return var_1;
+},
+cmcac_SuicideAction__init_1 = ($this, $target, $triggerRelics) => {
+    cmca_AbstractGameAction__init_($this);
+    $this.$duration0 = 0.0;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_DAMAGE;
+    $this.$m2 = $target;
+    $this.$relicTrigger = $triggerRelics;
+},
+cmcac_SuicideAction__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcac_SuicideAction();
+    cmcac_SuicideAction__init_1(var_2, var_0, var_1);
+    return var_2;
+},
+cmcac_SuicideAction_update = $this => {
+    let var$1;
+    if ($this.$duration0 === 0.0) {
+        var$1 = $this.$m2;
+        var$1.$gold = 0;
+        var$1.$currentHealth = 0;
+        cmcm_AbstractMonster_die0(var$1, $this.$relicTrigger);
+        cmcc_AbstractCreature_healthBarUpdatedEvent($this.$m2);
+    }
+    cmca_AbstractGameAction_tickDuration($this);
+},
+cmcac_EscapeAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcac_EscapeAction__init_0 = ($this, $source) => {
+    cmca_AbstractGameAction__init_($this);
+    cmca_AbstractGameAction_setValues1($this, $source, $source);
+    $this.$duration0 = 0.5;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
+},
+cmcac_EscapeAction__init_ = var_0 => {
+    let var_1 = new cmcac_EscapeAction();
+    cmcac_EscapeAction__init_0(var_1, var_0);
+    return var_1;
+},
+cmcac_EscapeAction_update = $this => {
+    if ($this.$duration0 === 0.5)
+        cmcm_AbstractMonster_escape($this.$source);
+    cmca_AbstractGameAction_tickDuration($this);
 };
 function cmcac_RemoveSpecificPowerAction() {
     let a = this; cmca_AbstractGameAction.call(a);
@@ -221765,59 +221872,6 @@ cmcac_RemoveSpecificPowerAction_update = $this => {
                 (ju_AbstractList$1_next(var$3)).$updateDescription0();
             }
         }
-    }
-    cmca_AbstractGameAction_tickDuration($this);
-},
-cmcau_HideHealthBarAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcau_HideHealthBarAction__init_0 = ($this, $owner) => {
-    cmca_AbstractGameAction__init_($this);
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_WAIT;
-    $this.$source = $owner;
-},
-cmcau_HideHealthBarAction__init_ = var_0 => {
-    let var_1 = new cmcau_HideHealthBarAction();
-    cmcau_HideHealthBarAction__init_0(var_1, var_0);
-    return var_1;
-},
-cmcau_HideHealthBarAction_update = $this => {
-    cmcc_AbstractCreature_hideHealthBar($this.$source);
-    $this.$isDone0 = 1;
-};
-function cmcac_SuicideAction() {
-    let a = this; cmca_AbstractGameAction.call(a);
-    a.$m2 = null;
-    a.$relicTrigger = 0;
-}
-let cmcac_SuicideAction__init_2 = ($this, $target) => {
-    cmcac_SuicideAction__init_1($this, $target, 1);
-},
-cmcac_SuicideAction__init_ = var_0 => {
-    let var_1 = new cmcac_SuicideAction();
-    cmcac_SuicideAction__init_2(var_1, var_0);
-    return var_1;
-},
-cmcac_SuicideAction__init_1 = ($this, $target, $triggerRelics) => {
-    cmca_AbstractGameAction__init_($this);
-    $this.$duration0 = 0.0;
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_DAMAGE;
-    $this.$m2 = $target;
-    $this.$relicTrigger = $triggerRelics;
-},
-cmcac_SuicideAction__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcac_SuicideAction();
-    cmcac_SuicideAction__init_1(var_2, var_0, var_1);
-    return var_2;
-},
-cmcac_SuicideAction_update = $this => {
-    let var$1;
-    if ($this.$duration0 === 0.0) {
-        var$1 = $this.$m2;
-        var$1.$gold = 0;
-        var$1.$currentHealth = 0;
-        cmcm_AbstractMonster_die0(var$1, $this.$relicTrigger);
-        cmcc_AbstractCreature_healthBarUpdatedEvent($this.$m2);
     }
     cmca_AbstractGameAction_tickDuration($this);
 };
@@ -221988,98 +222042,53 @@ cmcv_SpeechBubble__clinit_ = () => {
     cmcv_SpeechBubble_WAVY_DISTANCE = 2.0 * var$1;
     cmcv_SpeechBubble_ADJUST_X = 170.0 * var$1;
     cmcv_SpeechBubble_ADJUST_Y = 116.0 * var$1;
+};
+function cmcau_SFXAction() {
+    let a = this; cmca_AbstractGameAction.call(a);
+    a.$key7 = null;
+    a.$pitchVar = 0.0;
+    a.$adjust = 0;
+}
+let cmcau_SFXAction__init_3 = ($this, $key) => {
+    cmcau_SFXAction__init_2($this, $key, 0.0, 0);
 },
-cmcac_EscapeAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcac_EscapeAction__init_0 = ($this, $source) => {
-    cmca_AbstractGameAction__init_($this);
-    cmca_AbstractGameAction_setValues1($this, $source, $source);
-    $this.$duration0 = 0.5;
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_TEXT;
-},
-cmcac_EscapeAction__init_ = var_0 => {
-    let var_1 = new cmcac_EscapeAction();
-    cmcac_EscapeAction__init_0(var_1, var_0);
+cmcau_SFXAction__init_ = var_0 => {
+    let var_1 = new cmcau_SFXAction();
+    cmcau_SFXAction__init_3(var_1, var_0);
     return var_1;
 },
-cmcac_EscapeAction_update = $this => {
-    if ($this.$duration0 === 0.5)
-        cmcm_AbstractMonster_escape($this.$source);
-    cmca_AbstractGameAction_tickDuration($this);
-};
-function cmcac_SpawnMonsterAction() {
-    let a = this; cmca_AbstractGameAction.call(a);
-    a.$used1 = 0;
-    a.$m = null;
-    a.$minion = 0;
-    a.$targetSlot = 0;
-    a.$useSmartPositioning = 0;
-}
-let cmcac_SpawnMonsterAction__init_0 = ($this, $m, $isMinion) => {
-    cmca_AbstractGameAction__init_($this);
-    $this.$used1 = 0;
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_SPECIAL;
-    $this.$duration0 = 0.10000000149011612;
-    $this.$m = $m;
-    $this.$minion = $isMinion;
-    $this.$targetSlot = (-99);
-    $this.$useSmartPositioning = 0;
-    $this.$useSmartPositioning = 1;
+cmcau_SFXAction__init_4 = ($this, $key, $pitchVar) => {
+    cmcau_SFXAction__init_2($this, $key, $pitchVar, 0);
 },
-cmcac_SpawnMonsterAction__init_ = (var_0, var_1) => {
-    let var_2 = new cmcac_SpawnMonsterAction();
-    cmcac_SpawnMonsterAction__init_0(var_2, var_0, var_1);
+cmcau_SFXAction__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcau_SFXAction();
+    cmcau_SFXAction__init_4(var_2, var_0, var_1);
     return var_2;
 },
-cmcac_SpawnMonsterAction_update = $this => {
-    let var$1, $mo, $position, $r;
-    if (!$this.$used1) {
-        cmcd_AbstractDungeon_$callClinit();
-        var$1 = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$relics);
-        while (ju_AbstractList$1_hasNext(var$1)) {
-            (ju_AbstractList$1_next(var$1)).$onSpawnMonster($this.$m);
-        }
-        cmcm_AbstractMonster_init($this.$m);
-        $mo = $this.$m;
-        cmcc_CoopCombatSync_$callClinit();
-        if (cmcc_CoopManager_isActiveCoop())
-            cmcc_CoopCombatSync_scaleMonsterIfNeeded($mo);
-        cmcm_AbstractMonster_applyPowers($this.$m);
-        if (!$this.$useSmartPositioning)
-            cmcm_MonsterGroup_addMonster((cmcd_AbstractDungeon_getCurrRoom()).$monsters0, $this.$targetSlot, $this.$m);
-        else {
-            $position = 0;
-            var$1 = ju_AbstractList_iterator((cmcd_AbstractDungeon_getCurrRoom()).$monsters0.$monsters);
-            while (ju_AbstractList$1_hasNext(var$1)) {
-                $mo = ju_AbstractList$1_next(var$1);
-                if ($this.$m.$drawX > $mo.$drawX)
-                    $position = $position + 1 | 0;
-            }
-            cmcm_MonsterGroup_addMonster((cmcd_AbstractDungeon_getCurrRoom()).$monsters0, $position, $this.$m);
-        }
-        cmcc_AbstractCreature_showHealthBar($this.$m);
-        if (cmch_ModHelper_isModEnabled($rt_s(2828))) {
-            $mo = new cmcac_ApplyPowerAction;
-            $r = $this.$m;
-            cmcac_ApplyPowerAction__init_($mo, $r, $r, cmcp_StrengthPower__init_($r, 3), 3);
-            cmca_AbstractGameAction_addToBot($this, $mo);
-        }
-        if (cmch_ModHelper_isModEnabled($rt_s(2818))) {
-            $mo = new cmcac_ApplyPowerAction;
-            $r = $this.$m;
-            cmcac_ApplyPowerAction__init_2($mo, $r, $r, cmcp_SlowPower__init_($r, 0));
-            cmca_AbstractGameAction_addToBot($this, $mo);
-        }
-        if ($this.$minion) {
-            $r = new cmcac_ApplyPowerAction;
-            var$1 = $this.$m;
-            cmcac_ApplyPowerAction__init_2($r, var$1, var$1, cmcp_MinionPower__init_(var$1));
-            cmca_AbstractGameAction_addToTop($this, $r);
-        }
-        $this.$used1 = 1;
+cmcau_SFXAction__init_2 = ($this, $key, $pitchVar, $pitchAdjust) => {
+    cmca_AbstractGameAction__init_($this);
+    $this.$pitchVar = 0.0;
+    $this.$adjust = 0;
+    $this.$key7 = $key;
+    $this.$pitchVar = $pitchVar;
+    $this.$adjust = $pitchAdjust;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_WAIT;
+},
+cmcau_SFXAction__init_1 = (var_0, var_1, var_2) => {
+    let var_3 = new cmcau_SFXAction();
+    cmcau_SFXAction__init_2(var_3, var_0, var_1, var_2);
+    return var_3;
+},
+cmcau_SFXAction_update = $this => {
+    if ($this.$adjust) {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $this.$key7, $this.$pitchVar);
+    } else {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_play0(cmcc_CardCrawlGame_sound, $this.$key7, $this.$pitchVar);
     }
-    cmca_AbstractGameAction_tickDuration($this);
+    $this.$isDone0 = 1;
 },
 cbga_Sound = $rt_classWithoutFields(0);
 function cgxgtbwwh_HowlSound() {
@@ -239142,12 +239151,6 @@ cbgu_OrderedMap$OrderedMapEntries_next = $this => {
 cbgu_OrderedMap$OrderedMapEntries_next0 = $this => {
     return cbgu_OrderedMap$OrderedMapEntries_next($this);
 };
-function cbgu_JsonValue$PrettyPrintSettings() {
-    let a = this; jl_Object.call(a);
-    a.$outputType = null;
-    a.$singleLineColumns = 0;
-    a.$wrapNumericArrays = 0;
-}
 function cbgu_JsonValue$JsonIterator() {
     let a = this; jl_Object.call(a);
     a.$entry0 = null;
@@ -239168,8 +239171,14 @@ cbgu_JsonValue$JsonIterator_next = $this => {
     var$1 = new ju_NoSuchElementException;
     jl_Throwable__init_0(var$1);
     $rt_throw(var$1);
-},
-cesa_SkeletonAttachment = $rt_classWithoutFields(cesa_Attachment);
+};
+function cbgu_JsonValue$PrettyPrintSettings() {
+    let a = this; jl_Object.call(a);
+    a.$outputType = null;
+    a.$singleLineColumns = 0;
+    a.$wrapNumericArrays = 0;
+}
+let cesa_SkeletonAttachment = $rt_classWithoutFields(cesa_Attachment);
 function otcit_DateTimeZoneBuilder$Transition() {
     let a = this; jl_Object.call(a);
     a.$iMillis = Long_ZERO;
@@ -240306,107 +240315,6 @@ cmcac_ReducePowerAction_update = $this => {
     cmca_AbstractGameAction_tickDuration($this);
 },
 cbgur_ClassReflection = $rt_classWithoutFields();
-function cmcv_FallingDustEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x91 = 0.0;
-    a.$y103 = 0.0;
-    a.$vY32 = 0.0;
-    a.$vX7 = 0.0;
-    a.$vYAccel = 0.0;
-    a.$aV8 = 0.0;
-    a.$startingAlpha0 = 0.0;
-    a.$img139 = null;
-}
-let cmcv_FallingDustEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    $this.$rotation = $this.$rotation + $this.$aV8;
-    var$1 = $this.$y103;
-    var$2 = $this.$vY32;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    $this.$y103 = var$1 - var$2 * var$3;
-    var$1 = $this.$x91;
-    var$4 = $this.$vX7;
-    $this.$x91 = var$1 + var$4 * var$3;
-    $this.$vY32 = var$2 + $this.$vYAccel * var$3;
-    $this.$vX7 = var$4 * 0.9900000095367432;
-    var$4 = $this.$duration;
-    if (var$4 < 3.0) {
-        var$5 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$5.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$startingAlpha0, 0.0, 1.0 - var$4 / 3.0);
-    }
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-},
-cmcv_FallingDustEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img139;
-    var$3 = $this.$x91;
-    var$4 = $this.$y103;
-    var$5 = var$2.$offsetX;
-    var$6 = var$2.$offsetY;
-    var$7 = var$2.$packedWidth;
-    var$8 = var$2.$packedHeight;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$9, $this.$rotation);
-},
-cmcv_FallingDustEffect_dispose = $this => {
-    return;
-};
-function cmcvs_CeilingDustCloudEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x119 = 0.0;
-    a.$y127 = 0.0;
-    a.$vY26 = 0.0;
-    a.$vX18 = 0.0;
-    a.$vYAccel0 = 0.0;
-    a.$aV3 = 0.0;
-    a.$startingAlpha = 0.0;
-    a.$img77 = null;
-}
-let cmcvs_CeilingDustCloudEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    $this.$rotation = $this.$rotation + $this.$aV3;
-    var$1 = $this.$y127;
-    var$2 = $this.$vY26;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    $this.$y127 = var$1 - var$2 * var$3;
-    var$1 = $this.$x119;
-    var$4 = $this.$vX18;
-    $this.$x119 = var$1 + var$4 * var$3;
-    $this.$vY26 = var$2 + $this.$vYAccel0 * var$3;
-    $this.$vX18 = var$4 * 0.9900000095367432;
-    $this.$scale = $this.$scale + var$3 * 0.20000000298023224;
-    var$4 = $this.$duration;
-    if (var$4 < 3.0) {
-        var$5 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$5.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$startingAlpha, 0.0, 1.0 - var$4 / 3.0);
-    }
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvs_CeilingDustCloudEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img77;
-    var$3 = $this.$x119;
-    var$4 = $this.$y127;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
-},
-cmcvs_CeilingDustCloudEffect_dispose = $this => {
-    return;
-};
 function cmcv_ExhaustBlurEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$x95 = 0.0;
@@ -240593,6 +240501,107 @@ cmcv_ExhaustEmberEffect_render = ($this, $sb) => {
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
 cmcv_ExhaustEmberEffect_dispose = $this => {
+    return;
+};
+function cmcv_FallingDustEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x91 = 0.0;
+    a.$y103 = 0.0;
+    a.$vY32 = 0.0;
+    a.$vX7 = 0.0;
+    a.$vYAccel = 0.0;
+    a.$aV8 = 0.0;
+    a.$startingAlpha0 = 0.0;
+    a.$img139 = null;
+}
+let cmcv_FallingDustEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    $this.$rotation = $this.$rotation + $this.$aV8;
+    var$1 = $this.$y103;
+    var$2 = $this.$vY32;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    $this.$y103 = var$1 - var$2 * var$3;
+    var$1 = $this.$x91;
+    var$4 = $this.$vX7;
+    $this.$x91 = var$1 + var$4 * var$3;
+    $this.$vY32 = var$2 + $this.$vYAccel * var$3;
+    $this.$vX7 = var$4 * 0.9900000095367432;
+    var$4 = $this.$duration;
+    if (var$4 < 3.0) {
+        var$5 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$5.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$startingAlpha0, 0.0, 1.0 - var$4 / 3.0);
+    }
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
+},
+cmcv_FallingDustEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img139;
+    var$3 = $this.$x91;
+    var$4 = $this.$y103;
+    var$5 = var$2.$offsetX;
+    var$6 = var$2.$offsetY;
+    var$7 = var$2.$packedWidth;
+    var$8 = var$2.$packedHeight;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$9, $this.$rotation);
+},
+cmcv_FallingDustEffect_dispose = $this => {
+    return;
+};
+function cmcvs_CeilingDustCloudEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x119 = 0.0;
+    a.$y127 = 0.0;
+    a.$vY26 = 0.0;
+    a.$vX18 = 0.0;
+    a.$vYAccel0 = 0.0;
+    a.$aV3 = 0.0;
+    a.$startingAlpha = 0.0;
+    a.$img77 = null;
+}
+let cmcvs_CeilingDustCloudEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    $this.$rotation = $this.$rotation + $this.$aV3;
+    var$1 = $this.$y127;
+    var$2 = $this.$vY26;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    $this.$y127 = var$1 - var$2 * var$3;
+    var$1 = $this.$x119;
+    var$4 = $this.$vX18;
+    $this.$x119 = var$1 + var$4 * var$3;
+    $this.$vY26 = var$2 + $this.$vYAccel0 * var$3;
+    $this.$vX18 = var$4 * 0.9900000095367432;
+    $this.$scale = $this.$scale + var$3 * 0.20000000298023224;
+    var$4 = $this.$duration;
+    if (var$4 < 3.0) {
+        var$5 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$5.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$startingAlpha, 0.0, 1.0 - var$4 / 3.0);
+    }
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvs_CeilingDustCloudEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img77;
+    var$3 = $this.$x119;
+    var$4 = $this.$y127;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+},
+cmcvs_CeilingDustCloudEffect_dispose = $this => {
     return;
 };
 function cmcv_RainingGoldEffect() {
@@ -248012,6 +248021,68 @@ cmcv_TouchPickupGold_dispose = $this => {
 cmcv_TouchPickupGold__clinit_ = () => {
     cmcc_Settings_$callClinit();
     cmcv_TouchPickupGold_IMG_WIDTH = 32.0 * cmcc_Settings_scale;
+},
+cmcac_EndTurnAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcac_EndTurnAction_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    cmcd_AbstractDungeon_$callClinit();
+    var$1 = cmcd_AbstractDungeon_actionManager;
+    cmcc_AbstractPlayer_resetControllerValues(cmcd_AbstractDungeon_player);
+    var$1.$turnHasEnded = 1;
+    var$2 = cmcd_AbstractDungeon_player.$currentHealth;
+    cmca_GameActionManager_$callClinit();
+    cmca_GameActionManager_playerHpLastTurn = var$2;
+    if (!(cmcd_AbstractDungeon_getCurrRoom()).$skipMonsterTurn) {
+        var$1 = cmcd_AbstractDungeon_topLevelEffects;
+        var$3 = new cmcv_EnemyTurnEffect;
+        cmcv_EnemyTurnEffect_$callClinit();
+        cmcv_AbstractGameEffect__init_(var$3);
+        var$3.$currentHeight0 = 0.0;
+        var$3.$duration = 2.0;
+        var$3.$startingDuration = 2.0;
+        var$4 = new cbgg_Color;
+        var$5 = cmcd_AbstractDungeon_fadeColor;
+        cbgg_Color__init_2(var$4, var$5.$r / 2.0, var$5.$g / 2.0, var$5.$b / 2.0, 0.0);
+        var$3.$bgColor6 = var$4;
+        cmcc_Settings_$callClinit();
+        var$5 = cbgg_Color_cpy(cmcc_Settings_GOLD_COLOR);
+        var$3.$color1 = var$5;
+        var$5.$a = 0.0;
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1314));
+        var$3.$scale = 1.0;
+        ju_ArrayList_add(var$1, var$3);
+    }
+    $this.$isDone0 = 1;
+},
+cmcac_MonsterStartTurnAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcac_MonsterStartTurnAction_DURATION = 0.0,
+cmcac_MonsterStartTurnAction_$callClinit = () => {
+    cmcac_MonsterStartTurnAction_$callClinit = $rt_eraseClinit(cmcac_MonsterStartTurnAction);
+    cmcac_MonsterStartTurnAction__clinit_();
+},
+cmcac_MonsterStartTurnAction_update = $this => {
+    let var$1, var$2, var$3;
+    var$1 = $this.$duration0;
+    cmcac_MonsterStartTurnAction_$callClinit();
+    if (var$1 === cmcac_MonsterStartTurnAction_DURATION) {
+        $this.$isDone0 = 1;
+        var$2 = ju_AbstractList_iterator((cmcd_AbstractDungeon_getCurrRoom()).$monsters0.$monsters);
+        while (ju_AbstractList$1_hasNext(var$2)) {
+            var$3 = ju_AbstractList$1_next(var$2);
+            if (!var$3.$isDying && !var$3.$isEscaping) {
+                var$3 = var$3;
+                if (!cmcc_AbstractCreature_hasPower(var$3, $rt_s(3675)))
+                    cmcc_AbstractCreature_loseBlock(var$3);
+                cmcc_AbstractCreature_applyStartOfTurnPowers(var$3);
+            }
+        }
+    }
+    cmca_AbstractGameAction_tickDuration($this);
+},
+cmcac_MonsterStartTurnAction__clinit_ = () => {
+    cmcc_Settings_$callClinit();
+    cmcac_MonsterStartTurnAction_DURATION = cmcc_Settings_ACTION_DUR_FAST;
 };
 function cmcau_RestoreRetainedCardsAction() {
     cmca_AbstractGameAction.call(this);
@@ -248151,68 +248222,6 @@ cmcac_DiscardAction__clinit_ = () => {
     cmcc_Settings_$callClinit();
     cmcac_DiscardAction_DURATION = cmcc_Settings_ACTION_DUR_XFAST;
     cmcac_DiscardAction_TEXT = var$1.$TEXT;
-},
-cmcac_EndTurnAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcac_EndTurnAction_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    cmcd_AbstractDungeon_$callClinit();
-    var$1 = cmcd_AbstractDungeon_actionManager;
-    cmcc_AbstractPlayer_resetControllerValues(cmcd_AbstractDungeon_player);
-    var$1.$turnHasEnded = 1;
-    var$2 = cmcd_AbstractDungeon_player.$currentHealth;
-    cmca_GameActionManager_$callClinit();
-    cmca_GameActionManager_playerHpLastTurn = var$2;
-    if (!(cmcd_AbstractDungeon_getCurrRoom()).$skipMonsterTurn) {
-        var$1 = cmcd_AbstractDungeon_topLevelEffects;
-        var$3 = new cmcv_EnemyTurnEffect;
-        cmcv_EnemyTurnEffect_$callClinit();
-        cmcv_AbstractGameEffect__init_(var$3);
-        var$3.$currentHeight0 = 0.0;
-        var$3.$duration = 2.0;
-        var$3.$startingDuration = 2.0;
-        var$4 = new cbgg_Color;
-        var$5 = cmcd_AbstractDungeon_fadeColor;
-        cbgg_Color__init_2(var$4, var$5.$r / 2.0, var$5.$g / 2.0, var$5.$b / 2.0, 0.0);
-        var$3.$bgColor6 = var$4;
-        cmcc_Settings_$callClinit();
-        var$5 = cbgg_Color_cpy(cmcc_Settings_GOLD_COLOR);
-        var$3.$color1 = var$5;
-        var$5.$a = 0.0;
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1314));
-        var$3.$scale = 1.0;
-        ju_ArrayList_add(var$1, var$3);
-    }
-    $this.$isDone0 = 1;
-},
-cmcac_MonsterStartTurnAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcac_MonsterStartTurnAction_DURATION = 0.0,
-cmcac_MonsterStartTurnAction_$callClinit = () => {
-    cmcac_MonsterStartTurnAction_$callClinit = $rt_eraseClinit(cmcac_MonsterStartTurnAction);
-    cmcac_MonsterStartTurnAction__clinit_();
-},
-cmcac_MonsterStartTurnAction_update = $this => {
-    let var$1, var$2, var$3;
-    var$1 = $this.$duration0;
-    cmcac_MonsterStartTurnAction_$callClinit();
-    if (var$1 === cmcac_MonsterStartTurnAction_DURATION) {
-        $this.$isDone0 = 1;
-        var$2 = ju_AbstractList_iterator((cmcd_AbstractDungeon_getCurrRoom()).$monsters0.$monsters);
-        while (ju_AbstractList$1_hasNext(var$2)) {
-            var$3 = ju_AbstractList$1_next(var$2);
-            if (!var$3.$isDying && !var$3.$isEscaping) {
-                var$3 = var$3;
-                if (!cmcc_AbstractCreature_hasPower(var$3, $rt_s(3675)))
-                    cmcc_AbstractCreature_loseBlock(var$3);
-                cmcc_AbstractCreature_applyStartOfTurnPowers(var$3);
-            }
-        }
-    }
-    cmca_AbstractGameAction_tickDuration($this);
-},
-cmcac_MonsterStartTurnAction__clinit_ = () => {
-    cmcc_Settings_$callClinit();
-    cmcac_MonsterStartTurnAction_DURATION = cmcc_Settings_ACTION_DUR_FAST;
 };
 function cmcv_RelicAboveCreatureEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -248301,51 +248310,6 @@ cmcv_RelicAboveCreatureEffect__clinit_ = () => {
     cmcv_RelicAboveCreatureEffect_STARTING_OFFSET_Y = 0.0 * var$1;
     cmcv_RelicAboveCreatureEffect_TARGET_OFFSET_Y = 60.0 * var$1;
 };
-function cmcau_ShowCardAndPoofAction() {
-    cmca_AbstractGameAction.call(this);
-    this.$card20 = null;
-}
-let cmcau_ShowCardAndPoofAction_update = $this => {
-    if ($this.$duration0 === 0.20000000298023224) {
-        cmcd_AbstractDungeon_$callClinit();
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectList, cmcvc_ExhaustCardEffect__init_($this.$card20));
-        if (cmcc_CardGroup_contains(cmcd_AbstractDungeon_player.$limbo, $this.$card20))
-            cmcc_CardGroup_removeCard(cmcd_AbstractDungeon_player.$limbo, $this.$card20);
-        cmcd_AbstractDungeon_player.$cardInUse = null;
-    }
-    cmca_AbstractGameAction_tickDuration($this);
-};
-function cmcau_ShowCardAction() {
-    cmca_AbstractGameAction.call(this);
-    this.$card25 = null;
-}
-let cmcau_ShowCardAction__init_0 = ($this, $card) => {
-    let var$2, var$3;
-    cmca_AbstractGameAction__init_($this);
-    $this.$card25 = null;
-    cmcd_AbstractDungeon_$callClinit();
-    var$2 = cmcd_AbstractDungeon_player;
-    var$3 = null;
-    cmca_AbstractGameAction_setValues($this, var$2, var$3, 1);
-    $this.$card25 = $card;
-    $this.$duration0 = 0.20000000298023224;
-    cmca_AbstractGameAction$ActionType_$callClinit();
-    $this.$actionType = cmca_AbstractGameAction$ActionType_SPECIAL;
-},
-cmcau_ShowCardAction__init_ = var_0 => {
-    let var_1 = new cmcau_ShowCardAction();
-    cmcau_ShowCardAction__init_0(var_1, var_0);
-    return var_1;
-},
-cmcau_ShowCardAction_update = $this => {
-    if ($this.$duration0 === 0.20000000298023224) {
-        cmcd_AbstractDungeon_$callClinit();
-        if (cmcc_CardGroup_contains(cmcd_AbstractDungeon_player.$limbo, $this.$card25))
-            cmcc_CardGroup_removeCard(cmcd_AbstractDungeon_player.$limbo, $this.$card25);
-        cmcd_AbstractDungeon_player.$cardInUse = null;
-    }
-    cmca_AbstractGameAction_tickDuration($this);
-};
 function cmcvc_MoveNameEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$x167 = 0.0;
@@ -248414,6 +248378,51 @@ cmcvc_MoveNameEffect__clinit_ = () => {
     var$1 = cmcc_Settings_scale;
     cmcvc_MoveNameEffect_STARTING_OFFSET_Y = 100.0 * var$1;
     cmcvc_MoveNameEffect_TARGET_OFFSET_Y = 120.0 * var$1;
+};
+function cmcau_ShowCardAndPoofAction() {
+    cmca_AbstractGameAction.call(this);
+    this.$card20 = null;
+}
+let cmcau_ShowCardAndPoofAction_update = $this => {
+    if ($this.$duration0 === 0.20000000298023224) {
+        cmcd_AbstractDungeon_$callClinit();
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectList, cmcvc_ExhaustCardEffect__init_($this.$card20));
+        if (cmcc_CardGroup_contains(cmcd_AbstractDungeon_player.$limbo, $this.$card20))
+            cmcc_CardGroup_removeCard(cmcd_AbstractDungeon_player.$limbo, $this.$card20);
+        cmcd_AbstractDungeon_player.$cardInUse = null;
+    }
+    cmca_AbstractGameAction_tickDuration($this);
+};
+function cmcau_ShowCardAction() {
+    cmca_AbstractGameAction.call(this);
+    this.$card25 = null;
+}
+let cmcau_ShowCardAction__init_0 = ($this, $card) => {
+    let var$2, var$3;
+    cmca_AbstractGameAction__init_($this);
+    $this.$card25 = null;
+    cmcd_AbstractDungeon_$callClinit();
+    var$2 = cmcd_AbstractDungeon_player;
+    var$3 = null;
+    cmca_AbstractGameAction_setValues($this, var$2, var$3, 1);
+    $this.$card25 = $card;
+    $this.$duration0 = 0.20000000298023224;
+    cmca_AbstractGameAction$ActionType_$callClinit();
+    $this.$actionType = cmca_AbstractGameAction$ActionType_SPECIAL;
+},
+cmcau_ShowCardAction__init_ = var_0 => {
+    let var_1 = new cmcau_ShowCardAction();
+    cmcau_ShowCardAction__init_0(var_1, var_0);
+    return var_1;
+},
+cmcau_ShowCardAction_update = $this => {
+    if ($this.$duration0 === 0.20000000298023224) {
+        cmcd_AbstractDungeon_$callClinit();
+        if (cmcc_CardGroup_contains(cmcd_AbstractDungeon_player.$limbo, $this.$card25))
+            cmcc_CardGroup_removeCard(cmcd_AbstractDungeon_player.$limbo, $this.$card25);
+        cmcd_AbstractDungeon_player.$cardInUse = null;
+    }
+    cmca_AbstractGameAction_tickDuration($this);
 };
 function cmcv_GainPennyEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -250588,6 +250597,10 @@ let cmcvc_GainPowerEffect_update = $this => {
         var$1 =  -(var$1 - 2.0) / 1.5;
         $this.$scale33 = cbgm_Interpolation_apply(var$2, var$4, var$3, var$1);
     }
+    if ($this.$duration < 0.0) {
+        $this.$isDone = 1;
+        $this.$color1.$a = 0.0;
+    }
 },
 cmcvc_GainPowerEffect_render = ($this, $sb, $x, $y) => {
     let var$4, var$5, var$6, var$7, var$8, var$9;
@@ -251139,6 +251152,10 @@ let cmcvc_SilentGainPowerEffect_update = $this => {
         var$4 = 3.0 * var$3;
         var$1 =  -(var$1 - 2.0) / 1.5;
         $this.$scale41 = cbgm_Interpolation_apply(var$2, var$4, var$3, var$1);
+    }
+    if ($this.$duration < 0.0) {
+        $this.$isDone = 1;
+        $this.$color1.$a = 0.0;
     }
 },
 cmcvc_SilentGainPowerEffect_render0 = ($this, $sb, $x, $y) => {
@@ -261396,7 +261413,7 @@ let cmcvc_GiantTextEffect_update = $this => {
     var$2 = $this.$color1;
     var$2.$a = var$2.$a + cbgm_MathUtils_random((-0.05000000074505806), 0.05000000074505806);
     var$2 = $this.$color1;
-    var$2.$a = cbgm_MathUtils_clamp(var$2.$a, 0.0, 1.0);
+    var$2.$a = cbgm_MathUtils_clamp0(var$2.$a, 0.0, 1.0);
     $this.$duration = $this.$duration - cbg_Gdx_graphics.$deltaTime;
     if ($this.$index7 < $this.$targetString.$nativeString.length) {
         jl_AbstractStringBuilder_append0($this.$sBuilder, jl_String_charAt($this.$targetString, $this.$index7));
@@ -265707,122 +265724,6 @@ let cbggg_PixmapPacker$Page$1_dispose = $this => {
     cbgg_Texture_dispose($this);
     cbgg_Pixmap_dispose($this.$this$037.$image);
 };
-function cmcv_ShineLinesEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x230 = 0.0;
-    a.$y235 = 0.0;
-    a.$img146 = null;
-}
-let cmcv_ShineLinesEffect__init_0 = ($this, $x, $y) => {
-    let var$3;
-    cmcv_AbstractGameEffect__init_($this);
-    cmch_ImageMaster_$callClinit();
-    var$3 = cmch_ImageMaster_GRAB_COIN;
-    $this.$img146 = var$3;
-    $this.$duration = 0.25;
-    $this.$startingDuration = 0.25;
-    $this.$x230 = $x - var$3.$packedWidth / 2.0;
-    $this.$y235 = $y - var$3.$packedHeight / 2.0;
-    $this.$rotation = cbgm_MathUtils_random(0.0, 360.0);
-    cbgg_Color_$callClinit();
-    $this.$color1 = cbgg_Color_cpy(cbgg_Color_WHITE);
-    $this.$scale = 0.0;
-},
-cmcv_ShineLinesEffect__init_ = (var_0, var_1) => {
-    let var_2 = new cmcv_ShineLinesEffect();
-    cmcv_ShineLinesEffect__init_0(var_2, var_0, var_1);
-    return var_2;
-},
-cmcv_ShineLinesEffect_update = $this => {
-    cmcv_AbstractGameEffect_update($this);
-    $this.$scale = $this.$scale + cbg_Gdx_graphics.$deltaTime * 8.0;
-},
-cmcv_ShineLinesEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    if (!$this.$isDone) {
-        cbggg_SpriteBatch_setColor($sb, $this.$color1);
-        var$2 = $this.$img146;
-        var$3 = $this.$x230;
-        var$4 = $this.$y235;
-        var$5 = var$2.$packedWidth;
-        var$6 = var$5 / 2.0;
-        var$7 = var$2.$packedHeight;
-        var$8 = var$7 / 2.0;
-        var$9 = $this.$scale;
-        cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
-    }
-},
-cmcv_ShineLinesEffect_dispose = $this => {
-    return;
-};
-function cmcvc_FlyingSpikeEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x78 = 0.0;
-    a.$y88 = 0.0;
-    a.$vX40 = 0.0;
-    a.$vY60 = 0.0;
-    a.$img147 = null;
-}
-let cmcvc_FlyingSpikeEffect__init_0 = ($this, $x, $y, $startingRotation, $vX, $vY, $color) => {
-    let var$7;
-    cmcv_AbstractGameEffect__init_($this);
-    cmch_ImageMaster_$callClinit();
-    var$7 = cmch_ImageMaster_THICK_3D_LINE;
-    $this.$img147 = var$7;
-    $this.$duration = 0.75;
-    $this.$rotation = $startingRotation;
-    $this.$x78 = $x - var$7.$packedWidth / 2.0;
-    $this.$y88 = $y - var$7.$packedHeight / 2.0;
-    $this.$vX40 = $vX;
-    $this.$vY60 = $vY;
-    $this.$color1 = cbgg_Color__init_($color.$r, $color.$g, $color.$b, 0.0);
-    $this.$renderBehind = 1;
-    $this.$scale = 0.009999999776482582;
-    $this.$rotation = $this.$rotation + cbgm_MathUtils_random((-5.0), 5.0);
-},
-cmcvc_FlyingSpikeEffect__init_ = (var_0, var_1, var_2, var_3, var_4, var_5) => {
-    let var_6 = new cmcvc_FlyingSpikeEffect();
-    cmcvc_FlyingSpikeEffect__init_0(var_6, var_0, var_1, var_2, var_3, var_4, var_5);
-    return var_6;
-},
-cmcvc_FlyingSpikeEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$duration;
-    var$2 = var$1 * 2.0;
-    cmcc_Settings_$callClinit();
-    $this.$scale = var$2 * cmcc_Settings_scale;
-    var$2 = $this.$x78;
-    var$3 = $this.$vX40;
-    var$4 = cbg_Gdx_graphics.$deltaTime;
-    $this.$x78 = var$2 + var$3 * var$4;
-    $this.$y88 = $this.$y88 + $this.$vY60 * var$4;
-    var$2 = var$1 - var$4;
-    $this.$duration = var$2;
-    if (!(var$2 > 0.5))
-        $this.$color1.$a = var$2;
-    else
-        $this.$color1.$a = (0.75 - var$2) * 2.0;
-    if (var$2 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_FlyingSpikeEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img147;
-    var$3 = $this.$x78;
-    var$4 = $this.$y88;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_FlyingSpikeEffect_dispose = $this => {
-    return;
-};
 function cmcvc_FlameParticleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$img21 = null;
@@ -265936,72 +265837,72 @@ cmcvc_FlameParticleEffect_render = ($this, $sb) => {
 cmcvc_FlameParticleEffect_dispose = $this => {
     return;
 };
-function cmcvc_IntenseZoomParticle() {
+function cmcvc_FlyingSpikeEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x182 = 0.0;
-    a.$y200 = 0.0;
-    a.$img50 = null;
-    a.$color16 = null;
-    a.$offsetX8 = 0.0;
-    a.$flickerDuration = 0.0;
-    a.$lengthX = 0.0;
-    a.$lengthY = 0.0;
-    a.$isBlack = 0;
+    a.$x78 = 0.0;
+    a.$y88 = 0.0;
+    a.$vX40 = 0.0;
+    a.$vY60 = 0.0;
+    a.$img147 = null;
 }
-let cmcvc_IntenseZoomParticle_update = $this => {
-    let var$1;
-    var$1 = $this.$flickerDuration - cbg_Gdx_graphics.$deltaTime;
-    $this.$flickerDuration = var$1;
-    if (var$1 < 0.0) {
-        cmcvc_IntenseZoomParticle_randomize($this);
-        $this.$flickerDuration = cbgm_MathUtils_random(0.0, 0.05000000074505806);
-    }
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
+let cmcvc_FlyingSpikeEffect__init_0 = ($this, $x, $y, $startingRotation, $vX, $vY, $color) => {
+    let var$7;
+    cmcv_AbstractGameEffect__init_($this);
+    cmch_ImageMaster_$callClinit();
+    var$7 = cmch_ImageMaster_THICK_3D_LINE;
+    $this.$img147 = var$7;
+    $this.$duration = 0.75;
+    $this.$rotation = $startingRotation;
+    $this.$x78 = $x - var$7.$packedWidth / 2.0;
+    $this.$y88 = $y - var$7.$packedHeight / 2.0;
+    $this.$vX40 = $vX;
+    $this.$vY60 = $vY;
+    $this.$color1 = cbgg_Color__init_($color.$r, $color.$g, $color.$b, 0.0);
+    $this.$renderBehind = 1;
+    $this.$scale = 0.009999999776482582;
+    $this.$rotation = $this.$rotation + cbgm_MathUtils_random((-5.0), 5.0);
+},
+cmcvc_FlyingSpikeEffect__init_ = (var_0, var_1, var_2, var_3, var_4, var_5) => {
+    let var_6 = new cmcvc_FlyingSpikeEffect();
+    cmcvc_FlyingSpikeEffect__init_0(var_6, var_0, var_1, var_2, var_3, var_4, var_5);
+    return var_6;
+},
+cmcvc_FlyingSpikeEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$duration;
+    var$2 = var$1 * 2.0;
+    cmcc_Settings_$callClinit();
+    $this.$scale = var$2 * cmcc_Settings_scale;
+    var$2 = $this.$x78;
+    var$3 = $this.$vX40;
+    var$4 = cbg_Gdx_graphics.$deltaTime;
+    $this.$x78 = var$2 + var$3 * var$4;
+    $this.$y88 = $this.$y88 + $this.$vY60 * var$4;
+    var$2 = var$1 - var$4;
+    $this.$duration = var$2;
+    if (!(var$2 > 0.5))
+        $this.$color1.$a = var$2;
+    else
+        $this.$color1.$a = (0.75 - var$2) * 2.0;
+    if (var$2 < 0.0)
         $this.$isDone = 1;
 },
-cmcvc_IntenseZoomParticle_randomize = $this => {
-    let var$1, var$2;
-    $this.$rotation = cbgm_MathUtils_random1(360.0);
-    var$1 = cbgm_MathUtils_random(200.0, 600.0);
-    cmcc_Settings_$callClinit();
-    $this.$offsetX8 = var$1 * cmcc_Settings_scale * (2.0 - $this.$duration);
-    $this.$lengthX = cbgm_MathUtils_random(1.0, 1.2999999523162842);
-    $this.$lengthY = cbgm_MathUtils_random(0.8999999761581421, 1.2000000476837158);
-    if (!$this.$isBlack) {
-        var$2 = $this.$color16;
-        var$1 = cbgm_MathUtils_random(0.20000000298023224, 0.699999988079071);
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = var$1 * cbgm_Interpolation$PowOut_apply(cbgm_Interpolation_pow2Out, $this.$duration / 1.5);
-    } else {
-        var$2 = $this.$color16;
-        var$1 = cbgm_MathUtils_random(0.5, 1.0);
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = var$1 * cbgm_Interpolation$PowOut_apply(cbgm_Interpolation_pow2Out, $this.$duration / 1.5);
-    }
-},
-cmcvc_IntenseZoomParticle_render = ($this, $sb) => {
+cmcvc_FlyingSpikeEffect_render = ($this, $sb) => {
     let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    if (!$this.$isBlack)
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cbggg_SpriteBatch_setColor($sb, $this.$color16);
-    var$2 = $this.$img50;
-    var$3 = $this.$x182;
-    var$4 = $this.$offsetX8;
-    var$5 = var$3 + var$4;
-    var$6 = $this.$y200;
-    var$7 =  -var$4;
-    var$4 = var$2.$packedHeight;
-    var$3 = var$4 / 2.0;
-    var$8 = var$2.$packedWidth * $this.$lengthX;
-    var$4 = var$4 * $this.$lengthY;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img147;
+    var$3 = $this.$x78;
+    var$4 = $this.$y88;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
     var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$5, var$6, var$7, var$3, var$8, var$4, var$9, var$9, $this.$rotation);
-    if (!$this.$isBlack)
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcvc_IntenseZoomParticle_dispose = $this => {
+cmcvc_FlyingSpikeEffect_dispose = $this => {
     return;
 };
 function cmcv_DarkSmokePuffEffect() {
@@ -266127,57 +266028,52 @@ cmcvc_SmokingEmberEffect_render = ($this, $sb) => {
 cmcvc_SmokingEmberEffect_dispose = $this => {
     return;
 };
-function cmcvc_SmokeBlurEffect() {
+function cmcv_ShineLinesEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x69 = 0.0;
-    a.$y78 = 0.0;
-    a.$vY35 = 0.0;
-    a.$aV9 = 0.0;
-    a.$startDur3 = 0.0;
-    a.$targetScale3 = 0.0;
-    a.$img64 = null;
+    a.$x230 = 0.0;
+    a.$y235 = 0.0;
+    a.$img146 = null;
 }
-let cmcvc_SmokeBlurEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-    var$2 = $this.$x69;
-    cmcc_Settings_$callClinit();
-    var$1 = cmcc_Settings_scale;
-    var$1 = var$2 + cbgm_MathUtils_random((-2.0) * var$1, 2.0 * var$1);
-    $this.$x69 = var$1;
-    $this.$x69 = var$1 + $this.$vY35;
-    var$1 = $this.$y78;
-    var$3 = cmcc_Settings_scale;
-    var$1 = var$1 + cbgm_MathUtils_random((-2.0) * var$3, 2.0 * var$3);
-    $this.$y78 = var$1;
-    $this.$y78 = var$1 + $this.$vY35;
-    $this.$rotation = $this.$rotation + $this.$aV9 * cbg_Gdx_graphics.$deltaTime;
-    cbgm_Interpolation_$callClinit();
-    var$4 = cbgm_Interpolation_exp10Out;
-    var$2 = $this.$targetScale3;
-    var$3 = 1.0 - $this.$duration / $this.$startDur3;
-    $this.$scale = cbgm_Interpolation_apply(var$4, 0.009999999776482582, var$2, var$3);
-    var$1 = $this.$duration;
-    if (var$1 < 0.33000001311302185)
-        $this.$color1.$a = var$1 * 3.0;
+let cmcv_ShineLinesEffect__init_0 = ($this, $x, $y) => {
+    let var$3;
+    cmcv_AbstractGameEffect__init_($this);
+    cmch_ImageMaster_$callClinit();
+    var$3 = cmch_ImageMaster_GRAB_COIN;
+    $this.$img146 = var$3;
+    $this.$duration = 0.25;
+    $this.$startingDuration = 0.25;
+    $this.$x230 = $x - var$3.$packedWidth / 2.0;
+    $this.$y235 = $y - var$3.$packedHeight / 2.0;
+    $this.$rotation = cbgm_MathUtils_random(0.0, 360.0);
+    cbgg_Color_$callClinit();
+    $this.$color1 = cbgg_Color_cpy(cbgg_Color_WHITE);
+    $this.$scale = 0.0;
 },
-cmcvc_SmokeBlurEffect_render = ($this, $sb) => {
+cmcv_ShineLinesEffect__init_ = (var_0, var_1) => {
+    let var_2 = new cmcv_ShineLinesEffect();
+    cmcv_ShineLinesEffect__init_0(var_2, var_0, var_1);
+    return var_2;
+},
+cmcv_ShineLinesEffect_update = $this => {
+    cmcv_AbstractGameEffect_update($this);
+    $this.$scale = $this.$scale + cbg_Gdx_graphics.$deltaTime * 8.0;
+},
+cmcv_ShineLinesEffect_render = ($this, $sb) => {
     let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img64;
-    var$3 = $this.$x69;
-    var$4 = $this.$y78;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+    if (!$this.$isDone) {
+        cbggg_SpriteBatch_setColor($sb, $this.$color1);
+        var$2 = $this.$img146;
+        var$3 = $this.$x230;
+        var$4 = $this.$y235;
+        var$5 = var$2.$packedWidth;
+        var$6 = var$5 / 2.0;
+        var$7 = var$2.$packedHeight;
+        var$8 = var$7 / 2.0;
+        var$9 = $this.$scale;
+        cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+    }
 },
-cmcvc_SmokeBlurEffect_dispose = $this => {
+cmcv_ShineLinesEffect_dispose = $this => {
     return;
 };
 function cmcv_GainGoldTextEffect() {
@@ -266274,6 +266170,127 @@ cmcv_GainGoldTextEffect__clinit_ = () => {
     cmcc_Settings_$callClinit();
     cmcv_GainGoldTextEffect_FADE_Y_SPEED = 100.0 * cmcc_Settings_scale;
     cmcv_GainGoldTextEffect_TEXT = var$1.$TEXT;
+};
+function cmcvc_IntenseZoomParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x182 = 0.0;
+    a.$y200 = 0.0;
+    a.$img50 = null;
+    a.$color16 = null;
+    a.$offsetX8 = 0.0;
+    a.$flickerDuration = 0.0;
+    a.$lengthX = 0.0;
+    a.$lengthY = 0.0;
+    a.$isBlack = 0;
+}
+let cmcvc_IntenseZoomParticle_update = $this => {
+    let var$1;
+    var$1 = $this.$flickerDuration - cbg_Gdx_graphics.$deltaTime;
+    $this.$flickerDuration = var$1;
+    if (var$1 < 0.0) {
+        cmcvc_IntenseZoomParticle_randomize($this);
+        $this.$flickerDuration = cbgm_MathUtils_random(0.0, 0.05000000074505806);
+    }
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_IntenseZoomParticle_randomize = $this => {
+    let var$1, var$2;
+    $this.$rotation = cbgm_MathUtils_random1(360.0);
+    var$1 = cbgm_MathUtils_random(200.0, 600.0);
+    cmcc_Settings_$callClinit();
+    $this.$offsetX8 = var$1 * cmcc_Settings_scale * (2.0 - $this.$duration);
+    $this.$lengthX = cbgm_MathUtils_random(1.0, 1.2999999523162842);
+    $this.$lengthY = cbgm_MathUtils_random(0.8999999761581421, 1.2000000476837158);
+    if (!$this.$isBlack) {
+        var$2 = $this.$color16;
+        var$1 = cbgm_MathUtils_random(0.20000000298023224, 0.699999988079071);
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = var$1 * cbgm_Interpolation$PowOut_apply(cbgm_Interpolation_pow2Out, $this.$duration / 1.5);
+    } else {
+        var$2 = $this.$color16;
+        var$1 = cbgm_MathUtils_random(0.5, 1.0);
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = var$1 * cbgm_Interpolation$PowOut_apply(cbgm_Interpolation_pow2Out, $this.$duration / 1.5);
+    }
+},
+cmcvc_IntenseZoomParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    if (!$this.$isBlack)
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color16);
+    var$2 = $this.$img50;
+    var$3 = $this.$x182;
+    var$4 = $this.$offsetX8;
+    var$5 = var$3 + var$4;
+    var$6 = $this.$y200;
+    var$7 =  -var$4;
+    var$4 = var$2.$packedHeight;
+    var$3 = var$4 / 2.0;
+    var$8 = var$2.$packedWidth * $this.$lengthX;
+    var$4 = var$4 * $this.$lengthY;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$5, var$6, var$7, var$3, var$8, var$4, var$9, var$9, $this.$rotation);
+    if (!$this.$isBlack)
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_IntenseZoomParticle_dispose = $this => {
+    return;
+};
+function cmcvc_SmokeBlurEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x69 = 0.0;
+    a.$y78 = 0.0;
+    a.$vY35 = 0.0;
+    a.$aV9 = 0.0;
+    a.$startDur3 = 0.0;
+    a.$targetScale3 = 0.0;
+    a.$img64 = null;
+}
+let cmcvc_SmokeBlurEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
+    var$2 = $this.$x69;
+    cmcc_Settings_$callClinit();
+    var$1 = cmcc_Settings_scale;
+    var$1 = var$2 + cbgm_MathUtils_random((-2.0) * var$1, 2.0 * var$1);
+    $this.$x69 = var$1;
+    $this.$x69 = var$1 + $this.$vY35;
+    var$1 = $this.$y78;
+    var$3 = cmcc_Settings_scale;
+    var$1 = var$1 + cbgm_MathUtils_random((-2.0) * var$3, 2.0 * var$3);
+    $this.$y78 = var$1;
+    $this.$y78 = var$1 + $this.$vY35;
+    $this.$rotation = $this.$rotation + $this.$aV9 * cbg_Gdx_graphics.$deltaTime;
+    cbgm_Interpolation_$callClinit();
+    var$4 = cbgm_Interpolation_exp10Out;
+    var$2 = $this.$targetScale3;
+    var$3 = 1.0 - $this.$duration / $this.$startDur3;
+    $this.$scale = cbgm_Interpolation_apply(var$4, 0.009999999776482582, var$2, var$3);
+    var$1 = $this.$duration;
+    if (var$1 < 0.33000001311302185)
+        $this.$color1.$a = var$1 * 3.0;
+},
+cmcvc_SmokeBlurEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img64;
+    var$3 = $this.$x69;
+    var$4 = $this.$y78;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+},
+cmcvc_SmokeBlurEffect_dispose = $this => {
+    return;
 },
 cmcau_RegenAction = $rt_classWithoutFields(cmca_AbstractGameAction),
 cmcau_RegenAction_update = $this => {
@@ -267135,6 +267152,164 @@ function cmcv_FastDarkSmoke() {
     a.$killed0 = 0;
     a.$killSpeed1 = 0.0;
 }
+function cmcvc_CampfireLiftEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$hasTrained = 0;
+    a.$screenColor = null;
+}
+let cmcvc_CampfireLiftEffect_update = $this => {
+    let var$1, var$2, var$3;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 > 1.5) {
+        var$2 = $this.$screenColor;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.5) * 2.0);
+    } else if (!(var$1 < 1.0))
+        $this.$screenColor.$a = 1.0;
+    else {
+        var$2 = $this.$screenColor;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
+    }
+    if ($this.$duration < 1.0 && !$this.$hasTrained) {
+        $this.$hasTrained = 1;
+        cmcd_AbstractDungeon_$callClinit();
+        if (cmcc_AbstractPlayer_hasRelic(cmcd_AbstractDungeon_player, $rt_s(3284))) {
+            cmcr_AbstractRelic_flash(cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284)));
+            var$2 = cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284));
+            var$2.$counter = var$2.$counter + 1 | 0;
+            cmcc_CardCrawlGame_$callClinit();
+            cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1192));
+            var$2 = cmcc_CardCrawlGame_screenShake;
+            cmch_ScreenShake$ShakeIntensity_$callClinit();
+            var$3 = cmch_ScreenShake$ShakeIntensity_HIGH;
+            cmch_ScreenShake$ShakeDur_$callClinit();
+            cmch_ScreenShake_shake(var$2, var$3, cmch_ScreenShake$ShakeDur_SHORT, 1);
+            cmcm_MetricData_addCampfireChoiceData(cmcc_CardCrawlGame_metricData, $rt_s(7078), jl_Integer_toString((cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284))).$counter));
+        }
+        ju_ArrayList_add(cmcd_AbstractDungeon_topLevelEffects, cmcv_BorderFlashEffect__init_1(cbgg_Color__init_(0.800000011920929, 0.6000000238418579, 0.10000000149011612, 0.0)));
+    }
+    if ($this.$duration < 0.0) {
+        $this.$isDone = 1;
+        cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
+        var$2 = cmcd_AbstractDungeon_getCurrRoom();
+        cmcr_AbstractRoom$RoomPhase_$callClinit();
+        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
+    }
+},
+cmcvc_CampfireLiftEffect_render = ($this, $sb) => {
+    let var$2;
+    cbggg_SpriteBatch_setColor($sb, $this.$screenColor);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
+},
+cmcvc_CampfireLiftEffect_dispose = $this => {
+    return;
+};
+function cmcvc_CampfireSmithEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$openedScreen = 0;
+    a.$screenColor8 = null;
+}
+let cmcvc_CampfireSmithEffect_uiStrings = null,
+cmcvc_CampfireSmithEffect_TEXT = null,
+cmcvc_CampfireSmithEffect_$callClinit = () => {
+    cmcvc_CampfireSmithEffect_$callClinit = $rt_eraseClinit(cmcvc_CampfireSmithEffect);
+    cmcvc_CampfireSmithEffect__clinit_();
+},
+cmcvc_CampfireSmithEffect_update = $this => {
+    let var$1, $c, var$3, var$4, var$5;
+    cmcd_AbstractDungeon_$callClinit();
+    if (!cmcd_AbstractDungeon_isScreenUp) {
+        var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+        $this.$duration = var$1;
+        if (!(var$1 > 1.0)) {
+            $c = $this.$screenColor8;
+            cbgm_Interpolation_$callClinit();
+            $c.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1 / 1.5);
+        } else {
+            $c = $this.$screenColor8;
+            cbgm_Interpolation_$callClinit();
+            $c.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.0) * 2.0);
+        }
+    }
+    if (!cmcd_AbstractDungeon_isScreenUp && !ju_AbstractCollection_isEmpty(cmcd_AbstractDungeon_gridSelectScreen.$selectedCards)) {
+        $c = cmcd_AbstractDungeon_gridSelectScreen;
+        if ($c.$forUpgrade) {
+            var$3 = ju_AbstractList_iterator($c.$selectedCards);
+            while (ju_AbstractList$1_hasNext(var$3)) {
+                $c = ju_AbstractList$1_next(var$3);
+                var$4 = cmcd_AbstractDungeon_effectsQueue;
+                var$5 = new cmcv_UpgradeShineEffect;
+                cmcc_Settings_$callClinit();
+                cmcv_UpgradeShineEffect__init_(var$5, cmcc_Settings_WIDTH / 2.0, cmcc_Settings_HEIGHT / 2.0);
+                ju_ArrayList_add(var$4, var$5);
+                cmcc_CardCrawlGame_$callClinit();
+                var$4 = cmcc_CardCrawlGame_metricData;
+                var$4.$campfire_upgraded = var$4.$campfire_upgraded + 1 | 0;
+                cmcm_MetricData_addCampfireChoiceData(var$4, $rt_s(7081), cmcc_AbstractCard_getMetricID($c));
+                $c.$upgrade();
+                cmcc_AbstractPlayer_bottledCardUpgradeCheck(cmcd_AbstractDungeon_player, $c);
+                ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_ShowCardBrieflyEffect__init_($c.$makeStatEquivalentCopy()));
+            }
+            ju_ArrayList_clear(cmcd_AbstractDungeon_gridSelectScreen.$selectedCards);
+            cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
+        }
+    }
+    a: {
+        if ($this.$duration < 1.0 && !$this.$openedScreen) {
+            $this.$openedScreen = 1;
+            $c = cmcd_AbstractDungeon_gridSelectScreen;
+            var$4 = cmcc_CardGroup_getUpgradableCards(cmcd_AbstractDungeon_player.$masterDeck);
+            cmcvc_CampfireSmithEffect_$callClinit();
+            cmcss_GridCardSelectScreen_open($c, var$4, 1, cmcvc_CampfireSmithEffect_TEXT.data[0], 1, 0, 1, 0);
+            $c = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$relics);
+            while (true) {
+                if (!ju_AbstractList$1_hasNext($c))
+                    break a;
+                ju_AbstractList$1_next($c);
+            }
+        }
+    }
+    if ($this.$duration < 0.0) {
+        $this.$isDone = 1;
+        cmcr_CampfireUI_$callClinit();
+        if (cmcr_CampfireUI_hidden) {
+            cmcr_AbstractRoom_$callClinit();
+            cmcr_AbstractRoom_waitTimer = 0.0;
+            $c = cmcd_AbstractDungeon_getCurrRoom();
+            cmcr_AbstractRoom$RoomPhase_$callClinit();
+            $c.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
+            cmcr_RestRoom_cutFireSound(cmcd_AbstractDungeon_getCurrRoom());
+        }
+    }
+},
+cmcvc_CampfireSmithEffect_render = ($this, $sb) => {
+    let var$2;
+    cbggg_SpriteBatch_setColor($sb, $this.$screenColor8);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
+    cmcd_AbstractDungeon_$callClinit();
+    var$2 = cmcd_AbstractDungeon_screen;
+    cmcd_AbstractDungeon$CurrentScreen_$callClinit();
+    if (var$2 === cmcd_AbstractDungeon$CurrentScreen_GRID)
+        cmcss_GridCardSelectScreen_render(cmcd_AbstractDungeon_gridSelectScreen, $sb);
+},
+cmcvc_CampfireSmithEffect_dispose = $this => {
+    return;
+},
+cmcvc_CampfireSmithEffect__clinit_ = () => {
+    let var$1;
+    cmcc_CardCrawlGame_$callClinit();
+    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7745));
+    cmcvc_CampfireSmithEffect_uiStrings = var$1;
+    cmcvc_CampfireSmithEffect_TEXT = var$1.$TEXT;
+};
 function cmcvc_CampfireSleepEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$hasHealed = 0;
@@ -267284,7 +267459,7 @@ cmcvc_CampfireSleepEffect_dispose = $this => {
 cmcvc_CampfireSleepEffect__clinit_ = () => {
     let var$1;
     cmcc_CardCrawlGame_$callClinit();
-    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7745));
+    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7746));
     cmcvc_CampfireSleepEffect_uiStrings = var$1;
     cmcvc_CampfireSleepEffect_TEXT = var$1.$TEXT;
 };
@@ -267341,215 +267516,6 @@ cmcvc_CampfireSleepScreenCoverEffect_render = ($this, $sb) => {
 },
 cmcvc_CampfireSleepScreenCoverEffect_dispose = $this => {
     return;
-};
-function cmcvc_CampfireLiftEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$hasTrained = 0;
-    a.$screenColor = null;
-}
-let cmcvc_CampfireLiftEffect_update = $this => {
-    let var$1, var$2, var$3;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 > 1.5) {
-        var$2 = $this.$screenColor;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.5) * 2.0);
-    } else if (!(var$1 < 1.0))
-        $this.$screenColor.$a = 1.0;
-    else {
-        var$2 = $this.$screenColor;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
-    }
-    if ($this.$duration < 1.0 && !$this.$hasTrained) {
-        $this.$hasTrained = 1;
-        cmcd_AbstractDungeon_$callClinit();
-        if (cmcc_AbstractPlayer_hasRelic(cmcd_AbstractDungeon_player, $rt_s(3284))) {
-            cmcr_AbstractRelic_flash(cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284)));
-            var$2 = cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284));
-            var$2.$counter = var$2.$counter + 1 | 0;
-            cmcc_CardCrawlGame_$callClinit();
-            cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1192));
-            var$2 = cmcc_CardCrawlGame_screenShake;
-            cmch_ScreenShake$ShakeIntensity_$callClinit();
-            var$3 = cmch_ScreenShake$ShakeIntensity_HIGH;
-            cmch_ScreenShake$ShakeDur_$callClinit();
-            cmch_ScreenShake_shake(var$2, var$3, cmch_ScreenShake$ShakeDur_SHORT, 1);
-            cmcm_MetricData_addCampfireChoiceData(cmcc_CardCrawlGame_metricData, $rt_s(7078), jl_Integer_toString((cmcc_AbstractPlayer_getRelic(cmcd_AbstractDungeon_player, $rt_s(3284))).$counter));
-        }
-        ju_ArrayList_add(cmcd_AbstractDungeon_topLevelEffects, cmcv_BorderFlashEffect__init_1(cbgg_Color__init_(0.800000011920929, 0.6000000238418579, 0.10000000149011612, 0.0)));
-    }
-    if ($this.$duration < 0.0) {
-        $this.$isDone = 1;
-        cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
-        var$2 = cmcd_AbstractDungeon_getCurrRoom();
-        cmcr_AbstractRoom$RoomPhase_$callClinit();
-        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
-    }
-},
-cmcvc_CampfireLiftEffect_render = ($this, $sb) => {
-    let var$2;
-    cbggg_SpriteBatch_setColor($sb, $this.$screenColor);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
-},
-cmcvc_CampfireLiftEffect_dispose = $this => {
-    return;
-};
-function cmcvc_CampfireDigEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$hasDug = 0;
-    a.$screenColor3 = null;
-}
-let cmcvc_CampfireDigEffect_update = $this => {
-    let var$1, var$2;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 > 1.5) {
-        var$2 = $this.$screenColor3;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.5) * 2.0);
-    } else if (!(var$1 < 1.0))
-        $this.$screenColor3.$a = 1.0;
-    else {
-        var$2 = $this.$screenColor3;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
-    }
-    if ($this.$duration < 1.0 && !$this.$hasDug) {
-        $this.$hasDug = 1;
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1519));
-        ju_ArrayList_clear((cmcd_AbstractDungeon_getCurrRoom()).$rewards);
-        ju_ArrayList_add((cmcd_AbstractDungeon_getCurrRoom()).$rewards, cmcr_RewardItem__init_0(cmcd_AbstractDungeon_returnRandomRelic(cmcd_AbstractDungeon_returnRandomRelicTier())));
-        var$2 = cmcd_AbstractDungeon_getCurrRoom();
-        cmcr_AbstractRoom$RoomPhase_$callClinit();
-        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
-        cmcs_CombatRewardScreen_open(cmcd_AbstractDungeon_combatRewardScreen);
-        cmcm_MetricData_addCampfireChoiceData0(cmcc_CardCrawlGame_metricData, $rt_s(7077));
-    }
-    if ($this.$duration < 0.0) {
-        $this.$isDone = 1;
-        cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
-        var$2 = cmcd_AbstractDungeon_getCurrRoom();
-        cmcr_AbstractRoom$RoomPhase_$callClinit();
-        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
-    }
-},
-cmcvc_CampfireDigEffect_render = ($this, $sb) => {
-    let var$2;
-    cbggg_SpriteBatch_setColor($sb, $this.$screenColor3);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
-},
-cmcvc_CampfireDigEffect_dispose = $this => {
-    return;
-};
-function cmcvc_CampfireSmithEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$openedScreen = 0;
-    a.$screenColor8 = null;
-}
-let cmcvc_CampfireSmithEffect_uiStrings = null,
-cmcvc_CampfireSmithEffect_TEXT = null,
-cmcvc_CampfireSmithEffect_$callClinit = () => {
-    cmcvc_CampfireSmithEffect_$callClinit = $rt_eraseClinit(cmcvc_CampfireSmithEffect);
-    cmcvc_CampfireSmithEffect__clinit_();
-},
-cmcvc_CampfireSmithEffect_update = $this => {
-    let var$1, $c, var$3, var$4, var$5;
-    cmcd_AbstractDungeon_$callClinit();
-    if (!cmcd_AbstractDungeon_isScreenUp) {
-        var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-        $this.$duration = var$1;
-        if (!(var$1 > 1.0)) {
-            $c = $this.$screenColor8;
-            cbgm_Interpolation_$callClinit();
-            $c.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1 / 1.5);
-        } else {
-            $c = $this.$screenColor8;
-            cbgm_Interpolation_$callClinit();
-            $c.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.0) * 2.0);
-        }
-    }
-    if (!cmcd_AbstractDungeon_isScreenUp && !ju_AbstractCollection_isEmpty(cmcd_AbstractDungeon_gridSelectScreen.$selectedCards)) {
-        $c = cmcd_AbstractDungeon_gridSelectScreen;
-        if ($c.$forUpgrade) {
-            var$3 = ju_AbstractList_iterator($c.$selectedCards);
-            while (ju_AbstractList$1_hasNext(var$3)) {
-                $c = ju_AbstractList$1_next(var$3);
-                var$4 = cmcd_AbstractDungeon_effectsQueue;
-                var$5 = new cmcv_UpgradeShineEffect;
-                cmcc_Settings_$callClinit();
-                cmcv_UpgradeShineEffect__init_(var$5, cmcc_Settings_WIDTH / 2.0, cmcc_Settings_HEIGHT / 2.0);
-                ju_ArrayList_add(var$4, var$5);
-                cmcc_CardCrawlGame_$callClinit();
-                var$4 = cmcc_CardCrawlGame_metricData;
-                var$4.$campfire_upgraded = var$4.$campfire_upgraded + 1 | 0;
-                cmcm_MetricData_addCampfireChoiceData(var$4, $rt_s(7081), cmcc_AbstractCard_getMetricID($c));
-                $c.$upgrade();
-                cmcc_AbstractPlayer_bottledCardUpgradeCheck(cmcd_AbstractDungeon_player, $c);
-                ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_ShowCardBrieflyEffect__init_($c.$makeStatEquivalentCopy()));
-            }
-            ju_ArrayList_clear(cmcd_AbstractDungeon_gridSelectScreen.$selectedCards);
-            cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
-        }
-    }
-    a: {
-        if ($this.$duration < 1.0 && !$this.$openedScreen) {
-            $this.$openedScreen = 1;
-            $c = cmcd_AbstractDungeon_gridSelectScreen;
-            var$4 = cmcc_CardGroup_getUpgradableCards(cmcd_AbstractDungeon_player.$masterDeck);
-            cmcvc_CampfireSmithEffect_$callClinit();
-            cmcss_GridCardSelectScreen_open($c, var$4, 1, cmcvc_CampfireSmithEffect_TEXT.data[0], 1, 0, 1, 0);
-            $c = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$relics);
-            while (true) {
-                if (!ju_AbstractList$1_hasNext($c))
-                    break a;
-                ju_AbstractList$1_next($c);
-            }
-        }
-    }
-    if ($this.$duration < 0.0) {
-        $this.$isDone = 1;
-        cmcr_CampfireUI_$callClinit();
-        if (cmcr_CampfireUI_hidden) {
-            cmcr_AbstractRoom_$callClinit();
-            cmcr_AbstractRoom_waitTimer = 0.0;
-            $c = cmcd_AbstractDungeon_getCurrRoom();
-            cmcr_AbstractRoom$RoomPhase_$callClinit();
-            $c.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
-            cmcr_RestRoom_cutFireSound(cmcd_AbstractDungeon_getCurrRoom());
-        }
-    }
-},
-cmcvc_CampfireSmithEffect_render = ($this, $sb) => {
-    let var$2;
-    cbggg_SpriteBatch_setColor($sb, $this.$screenColor8);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
-    cmcd_AbstractDungeon_$callClinit();
-    var$2 = cmcd_AbstractDungeon_screen;
-    cmcd_AbstractDungeon$CurrentScreen_$callClinit();
-    if (var$2 === cmcd_AbstractDungeon$CurrentScreen_GRID)
-        cmcss_GridCardSelectScreen_render(cmcd_AbstractDungeon_gridSelectScreen, $sb);
-},
-cmcvc_CampfireSmithEffect_dispose = $this => {
-    return;
-},
-cmcvc_CampfireSmithEffect__clinit_ = () => {
-    let var$1;
-    cmcc_CardCrawlGame_$callClinit();
-    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7746));
-    cmcvc_CampfireSmithEffect_uiStrings = var$1;
-    cmcvc_CampfireSmithEffect_TEXT = var$1.$TEXT;
 };
 function cmcvc_CampfireTokeEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -267636,6 +267602,57 @@ cmcvc_CampfireTokeEffect__clinit_ = () => {
     var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7747));
     cmcvc_CampfireTokeEffect_uiStrings = var$1;
     cmcvc_CampfireTokeEffect_TEXT = var$1.$TEXT;
+};
+function cmcvc_CampfireDigEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$hasDug = 0;
+    a.$screenColor3 = null;
+}
+let cmcvc_CampfireDigEffect_update = $this => {
+    let var$1, var$2;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 > 1.5) {
+        var$2 = $this.$screenColor3;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, (var$1 - 1.5) * 2.0);
+    } else if (!(var$1 < 1.0))
+        $this.$screenColor3.$a = 1.0;
+    else {
+        var$2 = $this.$screenColor3;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
+    }
+    if ($this.$duration < 1.0 && !$this.$hasDug) {
+        $this.$hasDug = 1;
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1519));
+        ju_ArrayList_clear((cmcd_AbstractDungeon_getCurrRoom()).$rewards);
+        ju_ArrayList_add((cmcd_AbstractDungeon_getCurrRoom()).$rewards, cmcr_RewardItem__init_0(cmcd_AbstractDungeon_returnRandomRelic(cmcd_AbstractDungeon_returnRandomRelicTier())));
+        var$2 = cmcd_AbstractDungeon_getCurrRoom();
+        cmcr_AbstractRoom$RoomPhase_$callClinit();
+        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
+        cmcs_CombatRewardScreen_open(cmcd_AbstractDungeon_combatRewardScreen);
+        cmcm_MetricData_addCampfireChoiceData0(cmcc_CardCrawlGame_metricData, $rt_s(7077));
+    }
+    if ($this.$duration < 0.0) {
+        $this.$isDone = 1;
+        cmcr_RestRoom_fadeIn(cmcd_AbstractDungeon_getCurrRoom());
+        var$2 = cmcd_AbstractDungeon_getCurrRoom();
+        cmcr_AbstractRoom$RoomPhase_$callClinit();
+        var$2.$phase = cmcr_AbstractRoom$RoomPhase_COMPLETE;
+    }
+},
+cmcvc_CampfireDigEffect_render = ($this, $sb) => {
+    let var$2;
+    cbggg_SpriteBatch_setColor($sb, $this.$screenColor3);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
+},
+cmcvc_CampfireDigEffect_dispose = $this => {
+    return;
 };
 function cmcvc_CampfireRecallEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -268196,6 +268213,507 @@ cmcvs_DivinityParticleEffect_render = ($this, $sb) => {
 cmcvs_DivinityParticleEffect_dispose = $this => {
     return;
 };
+function cmcvc_WaterDropEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x20 = 0.0;
+    a.$y23 = 0.0;
+    a.$frame = 0;
+    a.$animTimer6 = 0.0;
+}
+let cmcvc_WaterDropEffect__init_ = ($this, $x, $y) => {
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$frame = 0;
+    $this.$animTimer6 = 0.10000000149011612;
+    $this.$x20 = $x;
+    $this.$y23 = $y;
+    $this.$frame = 0;
+    $x = cbgm_MathUtils_random(2.5, 3.0);
+    cmcc_Settings_$callClinit();
+    $y = cmcc_Settings_scale;
+    $x = $x * $y;
+    $this.$scale = $x;
+    $this.$rotation = 0.0;
+    $this.$scale = $x * $y;
+    $this.$color1 = cbgg_Color__init_(1.0, 0.05000000074505806, 0.05000000074505806, 0.0);
+},
+cmcvc_WaterDropEffect__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcvc_WaterDropEffect();
+    cmcvc_WaterDropEffect__init_(var_2, var_0, var_1);
+    return var_2;
+},
+cmcvc_WaterDropEffect_update = $this => {
+    let var$1, var$2, $i, var$4, var$5, var$6, var$7, var$8;
+    var$1 = $this.$color1;
+    var$1.$a = cmch_MathHelper_fadeLerpSnap(var$1.$a, 1.0);
+    var$2 = $this.$animTimer6 - cbg_Gdx_graphics.$deltaTime;
+    $this.$animTimer6 = var$2;
+    if (var$2 < 0.0) {
+        a: {
+            $this.$animTimer6 = var$2 + 0.10000000149011612;
+            $i = $this.$frame + 1 | 0;
+            $this.$frame = $i;
+            if ($i == 3) {
+                $i = 0;
+                while (true) {
+                    if ($i >= 3)
+                        break a;
+                    cmcd_AbstractDungeon_$callClinit();
+                    var$1 = cmcd_AbstractDungeon_effectsQueue;
+                    var$4 = new cmcvc_WaterSplashParticleEffect;
+                    var$2 = $this.$x20;
+                    var$5 = $this.$y23;
+                    cmcv_AbstractGameEffect__init_(var$4);
+                    cmch_ImageMaster_$callClinit();
+                    var$4.$img66 = cmch_ImageMaster_DECK_GLOW_1;
+                    var$4.$duration = cbgm_MathUtils_random(0.5, 1.0);
+                    var$2 = var$2 - (var$4.$img66.$packedWidth / 2 | 0);
+                    var$6 = cbgm_MathUtils_random((-10.0), 10.0);
+                    cmcc_Settings_$callClinit();
+                    var$7 = cmcc_Settings_scale;
+                    var$4.$x98 = var$2 + var$6 * var$7;
+                    var$4.$y58 = var$5 - (var$4.$img66.$packedHeight / 2 | 0) - 40.0 * var$7;
+                    var$8 = cbgg_Color__init_(1.0, 0.20000000298023224, 0.10000000149011612, 0.0);
+                    var$4.$color1 = var$8;
+                    var$8.$a = 0.0;
+                    var$4.$scale = cbgm_MathUtils_random(1.5, 3.5) * cmcc_Settings_scale;
+                    var$4.$vX50 = cbgm_MathUtils_random((-120.0), 120.0) * cmcc_Settings_scale;
+                    var$2 = cbgm_MathUtils_random(150.0, 300.0);
+                    var$6 = cmcc_Settings_scale;
+                    var$4.$vY18 = var$2 * var$6;
+                    var$4.$floor14 = var$5 - 40.0 * var$6;
+                    ju_ArrayList_add(var$1, var$4);
+                    $i = $i + 1 | 0;
+                }
+            }
+        }
+        if ($this.$frame > 5) {
+            $this.$frame = 5;
+            $this.$isDone = 1;
+        }
+    }
+},
+cmcvc_WaterDropEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    a: {
+        cbggg_SpriteBatch_setColor($sb, $this.$color1);
+        switch ($this.$frame) {
+            case 0:
+                cmch_ImageMaster_$callClinit();
+                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[0];
+                var$3 = $this.$x20 - 32.0;
+                var$4 = $this.$y23 - 32.0;
+                cmcc_Settings_$callClinit();
+                var$5 = var$4 + 40.0 * cmcc_Settings_scale;
+                var$6 = $this.$scale;
+                cbggg_SpriteBatch_draw($sb, var$2, var$3, var$5, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+                break a;
+            case 1:
+                cmch_ImageMaster_$callClinit();
+                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[1];
+                var$7 = $this.$x20 - 32.0;
+                var$4 = $this.$y23 - 32.0;
+                cmcc_Settings_$callClinit();
+                var$4 = var$4 + 20.0 * cmcc_Settings_scale;
+                var$6 = $this.$scale;
+                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+                break a;
+            case 2:
+                cmch_ImageMaster_$callClinit();
+                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[2];
+                var$7 = $this.$x20 - 32.0;
+                var$4 = $this.$y23 - 32.0;
+                cmcc_Settings_$callClinit();
+                var$4 = var$4 + 10.0 * cmcc_Settings_scale;
+                var$6 = $this.$scale;
+                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+                break a;
+            case 3:
+                break;
+            case 4:
+                cmch_ImageMaster_$callClinit();
+                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[4];
+                var$7 = $this.$x20 - 32.0;
+                var$4 = $this.$y23 - 32.0;
+                var$6 = $this.$scale;
+                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+                break a;
+            case 5:
+                cmch_ImageMaster_$callClinit();
+                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[5];
+                var$7 = $this.$x20 - 32.0;
+                var$4 = $this.$y23 - 32.0;
+                var$6 = $this.$scale;
+                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+                break a;
+            default:
+                break a;
+        }
+        cmch_ImageMaster_$callClinit();
+        var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[3];
+        var$7 = $this.$x20 - 32.0;
+        var$4 = $this.$y23 - 32.0;
+        var$6 = $this.$scale;
+        cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
+    }
+},
+cmcvc_WaterDropEffect_dispose = $this => {
+    return;
+};
+function cmcvc_BlurWaveChaoticEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x111 = 0.0;
+    a.$y120 = 0.0;
+    a.$speed4 = 0.0;
+    a.$speedStart4 = 0.0;
+    a.$speedTarget1 = 0.0;
+    a.$stallTimer2 = 0.0;
+    a.$img120 = null;
+    a.$flipper3 = 0.0;
+}
+let cmcvc_BlurWaveChaoticEffect_update = $this => {
+    let var$1, $tmp_0, var$3, var$4;
+    var$1 = $this.$stallTimer2 - cbg_Gdx_graphics.$deltaTime;
+    $this.$stallTimer2 = var$1;
+    if (var$1 < 0.0) {
+        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
+        var$1 = $tmp_0.$x;
+        var$3 = $this.$speed4 * cbg_Gdx_graphics.$deltaTime;
+        $tmp_0.$x = var$1 * var$3;
+        $tmp_0.$y = $tmp_0.$y * var$3;
+        cbgm_Interpolation_$callClinit();
+        $this.$speed4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart4, $this.$speedTarget1, 1.0 - $this.$duration / 2.0);
+        $this.$x111 = $this.$x111 + $tmp_0.$x;
+        $this.$y120 = $this.$y120 + $tmp_0.$y;
+        var$1 = $this.$scale;
+        var$4 = cbg_Gdx_graphics.$deltaTime;
+        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
+        var$1 = $this.$duration - var$4;
+        $this.$duration = var$1;
+        if (var$1 < 0.0)
+            $this.$isDone = 1;
+        else if (var$1 > 1.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
+        else if (var$1 < 0.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
+    }
+},
+cmcvc_BlurWaveChaoticEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img120;
+    var$3 = $this.$x111;
+    var$4 = $this.$y120;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.10000000149011612), 0.10000000149011612), $this.$scale + cbgm_MathUtils_random((-0.10000000149011612), 0.10000000149011612), $this.$rotation + $this.$flipper3 + cbgm_MathUtils_random((-30.0), 30.0));
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_BlurWaveChaoticEffect_dispose = $this => {
+    return;
+};
+function cmcvc_BlurWaveNormalEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x103 = 0.0;
+    a.$y111 = 0.0;
+    a.$speed3 = 0.0;
+    a.$speedStart0 = 0.0;
+    a.$speedTarget3 = 0.0;
+    a.$stallTimer3 = 0.0;
+    a.$img101 = null;
+    a.$flipper2 = 0.0;
+}
+let cmcvc_BlurWaveNormalEffect_update = $this => {
+    let var$1, $tmp_0, var$3, var$4;
+    var$1 = $this.$stallTimer3 - cbg_Gdx_graphics.$deltaTime;
+    $this.$stallTimer3 = var$1;
+    if (var$1 < 0.0) {
+        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
+        var$1 = $tmp_0.$x;
+        var$3 = $this.$speed3 * cbg_Gdx_graphics.$deltaTime;
+        $tmp_0.$x = var$1 * var$3;
+        $tmp_0.$y = $tmp_0.$y * var$3;
+        cbgm_Interpolation_$callClinit();
+        $this.$speed3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart0, $this.$speedTarget3, 1.0 - $this.$duration / 2.0);
+        $this.$x103 = $this.$x103 + $tmp_0.$x;
+        $this.$y111 = $this.$y111 + $tmp_0.$y;
+        var$1 = $this.$scale;
+        var$4 = cbg_Gdx_graphics.$deltaTime;
+        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
+        var$1 = $this.$duration - var$4;
+        $this.$duration = var$1;
+        if (var$1 < 0.0)
+            $this.$isDone = 1;
+        else if (var$1 > 1.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
+        else if (var$1 < 0.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
+    }
+},
+cmcvc_BlurWaveNormalEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img101;
+    var$3 = $this.$x103;
+    var$4 = $this.$y111;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$rotation + $this.$flipper2 + cbgm_MathUtils_random((-3.0), 3.0));
+},
+cmcvc_BlurWaveNormalEffect_dispose = $this => {
+    return;
+};
+function cmcvc_BlurWaveAdditiveEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x126 = 0.0;
+    a.$y135 = 0.0;
+    a.$speed7 = 0.0;
+    a.$speedStart3 = 0.0;
+    a.$speedTarget4 = 0.0;
+    a.$stallTimer1 = 0.0;
+    a.$img114 = null;
+    a.$flipper1 = 0.0;
+}
+let cmcvc_BlurWaveAdditiveEffect_update = $this => {
+    let var$1, $tmp_0, var$3, var$4;
+    var$1 = $this.$stallTimer1 - cbg_Gdx_graphics.$deltaTime;
+    $this.$stallTimer1 = var$1;
+    if (var$1 < 0.0) {
+        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
+        var$1 = $tmp_0.$x;
+        var$3 = $this.$speed7 * cbg_Gdx_graphics.$deltaTime;
+        $tmp_0.$x = var$1 * var$3;
+        $tmp_0.$y = $tmp_0.$y * var$3;
+        cbgm_Interpolation_$callClinit();
+        $this.$speed7 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart3, $this.$speedTarget4, 1.0 - $this.$duration / 2.0);
+        $this.$x126 = $this.$x126 + $tmp_0.$x;
+        $this.$y135 = $this.$y135 + $tmp_0.$y;
+        var$1 = $this.$scale;
+        var$4 = cbg_Gdx_graphics.$deltaTime;
+        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
+        var$1 = $this.$duration - var$4;
+        $this.$duration = var$1;
+        if (var$1 < 0.0)
+            $this.$isDone = 1;
+        else if (var$1 > 1.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
+        else if (var$1 < 0.5)
+            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
+    }
+},
+cmcvc_BlurWaveAdditiveEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img114;
+    var$3 = $this.$x126;
+    var$4 = $this.$y135;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$rotation + $this.$flipper1 + cbgm_MathUtils_random((-3.0), 3.0));
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_BlurWaveAdditiveEffect_dispose = $this => {
+    return;
+};
+function cmcvc_IronWaveParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x93 = 0.0;
+    a.$y54 = 0.0;
+    a.$targetY12 = 0.0;
+    a.$impactHook = 0;
+}
+let cmcvc_IronWaveParticle_img = null,
+cmcvc_IronWaveParticle_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    cbgm_Interpolation_$callClinit();
+    var$1 = cbgm_Interpolation_fade;
+    cmcc_Settings_$callClinit();
+    $this.$y54 = cbgm_Interpolation_apply(var$1, cmcc_Settings_HEIGHT, $this.$targetY12, 1.0 - $this.$duration / 0.5);
+    var$2 = $this.$scale;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    $this.$scale = var$2 + var$3;
+    var$2 = $this.$duration - var$3;
+    $this.$duration = var$2;
+    if (var$2 < 0.0)
+        $this.$isDone = 1;
+    else if (!(var$2 < 0.20000000298023224))
+        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, var$2 / 0.5);
+    else {
+        if (!$this.$impactHook) {
+            $this.$impactHook = 1;
+            cmcc_CardCrawlGame_$callClinit();
+            var$1 = cmcc_CardCrawlGame_screenShake;
+            cmch_ScreenShake$ShakeIntensity_$callClinit();
+            var$4 = cmch_ScreenShake$ShakeIntensity_LOW;
+            cmch_ScreenShake$ShakeDur_$callClinit();
+            cmch_ScreenShake_shake(var$1, var$4, cmch_ScreenShake$ShakeDur_SHORT, 0);
+        }
+        var$1 = $this.$color1;
+        var$4 = cbgm_Interpolation_pow2Out;
+        var$5 = $this.$duration * 5.0;
+        var$1.$a = cbgm_Interpolation_apply(var$4, 0.0, 1.0, var$5);
+    }
+},
+cmcvc_IronWaveParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$color1;
+    var$2.$g = 1.0;
+    cbggg_SpriteBatch_setColor($sb, var$2);
+    var$2 = cmcvc_IronWaveParticle_img;
+    var$3 = $this.$x93;
+    var$4 = $this.$y54;
+    cmcc_Settings_$callClinit();
+    var$5 = var$4 + 140.0 * cmcc_Settings_scale;
+    var$4 = var$2.$packedWidth / 2.0;
+    var$6 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$5, var$4, var$6 / 2.0, var$4, var$6 * ($this.$duration + 0.20000000298023224) * 3.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.5, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
+    var$2 = $this.$color1;
+    var$2.$g = 0.699999988079071;
+    cbggg_SpriteBatch_setColor($sb, var$2);
+    var$2 = cmcvc_IronWaveParticle_img;
+    var$7 = $this.$x93;
+    var$3 = cmcc_Settings_scale;
+    var$7 = var$7 - 50.0 * var$3;
+    var$5 = $this.$y54 + 140.0 * var$3;
+    var$3 = var$2.$packedWidth / 2.0;
+    var$4 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$7, var$5, var$3, var$4 / 2.0, var$3, var$4 * ($this.$duration + 0.20000000298023224) * 2.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.6000000238418579, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
+    var$2 = $this.$color1;
+    var$2.$g = 0.5;
+    cbggg_SpriteBatch_setColor($sb, var$2);
+    var$2 = cmcvc_IronWaveParticle_img;
+    var$7 = $this.$x93;
+    var$3 = cmcc_Settings_scale;
+    var$7 = var$7 - 100.0 * var$3;
+    var$5 = $this.$y54 + 140.0 * var$3;
+    var$3 = var$2.$packedWidth;
+    var$4 = var$3 / 2.0;
+    var$6 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$7, var$5, var$4, var$6 / 2.0, var$3, var$6 * ($this.$duration + 0.20000000298023224) * 1.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.75, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_IronWaveParticle_dispose = $this => {
+    return;
+};
+function cmcvc_WobblyLineEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x121 = 0.0;
+    a.$y129 = 0.0;
+    a.$speed6 = 0.0;
+    a.$speedStart1 = 0.0;
+    a.$speedTarget2 = 0.0;
+    a.$flipper0 = 0.0;
+    a.$img117 = null;
+}
+let cmcvc_WobblyLineEffect_update = $this => {
+    let $tmp_0, var$2, var$3;
+    $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
+    var$2 = $tmp_0.$x;
+    var$3 = $this.$speed6 * cbg_Gdx_graphics.$deltaTime;
+    $tmp_0.$x = var$2 * var$3;
+    $tmp_0.$y = $tmp_0.$y * var$3;
+    cbgm_Interpolation_$callClinit();
+    $this.$speed6 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart1, $this.$speedTarget2, 1.0 - $this.$duration / 2.0);
+    $this.$x121 = $this.$x121 + $tmp_0.$x;
+    $this.$y129 = $this.$y129 + $tmp_0.$y;
+    var$2 = $this.$scale;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    $this.$scale = var$2 + var$3;
+    var$2 = $this.$duration - var$3;
+    $this.$duration = var$2;
+    if (var$2 < 0.0)
+        $this.$isDone = 1;
+    else if (var$2 > 1.5)
+        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$2) * 2.0);
+    else if (var$2 < 0.5)
+        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$2 * 2.0);
+},
+cmcvc_WobblyLineEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img117;
+    var$3 = $this.$x121;
+    var$4 = $this.$y129;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    var$10 = cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066);
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9 + var$10 * cmcc_Settings_scale, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066) * cmcc_Settings_scale, $this.$rotation + $this.$flipper0 + cbgm_MathUtils_random((-5.0), 5.0));
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_WobblyLineEffect_dispose = $this => {
+    return;
+};
+function cmcvc_VerticalAuraParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x185 = 0.0;
+    a.$y92 = 0.0;
+    a.$vY72 = 0.0;
+    a.$fadeInTimer2 = 0.0;
+    a.$fadeOutTimer1 = 0.0;
+    a.$stallTimer0 = 0.0;
+    a.$img82 = null;
+}
+let cmcvc_VerticalAuraParticle_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$stallTimer0;
+    if (var$1 > 0.0)
+        $this.$stallTimer0 = var$1 - cbg_Gdx_graphics.$deltaTime;
+    else {
+        var$2 = $this.$y92;
+        var$1 = $this.$vY72;
+        var$3 = cbg_Gdx_graphics.$deltaTime;
+        $this.$y92 = var$2 + var$1 * var$3;
+        var$2 = $this.$fadeInTimer2;
+        if (var$2 !== 0.0) {
+            var$2 = var$2 - var$3;
+            $this.$fadeInTimer2 = var$2;
+            if (var$2 < 0.0)
+                $this.$fadeInTimer2 = 0.0;
+            var$4 = $this.$color1;
+            cbgm_Interpolation_$callClinit();
+            var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.5, 0.0, $this.$fadeInTimer2 / 0.20000000298023224);
+        } else {
+            var$2 = $this.$fadeOutTimer1;
+            if (var$2 === 0.0)
+                $this.$isDone = 1;
+            else {
+                var$2 = var$2 - var$3;
+                $this.$fadeOutTimer1 = var$2;
+                if (var$2 < 0.0)
+                    $this.$fadeOutTimer1 = 0.0;
+                var$4 = $this.$color1;
+                cbgm_Interpolation_$callClinit();
+                var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.5, $this.$fadeOutTimer1 / 0.800000011920929);
+            }
+        }
+    }
+},
+cmcvc_VerticalAuraParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img82;
+    var$3 = $this.$x185;
+    var$4 = $this.$y92;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+},
+cmcvc_VerticalAuraParticle_dispose = $this => {
+    return;
+};
 function cmcvc_HemokinesisParticle() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$img119 = null;
@@ -268396,347 +268914,6 @@ cmcvc_HemokinesisParticle__clinit_ = () => {
     cmcvc_HemokinesisParticle_VELOCITY_RAMP_RATE = 3000.0 * var$1;
     cmcvc_HemokinesisParticle_DST_THRESHOLD = 42.0 * var$1;
 };
-function cmcvc_WobblyLineEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x121 = 0.0;
-    a.$y129 = 0.0;
-    a.$speed6 = 0.0;
-    a.$speedStart1 = 0.0;
-    a.$speedTarget2 = 0.0;
-    a.$flipper0 = 0.0;
-    a.$img117 = null;
-}
-let cmcvc_WobblyLineEffect_update = $this => {
-    let $tmp_0, var$2, var$3;
-    $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
-    var$2 = $tmp_0.$x;
-    var$3 = $this.$speed6 * cbg_Gdx_graphics.$deltaTime;
-    $tmp_0.$x = var$2 * var$3;
-    $tmp_0.$y = $tmp_0.$y * var$3;
-    cbgm_Interpolation_$callClinit();
-    $this.$speed6 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart1, $this.$speedTarget2, 1.0 - $this.$duration / 2.0);
-    $this.$x121 = $this.$x121 + $tmp_0.$x;
-    $this.$y129 = $this.$y129 + $tmp_0.$y;
-    var$2 = $this.$scale;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    $this.$scale = var$2 + var$3;
-    var$2 = $this.$duration - var$3;
-    $this.$duration = var$2;
-    if (var$2 < 0.0)
-        $this.$isDone = 1;
-    else if (var$2 > 1.5)
-        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$2) * 2.0);
-    else if (var$2 < 0.5)
-        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$2 * 2.0);
-},
-cmcvc_WobblyLineEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img117;
-    var$3 = $this.$x121;
-    var$4 = $this.$y129;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    var$10 = cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066);
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9 + var$10 * cmcc_Settings_scale, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066) * cmcc_Settings_scale, $this.$rotation + $this.$flipper0 + cbgm_MathUtils_random((-5.0), 5.0));
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_WobblyLineEffect_dispose = $this => {
-    return;
-};
-function cmcvc_VerticalAuraParticle() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x185 = 0.0;
-    a.$y92 = 0.0;
-    a.$vY72 = 0.0;
-    a.$fadeInTimer2 = 0.0;
-    a.$fadeOutTimer1 = 0.0;
-    a.$stallTimer0 = 0.0;
-    a.$img82 = null;
-}
-let cmcvc_VerticalAuraParticle_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$stallTimer0;
-    if (var$1 > 0.0)
-        $this.$stallTimer0 = var$1 - cbg_Gdx_graphics.$deltaTime;
-    else {
-        var$2 = $this.$y92;
-        var$1 = $this.$vY72;
-        var$3 = cbg_Gdx_graphics.$deltaTime;
-        $this.$y92 = var$2 + var$1 * var$3;
-        var$2 = $this.$fadeInTimer2;
-        if (var$2 !== 0.0) {
-            var$2 = var$2 - var$3;
-            $this.$fadeInTimer2 = var$2;
-            if (var$2 < 0.0)
-                $this.$fadeInTimer2 = 0.0;
-            var$4 = $this.$color1;
-            cbgm_Interpolation_$callClinit();
-            var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.5, 0.0, $this.$fadeInTimer2 / 0.20000000298023224);
-        } else {
-            var$2 = $this.$fadeOutTimer1;
-            if (var$2 === 0.0)
-                $this.$isDone = 1;
-            else {
-                var$2 = var$2 - var$3;
-                $this.$fadeOutTimer1 = var$2;
-                if (var$2 < 0.0)
-                    $this.$fadeOutTimer1 = 0.0;
-                var$4 = $this.$color1;
-                cbgm_Interpolation_$callClinit();
-                var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.5, $this.$fadeOutTimer1 / 0.800000011920929);
-            }
-        }
-    }
-},
-cmcvc_VerticalAuraParticle_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img82;
-    var$3 = $this.$x185;
-    var$4 = $this.$y92;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
-},
-cmcvc_VerticalAuraParticle_dispose = $this => {
-    return;
-};
-function cmcvc_WaterDropEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x20 = 0.0;
-    a.$y23 = 0.0;
-    a.$frame = 0;
-    a.$animTimer6 = 0.0;
-}
-let cmcvc_WaterDropEffect__init_ = ($this, $x, $y) => {
-    cmcv_AbstractGameEffect__init_($this);
-    $this.$frame = 0;
-    $this.$animTimer6 = 0.10000000149011612;
-    $this.$x20 = $x;
-    $this.$y23 = $y;
-    $this.$frame = 0;
-    $x = cbgm_MathUtils_random(2.5, 3.0);
-    cmcc_Settings_$callClinit();
-    $y = cmcc_Settings_scale;
-    $x = $x * $y;
-    $this.$scale = $x;
-    $this.$rotation = 0.0;
-    $this.$scale = $x * $y;
-    $this.$color1 = cbgg_Color__init_(1.0, 0.05000000074505806, 0.05000000074505806, 0.0);
-},
-cmcvc_WaterDropEffect__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcvc_WaterDropEffect();
-    cmcvc_WaterDropEffect__init_(var_2, var_0, var_1);
-    return var_2;
-},
-cmcvc_WaterDropEffect_update = $this => {
-    let var$1, var$2, $i, var$4, var$5, var$6, var$7, var$8;
-    var$1 = $this.$color1;
-    var$1.$a = cmch_MathHelper_fadeLerpSnap(var$1.$a, 1.0);
-    var$2 = $this.$animTimer6 - cbg_Gdx_graphics.$deltaTime;
-    $this.$animTimer6 = var$2;
-    if (var$2 < 0.0) {
-        a: {
-            $this.$animTimer6 = var$2 + 0.10000000149011612;
-            $i = $this.$frame + 1 | 0;
-            $this.$frame = $i;
-            if ($i == 3) {
-                $i = 0;
-                while (true) {
-                    if ($i >= 3)
-                        break a;
-                    cmcd_AbstractDungeon_$callClinit();
-                    var$1 = cmcd_AbstractDungeon_effectsQueue;
-                    var$4 = new cmcvc_WaterSplashParticleEffect;
-                    var$2 = $this.$x20;
-                    var$5 = $this.$y23;
-                    cmcv_AbstractGameEffect__init_(var$4);
-                    cmch_ImageMaster_$callClinit();
-                    var$4.$img66 = cmch_ImageMaster_DECK_GLOW_1;
-                    var$4.$duration = cbgm_MathUtils_random(0.5, 1.0);
-                    var$2 = var$2 - (var$4.$img66.$packedWidth / 2 | 0);
-                    var$6 = cbgm_MathUtils_random((-10.0), 10.0);
-                    cmcc_Settings_$callClinit();
-                    var$7 = cmcc_Settings_scale;
-                    var$4.$x98 = var$2 + var$6 * var$7;
-                    var$4.$y58 = var$5 - (var$4.$img66.$packedHeight / 2 | 0) - 40.0 * var$7;
-                    var$8 = cbgg_Color__init_(1.0, 0.20000000298023224, 0.10000000149011612, 0.0);
-                    var$4.$color1 = var$8;
-                    var$8.$a = 0.0;
-                    var$4.$scale = cbgm_MathUtils_random(1.5, 3.5) * cmcc_Settings_scale;
-                    var$4.$vX50 = cbgm_MathUtils_random((-120.0), 120.0) * cmcc_Settings_scale;
-                    var$2 = cbgm_MathUtils_random(150.0, 300.0);
-                    var$6 = cmcc_Settings_scale;
-                    var$4.$vY18 = var$2 * var$6;
-                    var$4.$floor14 = var$5 - 40.0 * var$6;
-                    ju_ArrayList_add(var$1, var$4);
-                    $i = $i + 1 | 0;
-                }
-            }
-        }
-        if ($this.$frame > 5) {
-            $this.$frame = 5;
-            $this.$isDone = 1;
-        }
-    }
-},
-cmcvc_WaterDropEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    a: {
-        cbggg_SpriteBatch_setColor($sb, $this.$color1);
-        switch ($this.$frame) {
-            case 0:
-                cmch_ImageMaster_$callClinit();
-                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[0];
-                var$3 = $this.$x20 - 32.0;
-                var$4 = $this.$y23 - 32.0;
-                cmcc_Settings_$callClinit();
-                var$5 = var$4 + 40.0 * cmcc_Settings_scale;
-                var$6 = $this.$scale;
-                cbggg_SpriteBatch_draw($sb, var$2, var$3, var$5, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-                break a;
-            case 1:
-                cmch_ImageMaster_$callClinit();
-                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[1];
-                var$7 = $this.$x20 - 32.0;
-                var$4 = $this.$y23 - 32.0;
-                cmcc_Settings_$callClinit();
-                var$4 = var$4 + 20.0 * cmcc_Settings_scale;
-                var$6 = $this.$scale;
-                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-                break a;
-            case 2:
-                cmch_ImageMaster_$callClinit();
-                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[2];
-                var$7 = $this.$x20 - 32.0;
-                var$4 = $this.$y23 - 32.0;
-                cmcc_Settings_$callClinit();
-                var$4 = var$4 + 10.0 * cmcc_Settings_scale;
-                var$6 = $this.$scale;
-                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-                break a;
-            case 3:
-                break;
-            case 4:
-                cmch_ImageMaster_$callClinit();
-                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[4];
-                var$7 = $this.$x20 - 32.0;
-                var$4 = $this.$y23 - 32.0;
-                var$6 = $this.$scale;
-                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-                break a;
-            case 5:
-                cmch_ImageMaster_$callClinit();
-                var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[5];
-                var$7 = $this.$x20 - 32.0;
-                var$4 = $this.$y23 - 32.0;
-                var$6 = $this.$scale;
-                cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-                break a;
-            default:
-                break a;
-        }
-        cmch_ImageMaster_$callClinit();
-        var$2 = cmch_ImageMaster_WATER_DROP_VFX.data[3];
-        var$7 = $this.$x20 - 32.0;
-        var$4 = $this.$y23 - 32.0;
-        var$6 = $this.$scale;
-        cbggg_SpriteBatch_draw($sb, var$2, var$7, var$4, 32.0, 32.0, 64.0, 64.0, var$6, var$6, $this.$rotation, 0, 0, 64, 64, 0, 0);
-    }
-},
-cmcvc_WaterDropEffect_dispose = $this => {
-    return;
-};
-function cmcvc_IronWaveParticle() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x93 = 0.0;
-    a.$y54 = 0.0;
-    a.$targetY12 = 0.0;
-    a.$impactHook = 0;
-}
-let cmcvc_IronWaveParticle_img = null,
-cmcvc_IronWaveParticle_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    cbgm_Interpolation_$callClinit();
-    var$1 = cbgm_Interpolation_fade;
-    cmcc_Settings_$callClinit();
-    $this.$y54 = cbgm_Interpolation_apply(var$1, cmcc_Settings_HEIGHT, $this.$targetY12, 1.0 - $this.$duration / 0.5);
-    var$2 = $this.$scale;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    $this.$scale = var$2 + var$3;
-    var$2 = $this.$duration - var$3;
-    $this.$duration = var$2;
-    if (var$2 < 0.0)
-        $this.$isDone = 1;
-    else if (!(var$2 < 0.20000000298023224))
-        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, var$2 / 0.5);
-    else {
-        if (!$this.$impactHook) {
-            $this.$impactHook = 1;
-            cmcc_CardCrawlGame_$callClinit();
-            var$1 = cmcc_CardCrawlGame_screenShake;
-            cmch_ScreenShake$ShakeIntensity_$callClinit();
-            var$4 = cmch_ScreenShake$ShakeIntensity_LOW;
-            cmch_ScreenShake$ShakeDur_$callClinit();
-            cmch_ScreenShake_shake(var$1, var$4, cmch_ScreenShake$ShakeDur_SHORT, 0);
-        }
-        var$1 = $this.$color1;
-        var$4 = cbgm_Interpolation_pow2Out;
-        var$5 = $this.$duration * 5.0;
-        var$1.$a = cbgm_Interpolation_apply(var$4, 0.0, 1.0, var$5);
-    }
-},
-cmcvc_IronWaveParticle_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$color1;
-    var$2.$g = 1.0;
-    cbggg_SpriteBatch_setColor($sb, var$2);
-    var$2 = cmcvc_IronWaveParticle_img;
-    var$3 = $this.$x93;
-    var$4 = $this.$y54;
-    cmcc_Settings_$callClinit();
-    var$5 = var$4 + 140.0 * cmcc_Settings_scale;
-    var$4 = var$2.$packedWidth / 2.0;
-    var$6 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$5, var$4, var$6 / 2.0, var$4, var$6 * ($this.$duration + 0.20000000298023224) * 3.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.5, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
-    var$2 = $this.$color1;
-    var$2.$g = 0.699999988079071;
-    cbggg_SpriteBatch_setColor($sb, var$2);
-    var$2 = cmcvc_IronWaveParticle_img;
-    var$7 = $this.$x93;
-    var$3 = cmcc_Settings_scale;
-    var$7 = var$7 - 50.0 * var$3;
-    var$5 = $this.$y54 + 140.0 * var$3;
-    var$3 = var$2.$packedWidth / 2.0;
-    var$4 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$7, var$5, var$3, var$4 / 2.0, var$3, var$4 * ($this.$duration + 0.20000000298023224) * 2.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.6000000238418579, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
-    var$2 = $this.$color1;
-    var$2.$g = 0.5;
-    cbggg_SpriteBatch_setColor($sb, var$2);
-    var$2 = cmcvc_IronWaveParticle_img;
-    var$7 = $this.$x93;
-    var$3 = cmcc_Settings_scale;
-    var$7 = var$7 - 100.0 * var$3;
-    var$5 = $this.$y54 + 140.0 * var$3;
-    var$3 = var$2.$packedWidth;
-    var$4 = var$3 / 2.0;
-    var$6 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$7, var$5, var$4, var$6 / 2.0, var$3, var$6 * ($this.$duration + 0.20000000298023224) * 1.0, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 0.75, $this.$scale * cbgm_MathUtils_random(0.9900000095367432, 1.0099999904632568) * 2.0 * ($this.$duration + 0.800000011920929), $this.$rotation);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_IronWaveParticle_dispose = $this => {
-    return;
-};
 function cmcvs_TorchParticleXLEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$x172 = 0.0;
@@ -268861,164 +269038,54 @@ cmcvs_TorchParticleXLEffect__clinit_ = () => {
     cmcvs_TorchParticleXLEffect_imgs = $rt_createArray(cbggg_TextureAtlas$AtlasRegion, 3);
     cmcvs_TorchParticleXLEffect_renderGreen = 0;
 };
-function cmcvc_BlurWaveChaoticEffect() {
+function cmcvc_RedFireballEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x111 = 0.0;
-    a.$y120 = 0.0;
-    a.$speed4 = 0.0;
-    a.$speedStart4 = 0.0;
-    a.$speedTarget1 = 0.0;
-    a.$stallTimer2 = 0.0;
-    a.$img120 = null;
-    a.$flipper3 = 0.0;
+    a.$x133 = 0.0;
+    a.$y75 = 0.0;
+    a.$startX4 = 0.0;
+    a.$startY2 = 0.0;
+    a.$targetX10 = 0.0;
+    a.$targetY8 = 0.0;
+    a.$vfxTimer5 = 0.0;
+    a.$timesUpgraded0 = 0;
 }
-let cmcvc_BlurWaveChaoticEffect_update = $this => {
-    let var$1, $tmp_0, var$3, var$4;
-    var$1 = $this.$stallTimer2 - cbg_Gdx_graphics.$deltaTime;
-    $this.$stallTimer2 = var$1;
-    if (var$1 < 0.0) {
-        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
-        var$1 = $tmp_0.$x;
-        var$3 = $this.$speed4 * cbg_Gdx_graphics.$deltaTime;
-        $tmp_0.$x = var$1 * var$3;
-        $tmp_0.$y = $tmp_0.$y * var$3;
-        cbgm_Interpolation_$callClinit();
-        $this.$speed4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart4, $this.$speedTarget1, 1.0 - $this.$duration / 2.0);
-        $this.$x111 = $this.$x111 + $tmp_0.$x;
-        $this.$y120 = $this.$y120 + $tmp_0.$y;
-        var$1 = $this.$scale;
-        var$4 = cbg_Gdx_graphics.$deltaTime;
-        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
-        var$1 = $this.$duration - var$4;
-        $this.$duration = var$1;
-        if (var$1 < 0.0)
-            $this.$isDone = 1;
-        else if (var$1 > 1.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
-        else if (var$1 < 0.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
+let cmcvc_RedFireballEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5, var$6;
+    cbgm_Interpolation_$callClinit();
+    $this.$x133 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$targetX10, $this.$startX4, $this.$duration / $this.$startingDuration);
+    var$1 = $this.$duration;
+    var$2 = $this.$startingDuration;
+    var$3 = var$2 / 2.0;
+    if (!(var$1 > var$3)) {
+        var$4 = cbgm_Interpolation_pow4Out;
+        var$3 = $this.$targetY8;
+        var$5 = $this.$startY2;
+        var$1 = var$1 / var$2 * 2.0;
+        $this.$y75 = cbgm_Interpolation_apply(var$4, var$3, var$5, var$1);
+    } else {
+        var$4 = cbgm_Interpolation_pow4In;
+        var$5 = $this.$startY2;
+        var$6 = $this.$targetY8;
+        var$1 = (var$1 - var$3) / var$2 * 2.0;
+        $this.$y75 = cbgm_Interpolation_apply(var$4, var$5, var$6, var$1);
     }
+    var$1 = $this.$vfxTimer5 - cbg_Gdx_graphics.$deltaTime;
+    $this.$vfxTimer5 = var$1;
+    if (var$1 < 0.0) {
+        $this.$vfxTimer5 = var$1 + 0.01600000075995922;
+        cmcd_AbstractDungeon_$callClinit();
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_RedFireBurstParticleEffect__init_($this.$x133, $this.$y75, $this.$timesUpgraded0));
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_RedFireBurstParticleEffect__init_($this.$x133, $this.$y75, $this.$timesUpgraded0));
+    }
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
 },
-cmcvc_BlurWaveChaoticEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img120;
-    var$3 = $this.$x111;
-    var$4 = $this.$y120;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.10000000149011612), 0.10000000149011612), $this.$scale + cbgm_MathUtils_random((-0.10000000149011612), 0.10000000149011612), $this.$rotation + $this.$flipper3 + cbgm_MathUtils_random((-30.0), 30.0));
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_BlurWaveChaoticEffect_dispose = $this => {
+cmcvc_RedFireballEffect_render = ($this, $sb) => {
     return;
-};
-function cmcvc_BlurWaveNormalEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x103 = 0.0;
-    a.$y111 = 0.0;
-    a.$speed3 = 0.0;
-    a.$speedStart0 = 0.0;
-    a.$speedTarget3 = 0.0;
-    a.$stallTimer3 = 0.0;
-    a.$img101 = null;
-    a.$flipper2 = 0.0;
-}
-let cmcvc_BlurWaveNormalEffect_update = $this => {
-    let var$1, $tmp_0, var$3, var$4;
-    var$1 = $this.$stallTimer3 - cbg_Gdx_graphics.$deltaTime;
-    $this.$stallTimer3 = var$1;
-    if (var$1 < 0.0) {
-        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
-        var$1 = $tmp_0.$x;
-        var$3 = $this.$speed3 * cbg_Gdx_graphics.$deltaTime;
-        $tmp_0.$x = var$1 * var$3;
-        $tmp_0.$y = $tmp_0.$y * var$3;
-        cbgm_Interpolation_$callClinit();
-        $this.$speed3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart0, $this.$speedTarget3, 1.0 - $this.$duration / 2.0);
-        $this.$x103 = $this.$x103 + $tmp_0.$x;
-        $this.$y111 = $this.$y111 + $tmp_0.$y;
-        var$1 = $this.$scale;
-        var$4 = cbg_Gdx_graphics.$deltaTime;
-        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
-        var$1 = $this.$duration - var$4;
-        $this.$duration = var$1;
-        if (var$1 < 0.0)
-            $this.$isDone = 1;
-        else if (var$1 > 1.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
-        else if (var$1 < 0.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
-    }
 },
-cmcvc_BlurWaveNormalEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img101;
-    var$3 = $this.$x103;
-    var$4 = $this.$y111;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$rotation + $this.$flipper2 + cbgm_MathUtils_random((-3.0), 3.0));
-},
-cmcvc_BlurWaveNormalEffect_dispose = $this => {
-    return;
-};
-function cmcvc_BlurWaveAdditiveEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x126 = 0.0;
-    a.$y135 = 0.0;
-    a.$speed7 = 0.0;
-    a.$speedStart3 = 0.0;
-    a.$speedTarget4 = 0.0;
-    a.$stallTimer1 = 0.0;
-    a.$img114 = null;
-    a.$flipper1 = 0.0;
-}
-let cmcvc_BlurWaveAdditiveEffect_update = $this => {
-    let var$1, $tmp_0, var$3, var$4;
-    var$1 = $this.$stallTimer1 - cbg_Gdx_graphics.$deltaTime;
-    $this.$stallTimer1 = var$1;
-    if (var$1 < 0.0) {
-        $tmp_0 = cbgm_Vector2__init_(cbgm_MathUtils_cosDeg($this.$rotation), cbgm_MathUtils_sinDeg($this.$rotation));
-        var$1 = $tmp_0.$x;
-        var$3 = $this.$speed7 * cbg_Gdx_graphics.$deltaTime;
-        $tmp_0.$x = var$1 * var$3;
-        $tmp_0.$y = $tmp_0.$y * var$3;
-        cbgm_Interpolation_$callClinit();
-        $this.$speed7 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$speedStart3, $this.$speedTarget4, 1.0 - $this.$duration / 2.0);
-        $this.$x126 = $this.$x126 + $tmp_0.$x;
-        $this.$y135 = $this.$y135 + $tmp_0.$y;
-        var$1 = $this.$scale;
-        var$4 = cbg_Gdx_graphics.$deltaTime;
-        $this.$scale = var$1 * (1.0 + var$4 * 2.0);
-        var$1 = $this.$duration - var$4;
-        $this.$duration = var$1;
-        if (var$1 < 0.0)
-            $this.$isDone = 1;
-        else if (var$1 > 1.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, (2.0 - var$1) * 2.0);
-        else if (var$1 < 0.5)
-            $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.699999988079071, var$1 * 2.0);
-    }
-},
-cmcvc_BlurWaveAdditiveEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img114;
-    var$3 = $this.$x126;
-    var$4 = $this.$y135;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$scale + cbgm_MathUtils_random((-0.07999999821186066), 0.07999999821186066), $this.$rotation + $this.$flipper1 + cbgm_MathUtils_random((-3.0), 3.0));
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_BlurWaveAdditiveEffect_dispose = $this => {
+cmcvc_RedFireballEffect_dispose = $this => {
     return;
 };
 function cmcv_FireBurstParticleEffect() {
@@ -269234,168 +269301,642 @@ cmcvc_GiantFireEffect_render = ($this, $sb) => {
 cmcvc_GiantFireEffect_dispose = $this => {
     return;
 };
-function cmcvc_RedFireballEffect() {
+function cmcv_CollectorStakeEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x133 = 0.0;
-    a.$y75 = 0.0;
-    a.$startX4 = 0.0;
-    a.$startY2 = 0.0;
-    a.$targetX10 = 0.0;
-    a.$targetY8 = 0.0;
-    a.$vfxTimer5 = 0.0;
-    a.$timesUpgraded0 = 0;
+    a.$x24 = 0.0;
+    a.$y30 = 0.0;
+    a.$sX8 = 0.0;
+    a.$sY11 = 0.0;
+    a.$tX2 = 0.0;
+    a.$tY2 = 0.0;
+    a.$targetAngle0 = 0.0;
+    a.$startingAngle = 0.0;
+    a.$targetScale11 = 0.0;
+    a.$shownSlash = 0;
 }
-let cmcvc_RedFireballEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5, var$6;
-    cbgm_Interpolation_$callClinit();
-    $this.$x133 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$targetX10, $this.$startX4, $this.$duration / $this.$startingDuration);
-    var$1 = $this.$duration;
-    var$2 = $this.$startingDuration;
-    var$3 = var$2 / 2.0;
-    if (!(var$1 > var$3)) {
-        var$4 = cbgm_Interpolation_pow4Out;
-        var$3 = $this.$targetY8;
-        var$5 = $this.$startY2;
-        var$1 = var$1 / var$2 * 2.0;
-        $this.$y75 = cbgm_Interpolation_apply(var$4, var$3, var$5, var$1);
-    } else {
-        var$4 = cbgm_Interpolation_pow4In;
-        var$5 = $this.$startY2;
-        var$6 = $this.$targetY8;
-        var$1 = (var$1 - var$3) / var$2 * 2.0;
-        $this.$y75 = cbgm_Interpolation_apply(var$4, var$5, var$6, var$1);
-    }
-    var$1 = $this.$vfxTimer5 - cbg_Gdx_graphics.$deltaTime;
-    $this.$vfxTimer5 = var$1;
-    if (var$1 < 0.0) {
-        $this.$vfxTimer5 = var$1 + 0.01600000075995922;
-        cmcd_AbstractDungeon_$callClinit();
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_RedFireBurstParticleEffect__init_($this.$x133, $this.$y75, $this.$timesUpgraded0));
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_RedFireBurstParticleEffect__init_($this.$x133, $this.$y75, $this.$timesUpgraded0));
-    }
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_RedFireballEffect_render = ($this, $sb) => {
-    return;
-},
-cmcvc_RedFireballEffect_dispose = $this => {
-    return;
-};
-function cmcau_EstablishmentPowerAction() {
-    cmca_AbstractGameAction.call(this);
-    this.$discountAmount = 0;
-}
-let cmcau_EstablishmentPowerAction_update = $this => {
-    let var$1, $c;
-    cmcd_AbstractDungeon_$callClinit();
-    var$1 = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$hand.$group0);
-    while (ju_AbstractList$1_hasNext(var$1)) {
-        $c = ju_AbstractList$1_next(var$1);
-        if (!(!$c.$selfRetain && !$c.$retain))
-            cmcc_AbstractCard_modifyCostForCombat($c,  -$this.$discountAmount | 0);
-    }
-    $this.$isDone0 = 1;
-},
-cmcau_RetainCardsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcau_RetainCardsAction_uiStrings = null,
-cmcau_RetainCardsAction_TEXT = null,
-cmcau_RetainCardsAction_$callClinit = () => {
-    cmcau_RetainCardsAction_$callClinit = $rt_eraseClinit(cmcau_RetainCardsAction);
-    cmcau_RetainCardsAction__clinit_();
-},
-cmcau_RetainCardsAction_update = $this => {
-    let $c, var$2, var$3;
-    if ($this.$duration0 === 0.5) {
-        cmcd_AbstractDungeon_$callClinit();
-        $c = cmcd_AbstractDungeon_handCardSelectScreen;
-        cmcau_RetainCardsAction_$callClinit();
-        cmcss_HandCardSelectScreen_open2($c, cmcau_RetainCardsAction_TEXT.data[0], $this.$amount0, 0, 1, 0, 0, 1);
-        $c = cmcau_WaitAction__init_(0.25);
-        var$2 = $this;
-        cmca_AbstractGameAction_addToBot(var$2, $c);
-        cmca_AbstractGameAction_tickDuration(var$2);
-    } else {
-        cmcd_AbstractDungeon_$callClinit();
-        $c = cmcd_AbstractDungeon_handCardSelectScreen;
-        if (!$c.$wereCardsRetrieved) {
-            var$3 = ju_AbstractList_iterator($c.$selectedCards0.$group0);
-            while (ju_AbstractList$1_hasNext(var$3)) {
-                $c = ju_AbstractList$1_next(var$3);
-                if (!$c.$isEthereal)
-                    $c.$retain = 1;
-                cmcc_CardGroup_addToTop(cmcd_AbstractDungeon_player.$hand, $c);
-            }
-            cmcd_AbstractDungeon_handCardSelectScreen.$wereCardsRetrieved = 1;
-        }
-        cmca_AbstractGameAction_tickDuration($this);
-    }
-},
-cmcau_RetainCardsAction__clinit_ = () => {
-    let var$1;
-    cmcc_CardCrawlGame_$callClinit();
-    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7748));
-    cmcau_RetainCardsAction_uiStrings = var$1;
-    cmcau_RetainCardsAction_TEXT = var$1.$TEXT;
-};
-function cmcvc_OmegaFlashEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x169 = 0.0;
-    a.$y190 = 0.0;
-    a.$img109 = null;
-    a.$playedSound0 = 0;
-}
-let cmcvc_OmegaFlashEffect__init_ = ($this, $x, $y) => {
-    let var$3;
+let cmcv_CollectorStakeEffect_img = null,
+cmcv_CollectorStakeEffect__init_ = ($this, $x, $y) => {
+    let $randomAngle, var$4, var$5, var$6, var$7;
     cmcv_AbstractGameEffect__init_($this);
-    $this.$playedSound0 = 0;
-    cmcp_AbstractPower_$callClinit();
-    var$3 = cbggg_TextureAtlas_findRegion(cmcp_AbstractPower_atlas, $rt_s(7749));
-    $this.$img109 = var$3;
-    $this.$x169 = $x - var$3.$packedWidth / 2.0;
-    $this.$y190 = $y - var$3.$packedHeight / 2.0;
-    $this.$startingDuration = 0.5;
-    $this.$duration = 0.5;
-    cbgg_Color_$callClinit();
-    $this.$color1 = cbgg_Color_cpy(cbgg_Color_WHITE);
+    $this.$shownSlash = 0;
+    if (cmcv_CollectorStakeEffect_img === null) {
+        cmch_ImageMaster_$callClinit();
+        cmcv_CollectorStakeEffect_img = cbggg_TextureAtlas_findRegion(cmch_ImageMaster_vfxAtlas, $rt_s(7748));
+    }
+    $randomAngle = 0.01745329238474369 * cbgm_MathUtils_random((-50.0), 230.0);
+    var$4 = cbgm_MathUtils_cos($randomAngle) * cbgm_MathUtils_random(200.0, 600.0);
+    cmcc_Settings_$callClinit();
+    $this.$x24 = var$4 * cmcc_Settings_scale + $x;
+    $this.$y30 = cbgm_MathUtils_sin($randomAngle) * cbgm_MathUtils_random(200.0, 500.0) * cmcc_Settings_scale + $y;
+    $this.$duration = 1.0;
+    $this.$scale = 0.009999999776482582;
+    $this.$targetScale11 = cbgm_MathUtils_random(0.4000000059604645, 1.100000023841858);
+    $this.$targetAngle0 = cbgm_MathUtils_atan2($y - $this.$y30, $x - $this.$x24) * 57.2957763671875 + 90.0;
+    var$4 = cbgm_MathUtils_random(0.0, 360.0);
+    $this.$startingAngle = var$4;
+    $this.$rotation = var$4;
+    var$4 = $this.$x24;
+    var$5 = cmcv_CollectorStakeEffect_img;
+    $randomAngle = var$5.$packedWidth / 2 | 0;
+    var$4 = var$4 - $randomAngle;
+    $this.$x24 = var$4;
+    var$6 = $this.$y30;
+    var$7 = var$5.$packedHeight / 2 | 0;
+    var$6 = var$6 - var$7;
+    $this.$y30 = var$6;
+    $this.$sX8 = var$4;
+    $this.$sY11 = var$6;
+    $this.$tX2 = $x - $randomAngle;
+    $this.$tY2 = $y - var$7;
+    $this.$color1 = cbgg_Color__init_(cbgm_MathUtils_random(0.5, 1.0), cbgm_MathUtils_random(0.0, 0.4000000059604645), cbgm_MathUtils_random(0.5, 1.0), 0.0);
 },
-cmcvc_OmegaFlashEffect__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcvc_OmegaFlashEffect();
-    cmcvc_OmegaFlashEffect__init_(var_2, var_0, var_1);
+cmcv_CollectorStakeEffect__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcv_CollectorStakeEffect();
+    cmcv_CollectorStakeEffect__init_(var_2, var_0, var_1);
     return var_2;
 },
-cmcvc_OmegaFlashEffect_update = $this => {
-    if (!$this.$playedSound0) {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1240), (-0.5));
-        $this.$playedSound0 = 1;
+cmcv_CollectorStakeEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5, var$6, var$7;
+    cbgm_Interpolation_$callClinit();
+    var$1 = cbgm_Interpolation_elasticIn;
+    var$2 = $this.$targetAngle0;
+    var$3 = $this.$startingAngle;
+    var$4 = $this.$duration;
+    $this.$rotation = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
+    var$3 = $this.$duration;
+    if (!(var$3 > 0.5)) {
+        var$1 = cbgm_Interpolation_exp10Out;
+        var$4 = $this.$tX2;
+        var$5 = $this.$sX8;
+        var$2 = var$3 * 2.0;
+        $this.$x24 = cbgm_Interpolation_apply(var$1, var$4, var$5, var$2);
+        var$1 = cbgm_Interpolation_exp10Out;
+        var$2 = $this.$tY2;
+        var$3 = $this.$sY11;
+        var$4 = $this.$duration * 2.0;
+        $this.$y30 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
+    } else {
+        var$1 = cbgm_Interpolation_elasticIn;
+        var$2 = $this.$targetScale11;
+        var$4 = var$2 * 10.0;
+        var$3 = (var$3 - 0.5) * 2.0;
+        var$2 = cbgm_Interpolation_apply(var$1, var$2, var$4, var$3);
+        cmcc_Settings_$callClinit();
+        $this.$scale = var$2 * cmcc_Settings_scale;
+        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.6000000238418579, 0.0, ($this.$duration - 0.5) * 2.0);
     }
-    cmcv_AbstractGameEffect_update($this);
+    if ($this.$duration < 0.05000000074505806 && !$this.$shownSlash) {
+        cmcd_AbstractDungeon_$callClinit();
+        var$1 = cmcd_AbstractDungeon_effectsQueue;
+        var$6 = new cmcvc_AdditiveSlashImpactEffect;
+        var$2 = $this.$tX2;
+        var$7 = cmcv_CollectorStakeEffect_img;
+        cmcvc_AdditiveSlashImpactEffect__init_(var$6, var$2 + var$7.$packedWidth / 2.0, $this.$tY2 + var$7.$packedHeight / 2.0, cbgg_Color_cpy($this.$color1));
+        ju_ArrayList_add(var$1, var$6);
+        $this.$shownSlash = 1;
+    }
+    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$2;
+    if (var$2 < 0.0) {
+        $this.$isDone = 1;
+        cmcc_CardCrawlGame_$callClinit();
+        var$1 = cmcc_CardCrawlGame_screenShake;
+        cmch_ScreenShake$ShakeIntensity_$callClinit();
+        var$6 = cmch_ScreenShake$ShakeIntensity_MED;
+        cmch_ScreenShake$ShakeDur_$callClinit();
+        cmch_ScreenShake_shake(var$1, var$6, cmch_ScreenShake$ShakeDur_SHORT, cbgm_MathUtils_randomBoolean());
+        cmca_SoundMaster_play0(cmcc_CardCrawlGame_sound, $rt_s(1186), 0.20000000298023224);
+    }
 },
-cmcvc_OmegaFlashEffect_render = ($this, $sb) => {
+cmcv_CollectorStakeEffect_render = ($this, $sb) => {
     let var$2, var$3, var$4, var$5, var$6, var$7, var$8;
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
     cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img109;
-    var$3 = $this.$x169;
-    var$4 = $this.$y190;
+    var$2 = cmcv_CollectorStakeEffect_img;
+    var$3 = $this.$x24;
+    var$4 = $this.$y30;
     var$5 = var$2.$packedWidth;
     var$6 = var$5 / 2.0;
     var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$rotation);
-    var$2 = $this.$img109;
-    var$8 = $this.$x169;
-    var$3 = $this.$y190;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(1.0, 1.2000000476837158), $this.$scale * cbgm_MathUtils_random(1.0, 1.2000000476837158), $this.$rotation);
+    var$2 = cmcv_CollectorStakeEffect_img;
+    var$8 = $this.$x24;
+    var$3 = $this.$y30;
     var$4 = var$2.$packedWidth;
     var$5 = var$4 / 2.0;
     var$6 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$rotation);
+    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(0.8999999761581421, 1.100000023841858), $this.$scale * cbgm_MathUtils_random(0.8999999761581421, 1.100000023841858), $this.$rotation);
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcvc_OmegaFlashEffect_dispose = $this => {
+cmcv_CollectorStakeEffect_dispose = $this => {
     return;
+};
+function cmcvc_RoomTintEffect() {
+    cmcv_AbstractGameEffect.call(this);
+    this.$tintTransparency = 0.0;
+}
+let cmcvc_RoomTintEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$duration;
+    var$2 = $this.$startingDuration;
+    var$3 = var$2 * 0.5;
+    if (var$1 > var$3) {
+        var$4 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$tintTransparency, 0.0, (var$1 - var$3) / var$2);
+    } else if (var$1 < var$3) {
+        var$4 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, $this.$tintTransparency, var$1 / var$2 / 0.5);
+    }
+    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$3;
+    if (var$3 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_RoomTintEffect_render = ($this, $sb) => {
+    let var$2;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
+},
+cmcvc_RoomTintEffect_dispose = $this => {
+    return;
+};
+function cmcvc_FlyingDaggerEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x49 = 0.0;
+    a.$y56 = 0.0;
+    a.$destY = 0.0;
+    a.$scaleMultiplier = 0.0;
+    a.$img107 = null;
+    a.$playedSound3 = 0;
+}
+let cmcvc_FlyingDaggerEffect__init_0 = ($this, $x, $y, $fAngle, $shouldFlip) => {
+    let var$5;
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$playedSound3 = 0;
+    cmch_ImageMaster_$callClinit();
+    var$5 = cmch_ImageMaster_DAGGER_STREAK;
+    $this.$img107 = var$5;
+    $this.$x49 = $x - var$5.$packedWidth / 2.0;
+    $this.$destY = $y;
+    $this.$y56 = $y - var$5.$packedHeight / 2.0;
+    $this.$startingDuration = 0.5;
+    $this.$duration = 0.5;
+    $this.$scaleMultiplier = cbgm_MathUtils_random(1.2000000476837158, 1.5);
+    cmcc_Settings_$callClinit();
+    $this.$scale = 0.25 * cmcc_Settings_scale;
+    if (!$shouldFlip)
+        $this.$rotation = $fAngle;
+    else
+        $this.$rotation = $fAngle - 180.0;
+    cbgg_Color_$callClinit();
+    var$5 = cbgg_Color_cpy(cbgg_Color_CHARTREUSE);
+    $this.$color1 = var$5;
+    var$5.$a = 0.0;
+},
+cmcvc_FlyingDaggerEffect__init_ = (var_0, var_1, var_2, var_3) => {
+    let var_4 = new cmcvc_FlyingDaggerEffect();
+    cmcvc_FlyingDaggerEffect__init_0(var_4, var_0, var_1, var_2, var_3);
+    return var_4;
+},
+cmcvc_FlyingDaggerEffect_update = $this => {
+    let $derp, var$2, var$3, var$4, var$5, var$6, var$7;
+    if (!$this.$playedSound3) {
+        a: {
+            switch (cbgm_MathUtils_random0(5)) {
+                case 0:
+                    break;
+                case 1:
+                    cmcc_CardCrawlGame_$callClinit();
+                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1174));
+                    break a;
+                case 2:
+                    cmcc_CardCrawlGame_$callClinit();
+                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1176));
+                    break a;
+                case 3:
+                    cmcc_CardCrawlGame_$callClinit();
+                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1178));
+                    break a;
+                case 4:
+                    cmcc_CardCrawlGame_$callClinit();
+                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1180));
+                    break a;
+                default:
+                    cmcc_CardCrawlGame_$callClinit();
+                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1182));
+                    break a;
+            }
+            cmcc_CardCrawlGame_$callClinit();
+            cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1172));
+        }
+        $this.$playedSound3 = 1;
+    }
+    $this.$duration = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $derp = cbgm_Vector2__init_(cbgm_MathUtils_cos(0.01745329238474369 * $this.$rotation), cbgm_MathUtils_sin(0.01745329238474369 * $this.$rotation));
+    var$2 = $this.$x49;
+    var$3 = $derp.$x;
+    var$4 = cbg_Gdx_graphics.$deltaTime;
+    var$3 = var$3 * var$4;
+    var$5 = 3500.0 * $this.$scaleMultiplier;
+    var$3 = var$3 * var$5;
+    cmcc_Settings_$callClinit();
+    var$6 = cmcc_Settings_scale;
+    $this.$x49 = var$2 + var$3 * var$6;
+    $this.$y56 = $this.$y56 + $derp.$y * var$4 * var$5 * var$6;
+    var$3 = $this.$duration;
+    if (var$3 < 0.0)
+        $this.$isDone = 1;
+    if (!(var$3 > 0.25)) {
+        $derp = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        $derp.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$3 * 4.0);
+    } else {
+        $derp = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$7 = cbgm_Interpolation_pow5In;
+        var$3 = (var$3 - 0.25) * 4.0;
+        $derp.$a = cbgm_Interpolation_apply(var$7, 1.0, 0.0, var$3);
+    }
+    $this.$scale = $this.$scale + cbg_Gdx_graphics.$deltaTime * $this.$scaleMultiplier;
+},
+cmcvc_FlyingDaggerEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img107;
+    var$3 = $this.$x49;
+    var$4 = $this.$y56;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * 1.5, $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$img107;
+    var$10 = $this.$x49;
+    var$3 = $this.$y56;
+    var$4 = var$2.$packedWidth;
+    var$5 = var$4 / 2.0;
+    var$6 = var$2.$packedHeight;
+    var$7 = var$6 / 2.0;
+    var$8 = $this.$scale * 0.75;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$10, var$3, var$5, var$7, var$4, var$6, var$8, var$8, $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_FlyingDaggerEffect_dispose = $this => {
+    return;
+},
+cmcv_SpotlightEffect = $rt_classWithoutFields(cmcv_AbstractGameEffect),
+cmcv_SpotlightEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    if ($this.$duration === 3.0) {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1361), (-0.6000000238418579));
+    }
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (!(var$1 > 1.5)) {
+        var$2 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$3 = cbgm_Interpolation_exp10In;
+        var$4 = var$1 / 1.5;
+        var$2.$a = cbgm_Interpolation_apply(var$3, 0.0, 0.5, var$4);
+    } else {
+        var$2 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$3 = cbgm_Interpolation_pow5In;
+        var$1 = (var$1 - 1.5) / 1.5;
+        var$2.$a = cbgm_Interpolation_apply(var$3, 0.5, 0.0, var$1);
+    }
+    if ($this.$duration < 0.0) {
+        $this.$color1.$a = 0.0;
+        $this.$isDone = 1;
+    }
+},
+cmcv_SpotlightEffect_render = ($this, $sb) => {
+    let var$2;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_SPOTLIGHT_VFX;
+    cmcc_Settings_$callClinit();
+    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcv_SpotlightEffect_dispose = $this => {
+    return;
+};
+function cmcv_PetalEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x117 = 0.0;
+    a.$y125 = 0.0;
+    a.$vY48 = 0.0;
+    a.$vX31 = 0.0;
+    a.$scaleY9 = 0.0;
+    a.$frame0 = 0;
+    a.$animTimer5 = 0.0;
+}
+let cmcv_PetalEffect__init_0 = $this => {
+    let var$1, var$2, var$3;
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$frame0 = 0;
+    $this.$animTimer5 = 0.05000000074505806;
+    cmcc_Settings_$callClinit();
+    var$1 = cmcc_Settings_scale;
+    $this.$x117 = cbgm_MathUtils_random(100.0 * var$1, 1820.0 * var$1);
+    $this.$y125 = cmcc_Settings_HEIGHT + cbgm_MathUtils_random(20.0, 300.0) * cmcc_Settings_scale;
+    $this.$frame0 = cbgm_MathUtils_random0(8);
+    $this.$rotation = cbgm_MathUtils_random((-10.0), 10.0);
+    $this.$scale = cbgm_MathUtils_random(1.0, 2.5);
+    $this.$scaleY9 = cbgm_MathUtils_random(1.0, 1.2000000476837158);
+    if ($this.$scale < 1.5)
+        $this.$renderBehind = 1;
+    $this.$vY48 = cbgm_MathUtils_random(200.0, 300.0) * $this.$scale * cmcc_Settings_scale;
+    var$1 = cbgm_MathUtils_random((-100.0), 100.0);
+    var$2 = $this.$scale;
+    var$1 = var$1 * var$2;
+    var$3 = cmcc_Settings_scale;
+    $this.$vX31 = var$1 * var$3;
+    $this.$scale = var$2 * var$3;
+    if (cbgm_MathUtils_randomBoolean())
+        $this.$rotation = $this.$rotation + 180.0;
+    $this.$color1 = cbgg_Color__init_(1.0, cbgm_MathUtils_random(0.699999988079071, 0.8999999761581421), cbgm_MathUtils_random(0.699999988079071, 0.8999999761581421), 1.0);
+    $this.$duration = 4.0;
+},
+cmcv_PetalEffect__init_ = () => {
+    let var_0 = new cmcv_PetalEffect();
+    cmcv_PetalEffect__init_0(var_0);
+    return var_0;
+},
+cmcv_PetalEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$y125;
+    var$2 = $this.$vY48;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    $this.$y125 = var$1 - var$2 * var$3;
+    $this.$x117 = $this.$x117 + $this.$vX31 * var$3;
+    var$1 = $this.$animTimer5 - var$3 / $this.$scale;
+    $this.$animTimer5 = var$1;
+    if (var$1 < 0.0) {
+        $this.$animTimer5 = var$1 + 0.05000000074505806;
+        var$4 = $this.$frame0 + 1 | 0;
+        $this.$frame0 = var$4;
+        if (var$4 > 11)
+            $this.$frame0 = 0;
+    }
+    var$1 = $this.$duration - var$3;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
+        $this.$isDone = 1;
+    else if (var$1 < 1.0)
+        $this.$color1.$a = var$1;
+},
+cmcv_PetalEffect_render = ($this, $sb) => {
+    a: {
+        cbggg_SpriteBatch_setColor($sb, $this.$color1);
+        switch ($this.$frame0) {
+            case 0:
+                break;
+            case 1:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 0, 0);
+                break a;
+            case 2:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 0, 0);
+                break a;
+            case 3:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[3], 0, 0);
+                break a;
+            case 4:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 1, 1);
+                break a;
+            case 5:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 1, 1);
+                break a;
+            case 6:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[0], 1, 1);
+                break a;
+            case 7:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 1, 1);
+                break a;
+            case 8:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 1, 1);
+                break a;
+            case 9:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[3], 1, 1);
+                break a;
+            case 10:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 0, 0);
+                break a;
+            case 11:
+                cmch_ImageMaster_$callClinit();
+                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 0, 0);
+                break a;
+            default:
+                break a;
+        }
+        cmch_ImageMaster_$callClinit();
+        cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[0], 0, 0);
+    }
+},
+cmcv_PetalEffect_dispose = $this => {
+    return;
+},
+cmcv_PetalEffect_renderImg = ($this, $sb, $img, $flipH, $flipV) => {
+    let var$5, var$6, var$7;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$5 = $this.$x117;
+    var$6 = $this.$y125;
+    var$7 = $this.$scale;
+    cbggg_SpriteBatch_draw($sb, $img, var$5, var$6, 16.0, 16.0, 32.0, 32.0, var$7, var$7 * $this.$scaleY9, $this.$rotation, 0, 0, 32, 32, $flipH, $flipV);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+};
+function cmcvc_SwirlyBloodEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img103 = null;
+    a.$crs0 = null;
+    a.$controlPoints0 = null;
+    a.$points0 = null;
+    a.$pos3 = null;
+    a.$target17 = null;
+    a.$currentSpeed2 = 0.0;
+    a.$rotation5 = 0.0;
+    a.$rotateClockwise2 = 0;
+    a.$stopRotating2 = 0;
+    a.$rotationRate2 = 0.0;
+}
+let cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE = 0.0,
+cmcvc_SwirlyBloodEffect_$callClinit = () => {
+    cmcvc_SwirlyBloodEffect_$callClinit = $rt_eraseClinit(cmcvc_SwirlyBloodEffect);
+    cmcvc_SwirlyBloodEffect__clinit_();
+},
+cmcvc_SwirlyBloodEffect__init_ = ($this, $sX, $sY) => {
+    cmcvc_SwirlyBloodEffect_$callClinit();
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$crs0 = new cbgm_CatmullRomSpline;
+    $this.$controlPoints0 = ju_ArrayList__init_();
+    $this.$points0 = $rt_createArray(cbgm_Vector2, 60);
+    $this.$currentSpeed2 = 0.0;
+    $this.$rotateClockwise2 = 1;
+    $this.$stopRotating2 = 0;
+    cmch_ImageMaster_$callClinit();
+    $this.$img103 = cmch_ImageMaster_GLOW_SPARK_2;
+    $this.$pos3 = cbgm_Vector2__init_($sX, $sY);
+    $this.$target17 = cbgm_Vector2__init_($sX + 100.0, $sY + 100.0);
+    $this.$crs0.$controlPoints3 = $rt_createArray(cbgm_Vector2, 1);
+    $this.$rotateClockwise2 = cbgm_MathUtils_randomBoolean();
+    $this.$rotation5 = cbgm_MathUtils_random3(0, 359);
+    ju_ArrayList_clear($this.$controlPoints0);
+    $sX = cbgm_MathUtils_random(800.0, 1000.0);
+    cmcc_Settings_$callClinit();
+    $sX = $sX * cmcc_Settings_scale;
+    $this.$rotationRate2 = $sX;
+    $this.$currentSpeed2 = $sX / 2.0;
+    $this.$color1 = cbgg_Color__init_(cbgm_MathUtils_random(0.30000001192092896, 1.0), 0.30000001192092896, cbgm_MathUtils_random(0.6000000238418579, 1.0), 0.25);
+    $this.$duration = cbgm_MathUtils_random(1.0, 1.5);
+    $this.$renderBehind = cbgm_MathUtils_randomBoolean();
+    $this.$scale = 9.999999747378752E-6;
+},
+cmcvc_SwirlyBloodEffect__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcvc_SwirlyBloodEffect();
+    cmcvc_SwirlyBloodEffect__init_(var_2, var_0, var_1);
+    return var_2;
+},
+cmcvc_SwirlyBloodEffect_update = $this => {
+    cmcvc_SwirlyBloodEffect_updateMovement($this);
+},
+cmcvc_SwirlyBloodEffect_updateMovement = $this => {
+    let $tmp_0, var$2, var$3, var$4, var$5, var$6, $vec2Array, $i;
+    $tmp_0 = new cbgm_Vector2;
+    var$2 = $this.$pos3;
+    var$3 = var$2.$x;
+    var$4 = $this.$target17;
+    cbgm_Vector2__init_1($tmp_0, var$3 - var$4.$x, var$2.$y - var$4.$y);
+    cbgm_Vector2_nor($tmp_0);
+    if (!$this.$stopRotating2) {
+        if ($this.$rotateClockwise2)
+            $this.$rotation5 = $this.$rotation5 + cbg_Gdx_graphics.$deltaTime * $this.$rotationRate2;
+        else {
+            var$3 = $this.$rotation5 - cbg_Gdx_graphics.$deltaTime * $this.$rotationRate2;
+            $this.$rotation5 = var$3;
+            if (var$3 < 0.0)
+                $this.$rotation5 = var$3 + 360.0;
+        }
+        $this.$rotation5 = $this.$rotation5 % 360.0;
+    }
+    cbgm_Vector2_setAngle($tmp_0, $this.$rotation5);
+    var$3 = $tmp_0.$x;
+    var$5 = cbg_Gdx_graphics.$deltaTime * $this.$currentSpeed2;
+    $tmp_0.$x = var$3 * var$5;
+    $tmp_0.$y = $tmp_0.$y * var$5;
+    cbgm_Vector2_sub($this.$pos3, $tmp_0);
+    var$3 = $this.$currentSpeed2;
+    var$6 = cbg_Gdx_graphics.$deltaTime;
+    cmcvc_SwirlyBloodEffect_$callClinit();
+    $this.$currentSpeed2 = var$3 + var$6 * cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE * 1.5;
+    if (ju_AbstractCollection_isEmpty($this.$controlPoints0))
+        ju_ArrayList_add($this.$controlPoints0, cbgm_Vector2_cpy($this.$pos3));
+    else if (!cbgm_Vector2_equals(ju_ArrayList_get($this.$controlPoints0, 0), $this.$pos3))
+        ju_ArrayList_add($this.$controlPoints0, cbgm_Vector2_cpy($this.$pos3));
+    a: {
+        $tmp_0 = $this.$controlPoints0;
+        if ($tmp_0.$size0 > 3) {
+            $vec2Array = $rt_createArray(cbgm_Vector2, 0);
+            cbgm_CatmullRomSpline_set($this.$crs0, ju_AbstractCollection_toArray($tmp_0, $vec2Array), 0);
+            $i = 0;
+            while (true) {
+                if ($i >= 60)
+                    break a;
+                $this.$points0.data[$i] = cbgm_Vector2__init_0();
+                cbgm_CatmullRomSpline_valueAt($this.$crs0, $this.$points0.data[$i], $i / 59.0);
+                $i = $i + 1 | 0;
+            }
+        }
+    }
+    $tmp_0 = $this.$controlPoints0;
+    if ($tmp_0.$size0 > 5)
+        ju_ArrayList_remove($tmp_0, 0);
+    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$3;
+    cbgm_Interpolation_$callClinit();
+    var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_pow2In, 2.0, 0.009999999776482582, var$3);
+    cmcc_Settings_$callClinit();
+    $this.$scale = var$3 * cmcc_Settings_scale;
+    var$3 = $this.$duration;
+    if (var$3 < 0.5)
+        $this.$color1.$a = var$3 / 2.0;
+    if (var$3 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_SwirlyBloodEffect_render = ($this, $sb) => {
+    let $tmpScale, $i, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11, var$12;
+    if (!$this.$isDone) {
+        cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(0.0, 0.0, 0.0, $this.$color1.$a / 2.0));
+        $tmpScale = $this.$scale * 2.0;
+        $i = $this.$points0.data.length - 1 | 0;
+        while ($i > 0) {
+            var$4 = $this.$points0.data;
+            if (var$4[$i] !== null) {
+                var$5 = $this.$img103;
+                var$6 = var$4[$i].$x;
+                var$7 = var$5.$packedWidth;
+                var$6 = var$6 - (var$7 / 2 | 0);
+                var$8 = var$4[$i].$y;
+                var$9 = var$5.$packedHeight;
+                var$8 = var$8 - (var$9 / 2 | 0);
+                var$10 = var$7;
+                var$11 = var$10 / 2.0;
+                var$12 = var$9;
+                cbggg_SpriteBatch_draw0($sb, var$5, var$6, var$8, var$11, var$12 / 2.0, var$10, var$12, $tmpScale, $tmpScale, $this.$rotation5);
+                $tmpScale = $tmpScale * 0.9750000238418579;
+            }
+            $i = $i + (-1) | 0;
+        }
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+        cbggg_SpriteBatch_setColor($sb, $this.$color1);
+        $tmpScale = $this.$scale * 1.5;
+        $i = $this.$points0.data.length - 1 | 0;
+        while ($i > 0) {
+            var$4 = $this.$points0.data;
+            if (var$4[$i] !== null) {
+                var$5 = $this.$img103;
+                var$6 = var$4[$i].$x;
+                var$7 = var$5.$packedWidth;
+                var$6 = var$6 - (var$7 / 2 | 0);
+                var$8 = var$4[$i].$y;
+                var$9 = var$5.$packedHeight;
+                var$8 = var$8 - (var$9 / 2 | 0);
+                var$10 = var$7;
+                var$11 = var$10 / 2.0;
+                var$12 = var$9;
+                cbggg_SpriteBatch_draw0($sb, var$5, var$6, var$8, var$11, var$12 / 2.0, var$10, var$12, $tmpScale, $tmpScale, $this.$rotation5);
+                $tmpScale = $tmpScale * 0.9750000238418579;
+            }
+            $i = $i + (-1) | 0;
+        }
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+    }
+},
+cmcvc_SwirlyBloodEffect_dispose = $this => {
+    return;
+},
+cmcvc_SwirlyBloodEffect__clinit_ = () => {
+    cmcc_Settings_$callClinit();
+    cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE = 3000.0 * cmcc_Settings_scale;
 };
 function cmcvc_WindyParticleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -269529,330 +270070,145 @@ cmcvc_BloodShotParticleEffect_render = ($this, $sb) => {
 cmcvc_BloodShotParticleEffect_dispose = $this => {
     return;
 };
-function cmcvc_ImpactSparkEffect() {
+function cmcv_ShineSparkleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img69 = null;
-    a.$x47 = 0.0;
-    a.$y28 = 0.0;
-    a.$vX5 = 0.0;
-    a.$vY2 = 0.0;
-    a.$floor12 = 0.0;
+    a.$x177 = 0.0;
+    a.$y196 = 0.0;
+    a.$oX0 = 0.0;
+    a.$oY1 = 0.0;
+    a.$dur_div24 = 0.0;
+    a.$hb51 = null;
+    a.$img87 = null;
 }
-let cmcvc_ImpactSparkEffect_GRAVITY = 0.0,
-cmcvc_ImpactSparkEffect_$callClinit = () => {
-    cmcvc_ImpactSparkEffect_$callClinit = $rt_eraseClinit(cmcvc_ImpactSparkEffect);
-    cmcvc_ImpactSparkEffect__clinit_();
-},
-cmcvc_ImpactSparkEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, $test;
-    var$1 = $this.$vY2;
-    cmcvc_ImpactSparkEffect_$callClinit();
-    var$2 = var$1 - cmcvc_ImpactSparkEffect_GRAVITY / $this.$scale;
-    $this.$vY2 = var$2;
-    var$1 = $this.$x47;
-    var$3 = $this.$vX5;
-    var$4 = cbg_Gdx_graphics.$deltaTime;
-    $this.$x47 = var$1 + var$3 * var$4;
-    $this.$y28 = $this.$y28 + var$2 * var$4;
-    $this.$rotation = cbgm_Vector2_angle(cbgm_Vector2__init_(var$3, var$2));
-    var$2 = $this.$y28;
-    var$1 = $this.$floor12;
-    if (var$2 < var$1) {
-        $this.$vY2 =  -$this.$vY2 * 0.75;
-        cmcc_Settings_$callClinit();
-        $this.$y28 = var$1 + 0.10000000149011612 * cmcc_Settings_scale;
-        $this.$vX5 = $this.$vX5 * 1.100000023841858;
-    }
+let cmcv_ShineSparkleEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
     var$1 = $this.$duration;
-    var$2 = 1.0 - var$1;
-    if (!(var$2 < 0.10000000149011612)) {
-        $test = $this.$color1;
+    var$2 = $this.$dur_div24;
+    if (!(var$1 > var$2)) {
+        var$3 = $this.$color1;
         cbgm_Interpolation_$callClinit();
-        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_pow2Out, 0.0, 0.5, var$1);
+        var$4 = cbgm_Interpolation_pow3In;
+        var$1 = var$1 / var$2;
+        var$3.$a = cbgm_Interpolation_apply(var$4, 0.0, 0.6000000238418579, var$1);
     } else {
-        $test = $this.$color1;
+        var$3 = $this.$color1;
         cbgm_Interpolation_$callClinit();
-        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.5, var$2 * 10.0);
+        var$4 = cbgm_Interpolation_pow3In;
+        var$5 = (var$1 - var$2) / var$2;
+        var$3.$a = cbgm_Interpolation_apply(var$4, 0.6000000238418579, 0.0, var$5);
     }
-    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$2;
-    if (var$2 < 0.0)
+    var$5 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$5;
+    if (var$5 < 0.0)
         $this.$isDone = 1;
 },
-cmcvc_ImpactSparkEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+cmcv_ShineSparkleEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11;
     cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img69;
-    var$3 = $this.$x47;
-    var$4 = $this.$y28;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$rotation);
-    var$2 = $this.$img69;
-    var$8 = $this.$x47;
-    var$3 = $this.$y28;
-    var$4 = var$2.$packedWidth;
-    var$5 = var$4 / 2.0;
-    var$6 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$hb51;
+    if (var$2 !== null) {
+        var$3 = $this.$img87;
+        var$4 = var$2.$cX + $this.$oX0;
+        var$5 = var$2.$cY + $this.$oY1;
+        var$6 = var$3.$packedWidth;
+        var$7 = var$6 / 2.0;
+        var$8 = var$3.$packedHeight;
+        var$9 = var$8 / 2.0;
+        var$10 = $this.$scale;
+        cbggg_SpriteBatch_draw0($sb, var$3, var$4, var$5, var$7, var$9, var$6, var$8, var$10, var$10 * cbgm_MathUtils_random(0.6000000238418579, 1.399999976158142), $this.$rotation);
+    } else {
+        var$3 = $this.$img87;
+        var$11 = $this.$x177 + $this.$oX0;
+        var$4 = $this.$y196 + $this.$oY1;
+        var$5 = var$3.$packedWidth;
+        var$6 = var$5 / 2.0;
+        var$7 = var$3.$packedHeight;
+        var$8 = var$7 / 2.0;
+        var$9 = $this.$scale;
+        cbggg_SpriteBatch_draw0($sb, var$3, var$11, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * cbgm_MathUtils_random(0.6000000238418579, 1.399999976158142), $this.$rotation);
+    }
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcvc_ImpactSparkEffect_dispose = $this => {
+cmcv_ShineSparkleEffect_dispose = $this => {
     return;
-},
-cmcvc_ImpactSparkEffect__clinit_ = () => {
-    cmcc_Settings_$callClinit();
-    cmcvc_ImpactSparkEffect_GRAVITY = 20.0 * cmcc_Settings_scale;
 };
-function cmcvc_FlyingDaggerEffect() {
+function cmcvc_AdditiveSlashImpactEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x49 = 0.0;
-    a.$y56 = 0.0;
-    a.$destY = 0.0;
-    a.$scaleMultiplier = 0.0;
-    a.$img107 = null;
-    a.$playedSound3 = 0;
+    a.$x156 = 0.0;
+    a.$y170 = 0.0;
+    a.$targetScale6 = 0.0;
 }
-let cmcvc_FlyingDaggerEffect__init_0 = ($this, $x, $y, $fAngle, $shouldFlip) => {
-    let var$5;
+let cmcvc_AdditiveSlashImpactEffect_img = null,
+cmcvc_AdditiveSlashImpactEffect__init_ = ($this, $x, $y, $color) => {
+    let var$4;
     cmcv_AbstractGameEffect__init_($this);
-    $this.$playedSound3 = 0;
-    cmch_ImageMaster_$callClinit();
-    var$5 = cmch_ImageMaster_DAGGER_STREAK;
-    $this.$img107 = var$5;
-    $this.$x49 = $x - var$5.$packedWidth / 2.0;
-    $this.$destY = $y;
-    $this.$y56 = $y - var$5.$packedHeight / 2.0;
-    $this.$startingDuration = 0.5;
-    $this.$duration = 0.5;
-    $this.$scaleMultiplier = cbgm_MathUtils_random(1.2000000476837158, 1.5);
-    cmcc_Settings_$callClinit();
-    $this.$scale = 0.25 * cmcc_Settings_scale;
-    if (!$shouldFlip)
-        $this.$rotation = $fAngle;
-    else
-        $this.$rotation = $fAngle - 180.0;
-    cbgg_Color_$callClinit();
-    var$5 = cbgg_Color_cpy(cbgg_Color_CHARTREUSE);
-    $this.$color1 = var$5;
-    var$5.$a = 0.0;
-},
-cmcvc_FlyingDaggerEffect__init_ = (var_0, var_1, var_2, var_3) => {
-    let var_4 = new cmcvc_FlyingDaggerEffect();
-    cmcvc_FlyingDaggerEffect__init_0(var_4, var_0, var_1, var_2, var_3);
-    return var_4;
-},
-cmcvc_FlyingDaggerEffect_update = $this => {
-    let $derp, var$2, var$3, var$4, var$5, var$6, var$7;
-    if (!$this.$playedSound3) {
-        a: {
-            switch (cbgm_MathUtils_random0(5)) {
-                case 0:
-                    break;
-                case 1:
-                    cmcc_CardCrawlGame_$callClinit();
-                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1174));
-                    break a;
-                case 2:
-                    cmcc_CardCrawlGame_$callClinit();
-                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1176));
-                    break a;
-                case 3:
-                    cmcc_CardCrawlGame_$callClinit();
-                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1178));
-                    break a;
-                case 4:
-                    cmcc_CardCrawlGame_$callClinit();
-                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1180));
-                    break a;
-                default:
-                    cmcc_CardCrawlGame_$callClinit();
-                    cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1182));
-                    break a;
-            }
-            cmcc_CardCrawlGame_$callClinit();
-            cmca_SoundMaster_play(cmcc_CardCrawlGame_sound, $rt_s(1172));
-        }
-        $this.$playedSound3 = 1;
+    if (cmcvc_AdditiveSlashImpactEffect_img === null) {
+        cmch_ImageMaster_$callClinit();
+        cmcvc_AdditiveSlashImpactEffect_img = cbggg_TextureAtlas_findRegion(cmch_ImageMaster_vfxAtlas, $rt_s(2024));
     }
-    $this.$duration = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $derp = cbgm_Vector2__init_(cbgm_MathUtils_cos(0.01745329238474369 * $this.$rotation), cbgm_MathUtils_sin(0.01745329238474369 * $this.$rotation));
-    var$2 = $this.$x49;
-    var$3 = $derp.$x;
-    var$4 = cbg_Gdx_graphics.$deltaTime;
-    var$3 = var$3 * var$4;
-    var$5 = 3500.0 * $this.$scaleMultiplier;
-    var$3 = var$3 * var$5;
-    cmcc_Settings_$callClinit();
-    var$6 = cmcc_Settings_scale;
-    $this.$x49 = var$2 + var$3 * var$6;
-    $this.$y56 = $this.$y56 + $derp.$y * var$4 * var$5 * var$6;
-    var$3 = $this.$duration;
+    var$4 = cmcvc_AdditiveSlashImpactEffect_img;
+    $this.$x156 = $x - var$4.$packedWidth / 2.0;
+    $this.$y170 = $y - var$4.$packedHeight / 2.0;
+    $this.$color1 = $color;
+    $this.$duration = 0.4000000059604645;
+    $this.$scale = 0.009999999776482582;
+    $this.$targetScale6 = cbgm_MathUtils_random(3.0, 5.0);
+    $this.$rotation = cbgm_MathUtils_random1(360.0);
+},
+cmcvc_AdditiveSlashImpactEffect__init_0 = (var_0, var_1, var_2) => {
+    let var_3 = new cmcvc_AdditiveSlashImpactEffect();
+    cmcvc_AdditiveSlashImpactEffect__init_(var_3, var_0, var_1, var_2);
+    return var_3;
+},
+cmcvc_AdditiveSlashImpactEffect_update = $this => {
+    let var$1, var$2, var$3;
+    var$1 = $this.$duration;
+    if (!(var$1 > 0.20000000298023224)) {
+        var$2 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.800000011920929, var$1 * 5.0);
+        var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, $this.$targetScale6, $this.$duration * 5.0);
+        cmcc_Settings_$callClinit();
+        $this.$scale = var$3 * cmcc_Settings_scale;
+    } else {
+        var$2 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.800000011920929, (var$1 - 0.20000000298023224) * 5.0);
+        var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, $this.$targetScale6, ($this.$duration - 0.20000000298023224) * 5.0);
+        cmcc_Settings_$callClinit();
+        $this.$scale = var$3 * cmcc_Settings_scale;
+    }
+    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$3;
     if (var$3 < 0.0)
         $this.$isDone = 1;
-    if (!(var$3 > 0.25)) {
-        $derp = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        $derp.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$3 * 4.0);
-    } else {
-        $derp = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$7 = cbgm_Interpolation_pow5In;
-        var$3 = (var$3 - 0.25) * 4.0;
-        $derp.$a = cbgm_Interpolation_apply(var$7, 1.0, 0.0, var$3);
-    }
-    $this.$scale = $this.$scale + cbg_Gdx_graphics.$deltaTime * $this.$scaleMultiplier;
 },
-cmcvc_FlyingDaggerEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10;
+cmcvc_AdditiveSlashImpactEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11;
     cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img107;
-    var$3 = $this.$x49;
-    var$4 = $this.$y56;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = cmcvc_AdditiveSlashImpactEffect_img;
+    var$3 = $this.$x156;
+    var$4 = $this.$y170;
     var$5 = var$2.$packedWidth;
     var$6 = var$5 / 2.0;
     var$7 = var$2.$packedHeight;
     var$8 = var$7 / 2.0;
     var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * 1.5, $this.$rotation);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$img107;
-    var$10 = $this.$x49;
-    var$3 = $this.$y56;
-    var$4 = var$2.$packedWidth;
-    var$5 = var$4 / 2.0;
-    var$6 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9 / 3.0, var$9, $this.$rotation);
+    var$2 = cmcvc_AdditiveSlashImpactEffect_img;
+    var$4 = $this.$x156;
+    var$5 = $this.$y170;
+    var$6 = var$2.$packedWidth;
     var$7 = var$6 / 2.0;
-    var$8 = $this.$scale * 0.75;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$10, var$3, var$5, var$7, var$4, var$6, var$8, var$8, $this.$rotation);
+    var$8 = var$2.$packedHeight;
+    var$10 = var$8 / 2.0;
+    var$11 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$4, var$5, var$7, var$10, var$6, var$8, var$11 / 6.0, var$11 * 0.5, $this.$rotation + 90.0);
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcvc_FlyingDaggerEffect_dispose = $this => {
-    return;
-};
-function cmcvc_WebLineEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x227 = 0.0;
-    a.$y234 = 0.0;
-}
-let cmcvc_WebLineEffect__init_0 = ($this, $x, $y, $facingLeft) => {
-    let $g;
-    cmcv_AbstractGameEffect__init_($this);
-    $g = cbgm_MathUtils_random((-20.0), 20.0);
-    cmcc_Settings_$callClinit();
-    $this.$x227 = $x + $g * cmcc_Settings_scale;
-    $this.$y234 = $y - 128.0 + cbgm_MathUtils_random((-10.0), 10.0) * cmcc_Settings_scale;
-    $this.$startingDuration = 1.0;
-    $this.$duration = 1.0;
-    $x = cbgm_MathUtils_random(185.0, 170.0);
-    $this.$rotation = $x;
-    if (!$facingLeft)
-        $this.$rotation = $x + 180.0;
-    $this.$scale = cbgm_MathUtils_random(0.800000011920929, 1.0) * cmcc_Settings_scale;
-    $g = cbgm_MathUtils_random(0.6000000238418579, 0.8999999761581421);
-    $this.$color1 = cbgg_Color__init_($g, $g, $g + 0.10000000149011612, 0.0);
-    $this.$renderBehind = 0;
-},
-cmcvc_WebLineEffect__init_ = (var_0, var_1, var_2) => {
-    let var_3 = new cmcvc_WebLineEffect();
-    cmcvc_WebLineEffect__init_0(var_3, var_0, var_1, var_2);
-    return var_3;
-},
-cmcvc_WebLineEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    var$2 = $this.$startingDuration / 2.0;
-    if (var$1 > var$2) {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$1 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.800000011920929, 0.009999999776482582, var$1 - var$2);
-        cmcc_Settings_$callClinit();
-        var$3.$a = var$1 * cmcc_Settings_scale;
-    } else {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4 = cbgm_Interpolation_pow5Out;
-        var$1 = var$1 / var$2;
-        var$5 = cbgm_Interpolation_apply(var$4, 0.009999999776482582, 0.800000011920929, var$1);
-        cmcc_Settings_$callClinit();
-        var$3.$a = var$5 * cmcc_Settings_scale;
-    }
-    if ($this.$duration < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_WebLineEffect_render = ($this, $sb) => {
-    cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(1.0, 1.0, 1.0, $this.$color1.$a));
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cmch_ImageMaster_$callClinit();
-    cbggg_SpriteBatch_draw($sb, cmch_ImageMaster_HORIZONTAL_LINE, $this.$x227, $this.$y234, 0.0, 128.0, 256.0, 256.0, $this.$scale * 2.0 * (cbgm_MathUtils_cos($this.$duration * 16.0) / 4.0 + 1.5), $this.$scale, $this.$rotation, 0, 0, 256, 256, 0, 0);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_WebLineEffect_dispose = $this => {
-    return;
-};
-function cmcvc_WebParticleEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x207 = 0.0;
-    a.$y222 = 0.0;
-}
-let cmcvc_WebParticleEffect__init_ = ($this, $x, $y) => {
-    cmcv_AbstractGameEffect__init_($this);
-    $this.$x207 = $x - 32.0;
-    $this.$y222 = $y - 32.0;
-    $this.$startingDuration = 1.0;
-    $this.$duration = 1.0;
-    $this.$scale = 0.009999999776482582;
-    $this.$color1 = cbgg_Color__init_(1.0, 1.0, 1.0, 0.0);
-    $this.$renderBehind = 0;
-},
-cmcvc_WebParticleEffect__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcvc_WebParticleEffect();
-    cmcvc_WebParticleEffect__init_(var_2, var_0, var_1);
-    return var_2;
-},
-cmcvc_WebParticleEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    var$2 = $this.$startingDuration / 2.0;
-    if (!(var$1 > var$2)) {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, 1.0, var$1 / var$2);
-        cmcc_Settings_$callClinit();
-        var$3.$a = var$4 * cmcc_Settings_scale;
-    } else {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.009999999776482582, var$1 - var$2);
-        cmcc_Settings_$callClinit();
-        var$3.$a = var$4 * cmcc_Settings_scale;
-    }
-    cbgm_Interpolation_$callClinit();
-    var$3 = cbgm_Interpolation_elasticIn;
-    var$2 = $this.$duration / $this.$startingDuration;
-    var$4 = cbgm_Interpolation_apply(var$3, 2.5, 0.009999999776482582, var$2);
-    cmcc_Settings_$callClinit();
-    $this.$scale = var$4 * cmcc_Settings_scale;
-    if ($this.$duration < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_WebParticleEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5;
-    cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(1.0, 1.0, 1.0, $this.$color1.$a));
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_WEB_VFX;
-    var$3 = $this.$x207;
-    var$4 = $this.$y222;
-    var$5 = $this.$scale;
-    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 32.0, 32.0, 64.0, 64.0, var$5, var$5, 0.0, 0, 0, 64, 64, 0, 0);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_WebParticleEffect_dispose = $this => {
+cmcvc_AdditiveSlashImpactEffect_dispose = $this => {
     return;
 };
 function cmcvc_FallingIceEffect() {
@@ -270087,178 +270443,205 @@ cmcvc_ThrowShivEffect_render = ($this, $sb) => {
 cmcvc_ThrowShivEffect_dispose = $this => {
     return;
 };
-function cmcvc_SwirlyBloodEffect() {
+function cmcvc_WebLineEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img103 = null;
-    a.$crs0 = null;
-    a.$controlPoints0 = null;
-    a.$points0 = null;
-    a.$pos3 = null;
-    a.$target17 = null;
-    a.$currentSpeed2 = 0.0;
-    a.$rotation5 = 0.0;
-    a.$rotateClockwise2 = 0;
-    a.$stopRotating2 = 0;
-    a.$rotationRate2 = 0.0;
+    a.$x227 = 0.0;
+    a.$y234 = 0.0;
 }
-let cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE = 0.0,
-cmcvc_SwirlyBloodEffect_$callClinit = () => {
-    cmcvc_SwirlyBloodEffect_$callClinit = $rt_eraseClinit(cmcvc_SwirlyBloodEffect);
-    cmcvc_SwirlyBloodEffect__clinit_();
-},
-cmcvc_SwirlyBloodEffect__init_ = ($this, $sX, $sY) => {
-    cmcvc_SwirlyBloodEffect_$callClinit();
+let cmcvc_WebLineEffect__init_0 = ($this, $x, $y, $facingLeft) => {
+    let $g;
     cmcv_AbstractGameEffect__init_($this);
-    $this.$crs0 = new cbgm_CatmullRomSpline;
-    $this.$controlPoints0 = ju_ArrayList__init_();
-    $this.$points0 = $rt_createArray(cbgm_Vector2, 60);
-    $this.$currentSpeed2 = 0.0;
-    $this.$rotateClockwise2 = 1;
-    $this.$stopRotating2 = 0;
-    cmch_ImageMaster_$callClinit();
-    $this.$img103 = cmch_ImageMaster_GLOW_SPARK_2;
-    $this.$pos3 = cbgm_Vector2__init_($sX, $sY);
-    $this.$target17 = cbgm_Vector2__init_($sX + 100.0, $sY + 100.0);
-    $this.$crs0.$controlPoints3 = $rt_createArray(cbgm_Vector2, 1);
-    $this.$rotateClockwise2 = cbgm_MathUtils_randomBoolean();
-    $this.$rotation5 = cbgm_MathUtils_random3(0, 359);
-    ju_ArrayList_clear($this.$controlPoints0);
-    $sX = cbgm_MathUtils_random(800.0, 1000.0);
+    $g = cbgm_MathUtils_random((-20.0), 20.0);
     cmcc_Settings_$callClinit();
-    $sX = $sX * cmcc_Settings_scale;
-    $this.$rotationRate2 = $sX;
-    $this.$currentSpeed2 = $sX / 2.0;
-    $this.$color1 = cbgg_Color__init_(cbgm_MathUtils_random(0.30000001192092896, 1.0), 0.30000001192092896, cbgm_MathUtils_random(0.6000000238418579, 1.0), 0.25);
-    $this.$duration = cbgm_MathUtils_random(1.0, 1.5);
-    $this.$renderBehind = cbgm_MathUtils_randomBoolean();
-    $this.$scale = 9.999999747378752E-6;
+    $this.$x227 = $x + $g * cmcc_Settings_scale;
+    $this.$y234 = $y - 128.0 + cbgm_MathUtils_random((-10.0), 10.0) * cmcc_Settings_scale;
+    $this.$startingDuration = 1.0;
+    $this.$duration = 1.0;
+    $x = cbgm_MathUtils_random(185.0, 170.0);
+    $this.$rotation = $x;
+    if (!$facingLeft)
+        $this.$rotation = $x + 180.0;
+    $this.$scale = cbgm_MathUtils_random(0.800000011920929, 1.0) * cmcc_Settings_scale;
+    $g = cbgm_MathUtils_random(0.6000000238418579, 0.8999999761581421);
+    $this.$color1 = cbgg_Color__init_($g, $g, $g + 0.10000000149011612, 0.0);
+    $this.$renderBehind = 0;
 },
-cmcvc_SwirlyBloodEffect__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcvc_SwirlyBloodEffect();
-    cmcvc_SwirlyBloodEffect__init_(var_2, var_0, var_1);
-    return var_2;
+cmcvc_WebLineEffect__init_ = (var_0, var_1, var_2) => {
+    let var_3 = new cmcvc_WebLineEffect();
+    cmcvc_WebLineEffect__init_0(var_3, var_0, var_1, var_2);
+    return var_3;
 },
-cmcvc_SwirlyBloodEffect_update = $this => {
-    cmcvc_SwirlyBloodEffect_updateMovement($this);
-},
-cmcvc_SwirlyBloodEffect_updateMovement = $this => {
-    let $tmp_0, var$2, var$3, var$4, var$5, var$6, $vec2Array, $i;
-    $tmp_0 = new cbgm_Vector2;
-    var$2 = $this.$pos3;
-    var$3 = var$2.$x;
-    var$4 = $this.$target17;
-    cbgm_Vector2__init_1($tmp_0, var$3 - var$4.$x, var$2.$y - var$4.$y);
-    cbgm_Vector2_nor($tmp_0);
-    if (!$this.$stopRotating2) {
-        if ($this.$rotateClockwise2)
-            $this.$rotation5 = $this.$rotation5 + cbg_Gdx_graphics.$deltaTime * $this.$rotationRate2;
-        else {
-            var$3 = $this.$rotation5 - cbg_Gdx_graphics.$deltaTime * $this.$rotationRate2;
-            $this.$rotation5 = var$3;
-            if (var$3 < 0.0)
-                $this.$rotation5 = var$3 + 360.0;
-        }
-        $this.$rotation5 = $this.$rotation5 % 360.0;
+cmcvc_WebLineEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    var$2 = $this.$startingDuration / 2.0;
+    if (var$1 > var$2) {
+        var$3 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$1 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.800000011920929, 0.009999999776482582, var$1 - var$2);
+        cmcc_Settings_$callClinit();
+        var$3.$a = var$1 * cmcc_Settings_scale;
+    } else {
+        var$3 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4 = cbgm_Interpolation_pow5Out;
+        var$1 = var$1 / var$2;
+        var$5 = cbgm_Interpolation_apply(var$4, 0.009999999776482582, 0.800000011920929, var$1);
+        cmcc_Settings_$callClinit();
+        var$3.$a = var$5 * cmcc_Settings_scale;
     }
-    cbgm_Vector2_setAngle($tmp_0, $this.$rotation5);
-    var$3 = $tmp_0.$x;
-    var$5 = cbg_Gdx_graphics.$deltaTime * $this.$currentSpeed2;
-    $tmp_0.$x = var$3 * var$5;
-    $tmp_0.$y = $tmp_0.$y * var$5;
-    cbgm_Vector2_sub($this.$pos3, $tmp_0);
-    var$3 = $this.$currentSpeed2;
-    var$6 = cbg_Gdx_graphics.$deltaTime;
-    cmcvc_SwirlyBloodEffect_$callClinit();
-    $this.$currentSpeed2 = var$3 + var$6 * cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE * 1.5;
-    if (ju_AbstractCollection_isEmpty($this.$controlPoints0))
-        ju_ArrayList_add($this.$controlPoints0, cbgm_Vector2_cpy($this.$pos3));
-    else if (!cbgm_Vector2_equals(ju_ArrayList_get($this.$controlPoints0, 0), $this.$pos3))
-        ju_ArrayList_add($this.$controlPoints0, cbgm_Vector2_cpy($this.$pos3));
-    a: {
-        $tmp_0 = $this.$controlPoints0;
-        if ($tmp_0.$size0 > 3) {
-            $vec2Array = $rt_createArray(cbgm_Vector2, 0);
-            cbgm_CatmullRomSpline_set($this.$crs0, ju_AbstractCollection_toArray($tmp_0, $vec2Array), 0);
-            $i = 0;
-            while (true) {
-                if ($i >= 60)
-                    break a;
-                $this.$points0.data[$i] = cbgm_Vector2__init_0();
-                cbgm_CatmullRomSpline_valueAt($this.$crs0, $this.$points0.data[$i], $i / 59.0);
-                $i = $i + 1 | 0;
-            }
-        }
-    }
-    $tmp_0 = $this.$controlPoints0;
-    if ($tmp_0.$size0 > 5)
-        ju_ArrayList_remove($tmp_0, 0);
-    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$3;
-    cbgm_Interpolation_$callClinit();
-    var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_pow2In, 2.0, 0.009999999776482582, var$3);
-    cmcc_Settings_$callClinit();
-    $this.$scale = var$3 * cmcc_Settings_scale;
-    var$3 = $this.$duration;
-    if (var$3 < 0.5)
-        $this.$color1.$a = var$3 / 2.0;
-    if (var$3 < 0.0)
+    if ($this.$duration < 0.0)
         $this.$isDone = 1;
 },
-cmcvc_SwirlyBloodEffect_render = ($this, $sb) => {
-    let $tmpScale, $i, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11, var$12;
-    if (!$this.$isDone) {
-        cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(0.0, 0.0, 0.0, $this.$color1.$a / 2.0));
-        $tmpScale = $this.$scale * 2.0;
-        $i = $this.$points0.data.length - 1 | 0;
-        while ($i > 0) {
-            var$4 = $this.$points0.data;
-            if (var$4[$i] !== null) {
-                var$5 = $this.$img103;
-                var$6 = var$4[$i].$x;
-                var$7 = var$5.$packedWidth;
-                var$6 = var$6 - (var$7 / 2 | 0);
-                var$8 = var$4[$i].$y;
-                var$9 = var$5.$packedHeight;
-                var$8 = var$8 - (var$9 / 2 | 0);
-                var$10 = var$7;
-                var$11 = var$10 / 2.0;
-                var$12 = var$9;
-                cbggg_SpriteBatch_draw0($sb, var$5, var$6, var$8, var$11, var$12 / 2.0, var$10, var$12, $tmpScale, $tmpScale, $this.$rotation5);
-                $tmpScale = $tmpScale * 0.9750000238418579;
-            }
-            $i = $i + (-1) | 0;
-        }
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-        cbggg_SpriteBatch_setColor($sb, $this.$color1);
-        $tmpScale = $this.$scale * 1.5;
-        $i = $this.$points0.data.length - 1 | 0;
-        while ($i > 0) {
-            var$4 = $this.$points0.data;
-            if (var$4[$i] !== null) {
-                var$5 = $this.$img103;
-                var$6 = var$4[$i].$x;
-                var$7 = var$5.$packedWidth;
-                var$6 = var$6 - (var$7 / 2 | 0);
-                var$8 = var$4[$i].$y;
-                var$9 = var$5.$packedHeight;
-                var$8 = var$8 - (var$9 / 2 | 0);
-                var$10 = var$7;
-                var$11 = var$10 / 2.0;
-                var$12 = var$9;
-                cbggg_SpriteBatch_draw0($sb, var$5, var$6, var$8, var$11, var$12 / 2.0, var$10, var$12, $tmpScale, $tmpScale, $this.$rotation5);
-                $tmpScale = $tmpScale * 0.9750000238418579;
-            }
-            $i = $i + (-1) | 0;
-        }
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-    }
+cmcvc_WebLineEffect_render = ($this, $sb) => {
+    cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(1.0, 1.0, 1.0, $this.$color1.$a));
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cmch_ImageMaster_$callClinit();
+    cbggg_SpriteBatch_draw($sb, cmch_ImageMaster_HORIZONTAL_LINE, $this.$x227, $this.$y234, 0.0, 128.0, 256.0, 256.0, $this.$scale * 2.0 * (cbgm_MathUtils_cos($this.$duration * 16.0) / 4.0 + 1.5), $this.$scale, $this.$rotation, 0, 0, 256, 256, 0, 0);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcvc_SwirlyBloodEffect_dispose = $this => {
+cmcvc_WebLineEffect_dispose = $this => {
+    return;
+};
+function cmcvc_WebParticleEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x207 = 0.0;
+    a.$y222 = 0.0;
+}
+let cmcvc_WebParticleEffect__init_ = ($this, $x, $y) => {
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$x207 = $x - 32.0;
+    $this.$y222 = $y - 32.0;
+    $this.$startingDuration = 1.0;
+    $this.$duration = 1.0;
+    $this.$scale = 0.009999999776482582;
+    $this.$color1 = cbgg_Color__init_(1.0, 1.0, 1.0, 0.0);
+    $this.$renderBehind = 0;
+},
+cmcvc_WebParticleEffect__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcvc_WebParticleEffect();
+    cmcvc_WebParticleEffect__init_(var_2, var_0, var_1);
+    return var_2;
+},
+cmcvc_WebParticleEffect_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    var$2 = $this.$startingDuration / 2.0;
+    if (!(var$1 > var$2)) {
+        var$3 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, 1.0, var$1 / var$2);
+        cmcc_Settings_$callClinit();
+        var$3.$a = var$4 * cmcc_Settings_scale;
+    } else {
+        var$3 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.009999999776482582, var$1 - var$2);
+        cmcc_Settings_$callClinit();
+        var$3.$a = var$4 * cmcc_Settings_scale;
+    }
+    cbgm_Interpolation_$callClinit();
+    var$3 = cbgm_Interpolation_elasticIn;
+    var$2 = $this.$duration / $this.$startingDuration;
+    var$4 = cbgm_Interpolation_apply(var$3, 2.5, 0.009999999776482582, var$2);
+    cmcc_Settings_$callClinit();
+    $this.$scale = var$4 * cmcc_Settings_scale;
+    if ($this.$duration < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_WebParticleEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5;
+    cbggg_SpriteBatch_setColor($sb, cbgg_Color__init_(1.0, 1.0, 1.0, $this.$color1.$a));
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cmch_ImageMaster_$callClinit();
+    var$2 = cmch_ImageMaster_WEB_VFX;
+    var$3 = $this.$x207;
+    var$4 = $this.$y222;
+    var$5 = $this.$scale;
+    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 32.0, 32.0, 64.0, 64.0, var$5, var$5, 0.0, 0, 0, 64, 64, 0, 0);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_WebParticleEffect_dispose = $this => {
+    return;
+};
+function cmcvc_ImpactSparkEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img69 = null;
+    a.$x47 = 0.0;
+    a.$y28 = 0.0;
+    a.$vX5 = 0.0;
+    a.$vY2 = 0.0;
+    a.$floor12 = 0.0;
+}
+let cmcvc_ImpactSparkEffect_GRAVITY = 0.0,
+cmcvc_ImpactSparkEffect_$callClinit = () => {
+    cmcvc_ImpactSparkEffect_$callClinit = $rt_eraseClinit(cmcvc_ImpactSparkEffect);
+    cmcvc_ImpactSparkEffect__clinit_();
+},
+cmcvc_ImpactSparkEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, $test;
+    var$1 = $this.$vY2;
+    cmcvc_ImpactSparkEffect_$callClinit();
+    var$2 = var$1 - cmcvc_ImpactSparkEffect_GRAVITY / $this.$scale;
+    $this.$vY2 = var$2;
+    var$1 = $this.$x47;
+    var$3 = $this.$vX5;
+    var$4 = cbg_Gdx_graphics.$deltaTime;
+    $this.$x47 = var$1 + var$3 * var$4;
+    $this.$y28 = $this.$y28 + var$2 * var$4;
+    $this.$rotation = cbgm_Vector2_angle(cbgm_Vector2__init_(var$3, var$2));
+    var$2 = $this.$y28;
+    var$1 = $this.$floor12;
+    if (var$2 < var$1) {
+        $this.$vY2 =  -$this.$vY2 * 0.75;
+        cmcc_Settings_$callClinit();
+        $this.$y28 = var$1 + 0.10000000149011612 * cmcc_Settings_scale;
+        $this.$vX5 = $this.$vX5 * 1.100000023841858;
+    }
+    var$1 = $this.$duration;
+    var$2 = 1.0 - var$1;
+    if (!(var$2 < 0.10000000149011612)) {
+        $test = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_pow2Out, 0.0, 0.5, var$1);
+    } else {
+        $test = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.5, var$2 * 10.0);
+    }
+    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$2;
+    if (var$2 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_ImpactSparkEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img69;
+    var$3 = $this.$x47;
+    var$4 = $this.$y28;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$rotation);
+    var$2 = $this.$img69;
+    var$8 = $this.$x47;
+    var$3 = $this.$y28;
+    var$4 = var$2.$packedWidth;
+    var$5 = var$4 / 2.0;
+    var$6 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.2999999523162842), $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_ImpactSparkEffect_dispose = $this => {
     return;
 },
-cmcvc_SwirlyBloodEffect__clinit_ = () => {
+cmcvc_ImpactSparkEffect__clinit_ = () => {
     cmcc_Settings_$callClinit();
-    cmcvc_SwirlyBloodEffect_VELOCITY_RAMP_RATE = 3000.0 * cmcc_Settings_scale;
+    cmcvc_ImpactSparkEffect_GRAVITY = 20.0 * cmcc_Settings_scale;
 };
 function cmcvc_ThirdEyeParticleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -270347,321 +270730,6 @@ cmcvc_ThirdEyeParticleEffect_render = ($this, $sb) => {
 },
 cmcvc_ThirdEyeParticleEffect_dispose = $this => {
     return;
-},
-cmcv_SpotlightEffect = $rt_classWithoutFields(cmcv_AbstractGameEffect),
-cmcv_SpotlightEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    if ($this.$duration === 3.0) {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1361), (-0.6000000238418579));
-    }
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (!(var$1 > 1.5)) {
-        var$2 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$3 = cbgm_Interpolation_exp10In;
-        var$4 = var$1 / 1.5;
-        var$2.$a = cbgm_Interpolation_apply(var$3, 0.0, 0.5, var$4);
-    } else {
-        var$2 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$3 = cbgm_Interpolation_pow5In;
-        var$1 = (var$1 - 1.5) / 1.5;
-        var$2.$a = cbgm_Interpolation_apply(var$3, 0.5, 0.0, var$1);
-    }
-    if ($this.$duration < 0.0) {
-        $this.$color1.$a = 0.0;
-        $this.$isDone = 1;
-    }
-},
-cmcv_SpotlightEffect_render = ($this, $sb) => {
-    let var$2;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_SPOTLIGHT_VFX;
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcv_SpotlightEffect_dispose = $this => {
-    return;
-};
-function cmcv_PetalEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x117 = 0.0;
-    a.$y125 = 0.0;
-    a.$vY48 = 0.0;
-    a.$vX31 = 0.0;
-    a.$scaleY9 = 0.0;
-    a.$frame0 = 0;
-    a.$animTimer5 = 0.0;
-}
-let cmcv_PetalEffect__init_0 = $this => {
-    let var$1, var$2, var$3;
-    cmcv_AbstractGameEffect__init_($this);
-    $this.$frame0 = 0;
-    $this.$animTimer5 = 0.05000000074505806;
-    cmcc_Settings_$callClinit();
-    var$1 = cmcc_Settings_scale;
-    $this.$x117 = cbgm_MathUtils_random(100.0 * var$1, 1820.0 * var$1);
-    $this.$y125 = cmcc_Settings_HEIGHT + cbgm_MathUtils_random(20.0, 300.0) * cmcc_Settings_scale;
-    $this.$frame0 = cbgm_MathUtils_random0(8);
-    $this.$rotation = cbgm_MathUtils_random((-10.0), 10.0);
-    $this.$scale = cbgm_MathUtils_random(1.0, 2.5);
-    $this.$scaleY9 = cbgm_MathUtils_random(1.0, 1.2000000476837158);
-    if ($this.$scale < 1.5)
-        $this.$renderBehind = 1;
-    $this.$vY48 = cbgm_MathUtils_random(200.0, 300.0) * $this.$scale * cmcc_Settings_scale;
-    var$1 = cbgm_MathUtils_random((-100.0), 100.0);
-    var$2 = $this.$scale;
-    var$1 = var$1 * var$2;
-    var$3 = cmcc_Settings_scale;
-    $this.$vX31 = var$1 * var$3;
-    $this.$scale = var$2 * var$3;
-    if (cbgm_MathUtils_randomBoolean())
-        $this.$rotation = $this.$rotation + 180.0;
-    $this.$color1 = cbgg_Color__init_(1.0, cbgm_MathUtils_random(0.699999988079071, 0.8999999761581421), cbgm_MathUtils_random(0.699999988079071, 0.8999999761581421), 1.0);
-    $this.$duration = 4.0;
-},
-cmcv_PetalEffect__init_ = () => {
-    let var_0 = new cmcv_PetalEffect();
-    cmcv_PetalEffect__init_0(var_0);
-    return var_0;
-},
-cmcv_PetalEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$y125;
-    var$2 = $this.$vY48;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    $this.$y125 = var$1 - var$2 * var$3;
-    $this.$x117 = $this.$x117 + $this.$vX31 * var$3;
-    var$1 = $this.$animTimer5 - var$3 / $this.$scale;
-    $this.$animTimer5 = var$1;
-    if (var$1 < 0.0) {
-        $this.$animTimer5 = var$1 + 0.05000000074505806;
-        var$4 = $this.$frame0 + 1 | 0;
-        $this.$frame0 = var$4;
-        if (var$4 > 11)
-            $this.$frame0 = 0;
-    }
-    var$1 = $this.$duration - var$3;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-    else if (var$1 < 1.0)
-        $this.$color1.$a = var$1;
-},
-cmcv_PetalEffect_render = ($this, $sb) => {
-    a: {
-        cbggg_SpriteBatch_setColor($sb, $this.$color1);
-        switch ($this.$frame0) {
-            case 0:
-                break;
-            case 1:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 0, 0);
-                break a;
-            case 2:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 0, 0);
-                break a;
-            case 3:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[3], 0, 0);
-                break a;
-            case 4:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 1, 1);
-                break a;
-            case 5:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 1, 1);
-                break a;
-            case 6:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[0], 1, 1);
-                break a;
-            case 7:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 1, 1);
-                break a;
-            case 8:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 1, 1);
-                break a;
-            case 9:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[3], 1, 1);
-                break a;
-            case 10:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[2], 0, 0);
-                break a;
-            case 11:
-                cmch_ImageMaster_$callClinit();
-                cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[1], 0, 0);
-                break a;
-            default:
-                break a;
-        }
-        cmch_ImageMaster_$callClinit();
-        cmcv_PetalEffect_renderImg($this, $sb, cmch_ImageMaster_PETAL_VFX.data[0], 0, 0);
-    }
-},
-cmcv_PetalEffect_dispose = $this => {
-    return;
-},
-cmcv_PetalEffect_renderImg = ($this, $sb, $img, $flipH, $flipV) => {
-    let var$5, var$6, var$7;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$5 = $this.$x117;
-    var$6 = $this.$y125;
-    var$7 = $this.$scale;
-    cbggg_SpriteBatch_draw($sb, $img, var$5, var$6, 16.0, 16.0, 32.0, 32.0, var$7, var$7 * $this.$scaleY9, $this.$rotation, 0, 0, 32, 32, $flipH, $flipV);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-};
-function cmcv_ShineSparkleEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x177 = 0.0;
-    a.$y196 = 0.0;
-    a.$oX0 = 0.0;
-    a.$oY1 = 0.0;
-    a.$dur_div24 = 0.0;
-    a.$hb51 = null;
-    a.$img87 = null;
-}
-let cmcv_ShineSparkleEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    var$1 = $this.$duration;
-    var$2 = $this.$dur_div24;
-    if (!(var$1 > var$2)) {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4 = cbgm_Interpolation_pow3In;
-        var$1 = var$1 / var$2;
-        var$3.$a = cbgm_Interpolation_apply(var$4, 0.0, 0.6000000238418579, var$1);
-    } else {
-        var$3 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4 = cbgm_Interpolation_pow3In;
-        var$5 = (var$1 - var$2) / var$2;
-        var$3.$a = cbgm_Interpolation_apply(var$4, 0.6000000238418579, 0.0, var$5);
-    }
-    var$5 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$5;
-    if (var$5 < 0.0)
-        $this.$isDone = 1;
-},
-cmcv_ShineSparkleEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$hb51;
-    if (var$2 !== null) {
-        var$3 = $this.$img87;
-        var$4 = var$2.$cX + $this.$oX0;
-        var$5 = var$2.$cY + $this.$oY1;
-        var$6 = var$3.$packedWidth;
-        var$7 = var$6 / 2.0;
-        var$8 = var$3.$packedHeight;
-        var$9 = var$8 / 2.0;
-        var$10 = $this.$scale;
-        cbggg_SpriteBatch_draw0($sb, var$3, var$4, var$5, var$7, var$9, var$6, var$8, var$10, var$10 * cbgm_MathUtils_random(0.6000000238418579, 1.399999976158142), $this.$rotation);
-    } else {
-        var$3 = $this.$img87;
-        var$11 = $this.$x177 + $this.$oX0;
-        var$4 = $this.$y196 + $this.$oY1;
-        var$5 = var$3.$packedWidth;
-        var$6 = var$5 / 2.0;
-        var$7 = var$3.$packedHeight;
-        var$8 = var$7 / 2.0;
-        var$9 = $this.$scale;
-        cbggg_SpriteBatch_draw0($sb, var$3, var$11, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * cbgm_MathUtils_random(0.6000000238418579, 1.399999976158142), $this.$rotation);
-    }
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcv_ShineSparkleEffect_dispose = $this => {
-    return;
-};
-function cmcvc_AdditiveSlashImpactEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x156 = 0.0;
-    a.$y170 = 0.0;
-    a.$targetScale6 = 0.0;
-}
-let cmcvc_AdditiveSlashImpactEffect_img = null,
-cmcvc_AdditiveSlashImpactEffect__init_ = ($this, $x, $y, $color) => {
-    let var$4;
-    cmcv_AbstractGameEffect__init_($this);
-    if (cmcvc_AdditiveSlashImpactEffect_img === null) {
-        cmch_ImageMaster_$callClinit();
-        cmcvc_AdditiveSlashImpactEffect_img = cbggg_TextureAtlas_findRegion(cmch_ImageMaster_vfxAtlas, $rt_s(2024));
-    }
-    var$4 = cmcvc_AdditiveSlashImpactEffect_img;
-    $this.$x156 = $x - var$4.$packedWidth / 2.0;
-    $this.$y170 = $y - var$4.$packedHeight / 2.0;
-    $this.$color1 = $color;
-    $this.$duration = 0.4000000059604645;
-    $this.$scale = 0.009999999776482582;
-    $this.$targetScale6 = cbgm_MathUtils_random(3.0, 5.0);
-    $this.$rotation = cbgm_MathUtils_random1(360.0);
-},
-cmcvc_AdditiveSlashImpactEffect__init_0 = (var_0, var_1, var_2) => {
-    let var_3 = new cmcvc_AdditiveSlashImpactEffect();
-    cmcvc_AdditiveSlashImpactEffect__init_(var_3, var_0, var_1, var_2);
-    return var_3;
-},
-cmcvc_AdditiveSlashImpactEffect_update = $this => {
-    let var$1, var$2, var$3;
-    var$1 = $this.$duration;
-    if (!(var$1 > 0.20000000298023224)) {
-        var$2 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.800000011920929, var$1 * 5.0);
-        var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, $this.$targetScale6, $this.$duration * 5.0);
-        cmcc_Settings_$callClinit();
-        $this.$scale = var$3 * cmcc_Settings_scale;
-    } else {
-        var$2 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.800000011920929, (var$1 - 0.20000000298023224) * 5.0);
-        var$3 = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.009999999776482582, $this.$targetScale6, ($this.$duration - 0.20000000298023224) * 5.0);
-        cmcc_Settings_$callClinit();
-        $this.$scale = var$3 * cmcc_Settings_scale;
-    }
-    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$3;
-    if (var$3 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_AdditiveSlashImpactEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9, var$10, var$11;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = cmcvc_AdditiveSlashImpactEffect_img;
-    var$3 = $this.$x156;
-    var$4 = $this.$y170;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9 / 3.0, var$9, $this.$rotation);
-    var$2 = cmcvc_AdditiveSlashImpactEffect_img;
-    var$4 = $this.$x156;
-    var$5 = $this.$y170;
-    var$6 = var$2.$packedWidth;
-    var$7 = var$6 / 2.0;
-    var$8 = var$2.$packedHeight;
-    var$10 = var$8 / 2.0;
-    var$11 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$4, var$5, var$7, var$10, var$6, var$8, var$11 / 6.0, var$11 * 0.5, $this.$rotation + 90.0);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_AdditiveSlashImpactEffect_dispose = $this => {
-    return;
 };
 function cmcvc_EmptyStanceParticleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -270741,168 +270809,170 @@ cmcvc_EmptyStanceParticleEffect_render = ($this, $sb) => {
 cmcvc_EmptyStanceParticleEffect_dispose = $this => {
     return;
 };
-function cmcv_CollectorStakeEffect() {
+function cmcvc_TimeWarpTurnEndEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x24 = 0.0;
-    a.$y30 = 0.0;
-    a.$sX8 = 0.0;
-    a.$sY11 = 0.0;
-    a.$tX2 = 0.0;
-    a.$tY2 = 0.0;
-    a.$targetAngle0 = 0.0;
-    a.$startingAngle = 0.0;
-    a.$targetScale11 = 0.0;
-    a.$shownSlash = 0;
+    a.$x226 = 0.0;
+    a.$y182 = 0.0;
 }
-let cmcv_CollectorStakeEffect_img = null,
-cmcv_CollectorStakeEffect__init_ = ($this, $x, $y) => {
-    let $randomAngle, var$4, var$5, var$6, var$7;
-    cmcv_AbstractGameEffect__init_($this);
-    $this.$shownSlash = 0;
-    if (cmcv_CollectorStakeEffect_img === null) {
-        cmch_ImageMaster_$callClinit();
-        cmcv_CollectorStakeEffect_img = cbggg_TextureAtlas_findRegion(cmch_ImageMaster_vfxAtlas, $rt_s(7750));
-    }
-    $randomAngle = 0.01745329238474369 * cbgm_MathUtils_random((-50.0), 230.0);
-    var$4 = cbgm_MathUtils_cos($randomAngle) * cbgm_MathUtils_random(200.0, 600.0);
-    cmcc_Settings_$callClinit();
-    $this.$x24 = var$4 * cmcc_Settings_scale + $x;
-    $this.$y30 = cbgm_MathUtils_sin($randomAngle) * cbgm_MathUtils_random(200.0, 500.0) * cmcc_Settings_scale + $y;
-    $this.$duration = 1.0;
-    $this.$scale = 0.009999999776482582;
-    $this.$targetScale11 = cbgm_MathUtils_random(0.4000000059604645, 1.100000023841858);
-    $this.$targetAngle0 = cbgm_MathUtils_atan2($y - $this.$y30, $x - $this.$x24) * 57.2957763671875 + 90.0;
-    var$4 = cbgm_MathUtils_random(0.0, 360.0);
-    $this.$startingAngle = var$4;
-    $this.$rotation = var$4;
-    var$4 = $this.$x24;
-    var$5 = cmcv_CollectorStakeEffect_img;
-    $randomAngle = var$5.$packedWidth / 2 | 0;
-    var$4 = var$4 - $randomAngle;
-    $this.$x24 = var$4;
-    var$6 = $this.$y30;
-    var$7 = var$5.$packedHeight / 2 | 0;
-    var$6 = var$6 - var$7;
-    $this.$y30 = var$6;
-    $this.$sX8 = var$4;
-    $this.$sY11 = var$6;
-    $this.$tX2 = $x - $randomAngle;
-    $this.$tY2 = $y - var$7;
-    $this.$color1 = cbgg_Color__init_(cbgm_MathUtils_random(0.5, 1.0), cbgm_MathUtils_random(0.0, 0.4000000059604645), cbgm_MathUtils_random(0.5, 1.0), 0.0);
+let cmcvc_TimeWarpTurnEndEffect_img = null,
+cmcvc_TimeWarpTurnEndEffect_$callClinit = () => {
+    cmcvc_TimeWarpTurnEndEffect_$callClinit = $rt_eraseClinit(cmcvc_TimeWarpTurnEndEffect);
+    cmcvc_TimeWarpTurnEndEffect__clinit_();
 },
-cmcv_CollectorStakeEffect__init_0 = (var_0, var_1) => {
-    let var_2 = new cmcv_CollectorStakeEffect();
-    cmcv_CollectorStakeEffect__init_(var_2, var_0, var_1);
-    return var_2;
-},
-cmcv_CollectorStakeEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5, var$6, var$7;
-    cbgm_Interpolation_$callClinit();
-    var$1 = cbgm_Interpolation_elasticIn;
-    var$2 = $this.$targetAngle0;
-    var$3 = $this.$startingAngle;
-    var$4 = $this.$duration;
-    $this.$rotation = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
-    var$3 = $this.$duration;
-    if (!(var$3 > 0.5)) {
-        var$1 = cbgm_Interpolation_exp10Out;
-        var$4 = $this.$tX2;
-        var$5 = $this.$sX8;
-        var$2 = var$3 * 2.0;
-        $this.$x24 = cbgm_Interpolation_apply(var$1, var$4, var$5, var$2);
-        var$1 = cbgm_Interpolation_exp10Out;
-        var$2 = $this.$tY2;
-        var$3 = $this.$sY11;
-        var$4 = $this.$duration * 2.0;
-        $this.$y30 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
-    } else {
-        var$1 = cbgm_Interpolation_elasticIn;
-        var$2 = $this.$targetScale11;
-        var$4 = var$2 * 10.0;
-        var$3 = (var$3 - 0.5) * 2.0;
-        var$2 = cbgm_Interpolation_apply(var$1, var$2, var$4, var$3);
-        cmcc_Settings_$callClinit();
-        $this.$scale = var$2 * cmcc_Settings_scale;
-        $this.$color1.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.6000000238418579, 0.0, ($this.$duration - 0.5) * 2.0);
-    }
-    if ($this.$duration < 0.05000000074505806 && !$this.$shownSlash) {
-        cmcd_AbstractDungeon_$callClinit();
-        var$1 = cmcd_AbstractDungeon_effectsQueue;
-        var$6 = new cmcvc_AdditiveSlashImpactEffect;
-        var$2 = $this.$tX2;
-        var$7 = cmcv_CollectorStakeEffect_img;
-        cmcvc_AdditiveSlashImpactEffect__init_(var$6, var$2 + var$7.$packedWidth / 2.0, $this.$tY2 + var$7.$packedHeight / 2.0, cbgg_Color_cpy($this.$color1));
-        ju_ArrayList_add(var$1, var$6);
-        $this.$shownSlash = 1;
-    }
-    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$2;
-    if (var$2 < 0.0) {
+cmcvc_TimeWarpTurnEndEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5, var$6;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0)
         $this.$isDone = 1;
-        cmcc_CardCrawlGame_$callClinit();
-        var$1 = cmcc_CardCrawlGame_screenShake;
-        cmch_ScreenShake$ShakeIntensity_$callClinit();
-        var$6 = cmch_ScreenShake$ShakeIntensity_MED;
-        cmch_ScreenShake$ShakeDur_$callClinit();
-        cmch_ScreenShake_shake(var$1, var$6, cmch_ScreenShake$ShakeDur_SHORT, cbgm_MathUtils_randomBoolean());
-        cmca_SoundMaster_play0(cmcc_CardCrawlGame_sound, $rt_s(1186), 0.20000000298023224);
+    if (var$1 < 1.0) {
+        var$2 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
+    } else {
+        cbgm_Interpolation_$callClinit();
+        var$2 = cbgm_Interpolation_swingIn;
+        cmcc_Settings_$callClinit();
+        var$3 = cmcc_Settings_HEIGHT * 0.699999988079071;
+        cmcvc_TimeWarpTurnEndEffect_$callClinit();
+        var$4 = cmcvc_TimeWarpTurnEndEffect_img.$packedHeight;
+        var$3 = var$3 - var$4 / 2.0;
+        var$5 = ( -var$4 | 0) / 2.0;
+        var$6 = var$1 - 1.0;
+        $this.$y182 = cbgm_Interpolation_apply(var$2, var$3, var$5, var$6);
     }
 },
-cmcv_CollectorStakeEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8;
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+cmcvc_TimeWarpTurnEndEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
     cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = cmcv_CollectorStakeEffect_img;
-    var$3 = $this.$x24;
-    var$4 = $this.$y30;
+    cmcvc_TimeWarpTurnEndEffect_$callClinit();
+    var$2 = cmcvc_TimeWarpTurnEndEffect_img;
+    var$3 = $this.$x226;
+    var$4 = $this.$y182;
     var$5 = var$2.$packedWidth;
     var$6 = var$5 / 2.0;
     var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(1.0, 1.2000000476837158), $this.$scale * cbgm_MathUtils_random(1.0, 1.2000000476837158), $this.$rotation);
-    var$2 = cmcv_CollectorStakeEffect_img;
-    var$8 = $this.$x24;
-    var$3 = $this.$y30;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$duration * 360.0);
+},
+cmcvc_TimeWarpTurnEndEffect_dispose = $this => {
+    return;
+},
+cmcvc_TimeWarpTurnEndEffect__clinit_ = () => {
+    cmcvc_TimeWarpTurnEndEffect_img = null;
+};
+function cmcau_EstablishmentPowerAction() {
+    cmca_AbstractGameAction.call(this);
+    this.$discountAmount = 0;
+}
+let cmcau_EstablishmentPowerAction_update = $this => {
+    let var$1, $c;
+    cmcd_AbstractDungeon_$callClinit();
+    var$1 = ju_AbstractList_iterator(cmcd_AbstractDungeon_player.$hand.$group0);
+    while (ju_AbstractList$1_hasNext(var$1)) {
+        $c = ju_AbstractList$1_next(var$1);
+        if (!(!$c.$selfRetain && !$c.$retain))
+            cmcc_AbstractCard_modifyCostForCombat($c,  -$this.$discountAmount | 0);
+    }
+    $this.$isDone0 = 1;
+},
+cmcau_RetainCardsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcau_RetainCardsAction_uiStrings = null,
+cmcau_RetainCardsAction_TEXT = null,
+cmcau_RetainCardsAction_$callClinit = () => {
+    cmcau_RetainCardsAction_$callClinit = $rt_eraseClinit(cmcau_RetainCardsAction);
+    cmcau_RetainCardsAction__clinit_();
+},
+cmcau_RetainCardsAction_update = $this => {
+    let $c, var$2, var$3;
+    if ($this.$duration0 === 0.5) {
+        cmcd_AbstractDungeon_$callClinit();
+        $c = cmcd_AbstractDungeon_handCardSelectScreen;
+        cmcau_RetainCardsAction_$callClinit();
+        cmcss_HandCardSelectScreen_open2($c, cmcau_RetainCardsAction_TEXT.data[0], $this.$amount0, 0, 1, 0, 0, 1);
+        $c = cmcau_WaitAction__init_(0.25);
+        var$2 = $this;
+        cmca_AbstractGameAction_addToBot(var$2, $c);
+        cmca_AbstractGameAction_tickDuration(var$2);
+    } else {
+        cmcd_AbstractDungeon_$callClinit();
+        $c = cmcd_AbstractDungeon_handCardSelectScreen;
+        if (!$c.$wereCardsRetrieved) {
+            var$3 = ju_AbstractList_iterator($c.$selectedCards0.$group0);
+            while (ju_AbstractList$1_hasNext(var$3)) {
+                $c = ju_AbstractList$1_next(var$3);
+                if (!$c.$isEthereal)
+                    $c.$retain = 1;
+                cmcc_CardGroup_addToTop(cmcd_AbstractDungeon_player.$hand, $c);
+            }
+            cmcd_AbstractDungeon_handCardSelectScreen.$wereCardsRetrieved = 1;
+        }
+        cmca_AbstractGameAction_tickDuration($this);
+    }
+},
+cmcau_RetainCardsAction__clinit_ = () => {
+    let var$1;
+    cmcc_CardCrawlGame_$callClinit();
+    var$1 = cmcl_LocalizedStrings_getUIString(cmcc_CardCrawlGame_languagePack, $rt_s(7749));
+    cmcau_RetainCardsAction_uiStrings = var$1;
+    cmcau_RetainCardsAction_TEXT = var$1.$TEXT;
+};
+function cmcvc_OmegaFlashEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x169 = 0.0;
+    a.$y190 = 0.0;
+    a.$img109 = null;
+    a.$playedSound0 = 0;
+}
+let cmcvc_OmegaFlashEffect__init_ = ($this, $x, $y) => {
+    let var$3;
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$playedSound0 = 0;
+    cmcp_AbstractPower_$callClinit();
+    var$3 = cbggg_TextureAtlas_findRegion(cmcp_AbstractPower_atlas, $rt_s(7750));
+    $this.$img109 = var$3;
+    $this.$x169 = $x - var$3.$packedWidth / 2.0;
+    $this.$y190 = $y - var$3.$packedHeight / 2.0;
+    $this.$startingDuration = 0.5;
+    $this.$duration = 0.5;
+    cbgg_Color_$callClinit();
+    $this.$color1 = cbgg_Color_cpy(cbgg_Color_WHITE);
+},
+cmcvc_OmegaFlashEffect__init_0 = (var_0, var_1) => {
+    let var_2 = new cmcvc_OmegaFlashEffect();
+    cmcvc_OmegaFlashEffect__init_(var_2, var_0, var_1);
+    return var_2;
+},
+cmcvc_OmegaFlashEffect_update = $this => {
+    if (!$this.$playedSound0) {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1240), (-0.5));
+        $this.$playedSound0 = 1;
+    }
+    cmcv_AbstractGameEffect_update($this);
+},
+cmcvc_OmegaFlashEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8;
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img109;
+    var$3 = $this.$x169;
+    var$4 = $this.$y190;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$rotation);
+    var$2 = $this.$img109;
+    var$8 = $this.$x169;
+    var$3 = $this.$y190;
     var$4 = var$2.$packedWidth;
     var$5 = var$4 / 2.0;
     var$6 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(0.8999999761581421, 1.100000023841858), $this.$scale * cbgm_MathUtils_random(0.8999999761581421, 1.100000023841858), $this.$rotation);
+    cbggg_SpriteBatch_draw0($sb, var$2, var$8, var$3, var$5, var$6 / 2.0, var$4, var$6, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$rotation);
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
-cmcv_CollectorStakeEffect_dispose = $this => {
-    return;
-};
-function cmcvc_RoomTintEffect() {
-    cmcv_AbstractGameEffect.call(this);
-    this.$tintTransparency = 0.0;
-}
-let cmcvc_RoomTintEffect_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$duration;
-    var$2 = $this.$startingDuration;
-    var$3 = var$2 * 0.5;
-    if (var$1 > var$3) {
-        var$4 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, $this.$tintTransparency, 0.0, (var$1 - var$3) / var$2);
-    } else if (var$1 < var$3) {
-        var$4 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, $this.$tintTransparency, var$1 / var$2 / 0.5);
-    }
-    var$3 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$3;
-    if (var$3 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_RoomTintEffect_render = ($this, $sb) => {
-    let var$2;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cmch_ImageMaster_$callClinit();
-    var$2 = cmch_ImageMaster_WHITE_SQUARE_IMG;
-    cmcc_Settings_$callClinit();
-    cbggg_SpriteBatch_draw1($sb, var$2, 0.0, 0.0, cmcc_Settings_WIDTH, cmcc_Settings_HEIGHT);
-},
-cmcvc_RoomTintEffect_dispose = $this => {
+cmcvc_OmegaFlashEffect_dispose = $this => {
     return;
 };
 function cmcp_DoubleDamagePower() {
@@ -271011,59 +271081,6 @@ let cmcp_MayhemPower$1_update = $this => {
     var$1 = cmcac_PlayTopCardAction__init_(cmcm_MonsterGroup_getRandomMonster((cmcd_AbstractDungeon_getCurrRoom()).$monsters0, null, 1, cmcd_AbstractDungeon_cardRandomRng), 0);
     cmca_AbstractGameAction_addToBot($this, var$1);
     $this.$isDone0 = 1;
-};
-function cmcvc_TimeWarpTurnEndEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x226 = 0.0;
-    a.$y182 = 0.0;
-}
-let cmcvc_TimeWarpTurnEndEffect_img = null,
-cmcvc_TimeWarpTurnEndEffect_$callClinit = () => {
-    cmcvc_TimeWarpTurnEndEffect_$callClinit = $rt_eraseClinit(cmcvc_TimeWarpTurnEndEffect);
-    cmcvc_TimeWarpTurnEndEffect__clinit_();
-},
-cmcvc_TimeWarpTurnEndEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5, var$6;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0)
-        $this.$isDone = 1;
-    if (var$1 < 1.0) {
-        var$2 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$2.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$1);
-    } else {
-        cbgm_Interpolation_$callClinit();
-        var$2 = cbgm_Interpolation_swingIn;
-        cmcc_Settings_$callClinit();
-        var$3 = cmcc_Settings_HEIGHT * 0.699999988079071;
-        cmcvc_TimeWarpTurnEndEffect_$callClinit();
-        var$4 = cmcvc_TimeWarpTurnEndEffect_img.$packedHeight;
-        var$3 = var$3 - var$4 / 2.0;
-        var$5 = ( -var$4 | 0) / 2.0;
-        var$6 = var$1 - 1.0;
-        $this.$y182 = cbgm_Interpolation_apply(var$2, var$3, var$5, var$6);
-    }
-},
-cmcvc_TimeWarpTurnEndEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cmcvc_TimeWarpTurnEndEffect_$callClinit();
-    var$2 = cmcvc_TimeWarpTurnEndEffect_img;
-    var$3 = $this.$x226;
-    var$4 = $this.$y182;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$duration * 360.0);
-},
-cmcvc_TimeWarpTurnEndEffect_dispose = $this => {
-    return;
-},
-cmcvc_TimeWarpTurnEndEffect__clinit_ = () => {
-    cmcvc_TimeWarpTurnEndEffect_img = null;
 };
 function jusi_MappingStreamImpl$wrap$lambda$_1_0() {
     let a = this; jl_Object.call(a);
@@ -271599,6 +271616,123 @@ cmcvc_FlashIntentParticle__clinit_ = () => {
     cmcc_Settings_$callClinit();
     cmcvc_FlashIntentParticle_START_SCALE = 5.0 * cmcc_Settings_scale;
 };
+function cmcvc_LightningOrbPassiveEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img83 = null;
+    a.$index15 = 0;
+    a.$x209 = 0.0;
+    a.$y224 = 0.0;
+    a.$flipX13 = 0;
+    a.$flipY8 = 0;
+    a.$intervalDuration = 0.0;
+}
+let cmcvc_LightningOrbPassiveEffect__init_0 = ($this, $x, $y) => {
+    cmcv_AbstractGameEffect__init_($this);
+    $this.$img83 = null;
+    $this.$index15 = 0;
+    $this.$renderBehind = cbgm_MathUtils_randomBoolean();
+    $this.$x209 = $x;
+    $this.$y224 = $y;
+    cmcc_Settings_$callClinit();
+    $this.$color1 = cbgg_Color_cpy(cmcc_Settings_LIGHT_YELLOW_COLOR);
+    cmch_ImageMaster_$callClinit();
+    $this.$img83 = ju_ArrayList_get(cmch_ImageMaster_LIGHTNING_PASSIVE_VFX, $this.$index15);
+    $this.$scale = cbgm_MathUtils_random(0.6000000238418579, 1.0) * cmcc_Settings_scale;
+    $x = cbgm_MathUtils_random1(360.0);
+    $this.$rotation = $x;
+    if ($x < 120.0)
+        $this.$renderBehind = 1;
+    $this.$flipX13 = cbgm_MathUtils_randomBoolean();
+    $this.$flipY8 = cbgm_MathUtils_randomBoolean();
+    $x = cbgm_MathUtils_random(0.029999999329447746, 0.05999999865889549);
+    $this.$intervalDuration = $x;
+    $this.$duration = $x;
+},
+cmcvc_LightningOrbPassiveEffect__init_ = (var_0, var_1) => {
+    let var_2 = new cmcvc_LightningOrbPassiveEffect();
+    cmcvc_LightningOrbPassiveEffect__init_0(var_2, var_0, var_1);
+    return var_2;
+},
+cmcvc_LightningOrbPassiveEffect_update = $this => {
+    let var$1, var$2, var$3;
+    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$1;
+    if (var$1 < 0.0) {
+        var$2 = $this.$index15 + 1 | 0;
+        $this.$index15 = var$2;
+        cmch_ImageMaster_$callClinit();
+        var$3 = cmch_ImageMaster_LIGHTNING_PASSIVE_VFX;
+        if (var$2 > (var$3.$size0 - 1 | 0)) {
+            $this.$isDone = 1;
+            return;
+        }
+        $this.$img83 = ju_ArrayList_get(var$3, var$2);
+        $this.$duration = $this.$intervalDuration;
+    }
+},
+cmcvc_LightningOrbPassiveEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$img83;
+    var$3 = $this.$x209 - 61.0;
+    var$4 = $this.$y224 - 61.0;
+    var$5 = $this.$scale;
+    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 61.0, 61.0, 122.0, 122.0, var$5, var$5, $this.$rotation, 0, 0, 122, 122, $this.$flipX13, $this.$flipY8);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_LightningOrbPassiveEffect_dispose = $this => {
+    return;
+};
+function cmcvc_DarkOrbPassiveEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x195 = 0.0;
+    a.$y209 = 0.0;
+    a.$startingScale = 0.0;
+    a.$rotationSpeed1 = 0.0;
+    a.$img73 = null;
+}
+let cmcvc_DarkOrbPassiveEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    var$1 = $this.$duration;
+    var$2 = cbg_Gdx_graphics.$deltaTime;
+    var$3 = var$1 - var$2;
+    $this.$duration = var$3;
+    $this.$rotation = $this.$rotation + var$2 * $this.$rotationSpeed1;
+    if (!(var$3 > 1.0)) {
+        var$4 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$3);
+    } else {
+        var$4 = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, var$3 - 1.0);
+    }
+    cbgm_Interpolation_$callClinit();
+    var$4 = cbgm_Interpolation_swingOut;
+    var$3 = $this.$startingScale;
+    var$5 = $this.$duration / 2.0;
+    var$1 = cbgm_Interpolation_apply(var$4, 0.009999999776482582, var$3, var$5);
+    cmcc_Settings_$callClinit();
+    var$1 = var$1 * cmcc_Settings_scale;
+    $this.$scale = var$1;
+    if (!(!(var$1 < 0.0) && !($this.$duration < 0.0)))
+        $this.$isDone = 1;
+},
+cmcvc_DarkOrbPassiveEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$img73;
+    var$3 = $this.$x195 - 37.0;
+    var$4 = $this.$y209 - 37.0;
+    var$5 = $this.$scale;
+    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 37.0, 37.0, 74.0, 74.0, var$5, var$5, $this.$rotation, 0, 0, 74, 74, 0, 0);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_DarkOrbPassiveEffect_dispose = $this => {
+    return;
+};
 function cmcvc_PlasmaOrbPassiveEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$effectDuration7 = 0.0;
@@ -271720,123 +271854,6 @@ cmcvc_FrostOrbPassiveEffect_render = ($this, $sb) => {
 cmcvc_FrostOrbPassiveEffect_dispose = $this => {
     return;
 };
-function cmcvc_DarkOrbPassiveEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x195 = 0.0;
-    a.$y209 = 0.0;
-    a.$startingScale = 0.0;
-    a.$rotationSpeed1 = 0.0;
-    a.$img73 = null;
-}
-let cmcvc_DarkOrbPassiveEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    var$1 = $this.$duration;
-    var$2 = cbg_Gdx_graphics.$deltaTime;
-    var$3 = var$1 - var$2;
-    $this.$duration = var$3;
-    $this.$rotation = $this.$rotation + var$2 * $this.$rotationSpeed1;
-    if (!(var$3 > 1.0)) {
-        var$4 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$3);
-    } else {
-        var$4 = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        var$4.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 1.0, 0.0, var$3 - 1.0);
-    }
-    cbgm_Interpolation_$callClinit();
-    var$4 = cbgm_Interpolation_swingOut;
-    var$3 = $this.$startingScale;
-    var$5 = $this.$duration / 2.0;
-    var$1 = cbgm_Interpolation_apply(var$4, 0.009999999776482582, var$3, var$5);
-    cmcc_Settings_$callClinit();
-    var$1 = var$1 * cmcc_Settings_scale;
-    $this.$scale = var$1;
-    if (!(!(var$1 < 0.0) && !($this.$duration < 0.0)))
-        $this.$isDone = 1;
-},
-cmcvc_DarkOrbPassiveEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$img73;
-    var$3 = $this.$x195 - 37.0;
-    var$4 = $this.$y209 - 37.0;
-    var$5 = $this.$scale;
-    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 37.0, 37.0, 74.0, 74.0, var$5, var$5, $this.$rotation, 0, 0, 74, 74, 0, 0);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_DarkOrbPassiveEffect_dispose = $this => {
-    return;
-};
-function cmcvc_LightningOrbPassiveEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img83 = null;
-    a.$index15 = 0;
-    a.$x209 = 0.0;
-    a.$y224 = 0.0;
-    a.$flipX13 = 0;
-    a.$flipY8 = 0;
-    a.$intervalDuration = 0.0;
-}
-let cmcvc_LightningOrbPassiveEffect__init_0 = ($this, $x, $y) => {
-    cmcv_AbstractGameEffect__init_($this);
-    $this.$img83 = null;
-    $this.$index15 = 0;
-    $this.$renderBehind = cbgm_MathUtils_randomBoolean();
-    $this.$x209 = $x;
-    $this.$y224 = $y;
-    cmcc_Settings_$callClinit();
-    $this.$color1 = cbgg_Color_cpy(cmcc_Settings_LIGHT_YELLOW_COLOR);
-    cmch_ImageMaster_$callClinit();
-    $this.$img83 = ju_ArrayList_get(cmch_ImageMaster_LIGHTNING_PASSIVE_VFX, $this.$index15);
-    $this.$scale = cbgm_MathUtils_random(0.6000000238418579, 1.0) * cmcc_Settings_scale;
-    $x = cbgm_MathUtils_random1(360.0);
-    $this.$rotation = $x;
-    if ($x < 120.0)
-        $this.$renderBehind = 1;
-    $this.$flipX13 = cbgm_MathUtils_randomBoolean();
-    $this.$flipY8 = cbgm_MathUtils_randomBoolean();
-    $x = cbgm_MathUtils_random(0.029999999329447746, 0.05999999865889549);
-    $this.$intervalDuration = $x;
-    $this.$duration = $x;
-},
-cmcvc_LightningOrbPassiveEffect__init_ = (var_0, var_1) => {
-    let var_2 = new cmcvc_LightningOrbPassiveEffect();
-    cmcvc_LightningOrbPassiveEffect__init_0(var_2, var_0, var_1);
-    return var_2;
-},
-cmcvc_LightningOrbPassiveEffect_update = $this => {
-    let var$1, var$2, var$3;
-    var$1 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$1;
-    if (var$1 < 0.0) {
-        var$2 = $this.$index15 + 1 | 0;
-        $this.$index15 = var$2;
-        cmch_ImageMaster_$callClinit();
-        var$3 = cmch_ImageMaster_LIGHTNING_PASSIVE_VFX;
-        if (var$2 > (var$3.$size0 - 1 | 0)) {
-            $this.$isDone = 1;
-            return;
-        }
-        $this.$img83 = ju_ArrayList_get(var$3, var$2);
-        $this.$duration = $this.$intervalDuration;
-    }
-},
-cmcvc_LightningOrbPassiveEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$img83;
-    var$3 = $this.$x209 - 61.0;
-    var$4 = $this.$y224 - 61.0;
-    var$5 = $this.$scale;
-    cbggg_SpriteBatch_draw($sb, var$2, var$3, var$4, 61.0, 61.0, 122.0, 122.0, var$5, var$5, $this.$rotation, 0, 0, 122, 122, $this.$flipX13, $this.$flipY8);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_LightningOrbPassiveEffect_dispose = $this => {
-    return;
-};
 function cmcv_EnemyTurnEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$bgColor6 = null;
@@ -271932,49 +271949,6 @@ let cmcau_UnlimboAction_update = $this => {
             ju_ArrayList_add(cmcd_AbstractDungeon_effectList, cmcvc_ExhaustCardEffect__init_($this.$card28));
         $this.$isDone0 = 1;
     }
-};
-function cmcvc_RipAndTearEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x25 = 0.0;
-    a.$y31 = 0.0;
-    a.$color21 = null;
-}
-let cmcvc_RipAndTearEffect_flipped = 0,
-cmcvc_RipAndTearEffect_$callClinit = () => {
-    cmcvc_RipAndTearEffect_$callClinit = $rt_eraseClinit(cmcvc_RipAndTearEffect);
-    cmcvc_RipAndTearEffect__clinit_();
-},
-cmcvc_RipAndTearEffect_update = $this => {
-    if (!cbgm_MathUtils_randomBoolean()) {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1182), cbgm_MathUtils_random(0.0, (-0.30000001192092896)));
-    } else {
-        cmcc_CardCrawlGame_$callClinit();
-        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1180), cbgm_MathUtils_random(0.0, (-0.30000001192092896)));
-    }
-    cmcvc_RipAndTearEffect_$callClinit();
-    if (cmcvc_RipAndTearEffect_flipped) {
-        cmcd_AbstractDungeon_$callClinit();
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 - 45.0, $this.$y31 - 45.0, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25, $this.$y31, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 + 40.0, $this.$y31 + 40.0, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-    } else {
-        cmcd_AbstractDungeon_$callClinit();
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 - 45.0, $this.$y31 + 45.0, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25, $this.$y31, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 + 45.0, $this.$y31 - 45.0, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
-    }
-    cmcvc_RipAndTearEffect_flipped = cmcvc_RipAndTearEffect_flipped ? 0 : 1;
-    $this.$isDone = 1;
-},
-cmcvc_RipAndTearEffect_render = ($this, $sb) => {
-    return;
-},
-cmcvc_RipAndTearEffect_dispose = $this => {
-    return;
-},
-cmcvc_RipAndTearEffect__clinit_ = () => {
-    cmcvc_RipAndTearEffect_flipped = 0;
 },
 cmch_GetAllInBattleInstances = $rt_classWithoutFields(),
 cmch_GetAllInBattleInstances_get = $uuid => {
@@ -272015,216 +271989,6 @@ cmch_GetAllInBattleInstances_get = $uuid => {
     }
     return $cards;
 };
-function cmcp_NightmarePower() {
-    cmcp_AbstractPower.call(this);
-    this.$card27 = null;
-}
-let cmcp_NightmarePower_powerStrings = null,
-cmcp_NightmarePower_NAME = null,
-cmcp_NightmarePower_DESCRIPTIONS = null,
-cmcp_NightmarePower_$callClinit = () => {
-    cmcp_NightmarePower_$callClinit = $rt_eraseClinit(cmcp_NightmarePower);
-    cmcp_NightmarePower__clinit_();
-},
-cmcp_NightmarePower__init_0 = ($this, $owner, $cardAmt, $copyMe) => {
-    cmcp_NightmarePower_$callClinit();
-    cmcp_AbstractPower__init_($this);
-    $this.$name0 = cmcp_NightmarePower_NAME;
-    $this.$ID = $rt_s(4073);
-    $this.$owner = $owner;
-    $this.$amount = $cardAmt;
-    cmcp_AbstractPower_loadRegion($this, $rt_s(7753));
-    $owner = $copyMe.$makeStatEquivalentCopy();
-    $this.$card27 = $owner;
-    cmcc_AbstractCard_resetAttributes($owner);
-    cmcp_NightmarePower_updateDescription($this);
-},
-cmcp_NightmarePower__init_ = (var_0, var_1, var_2) => {
-    let var_3 = new cmcp_NightmarePower();
-    cmcp_NightmarePower__init_0(var_3, var_0, var_1, var_2);
-    return var_3;
-},
-cmcp_NightmarePower_updateDescription = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    cmcp_NightmarePower_$callClinit();
-    var$1 = cmcp_NightmarePower_DESCRIPTIONS.data[0];
-    var$2 = $this.$amount;
-    var$3 = cmch_FontHelper_colorString($this.$card27.$name2, $rt_s(3223));
-    var$4 = cmcp_NightmarePower_DESCRIPTIONS.data[1];
-    var$5 = new jl_StringBuilder;
-    jl_AbstractStringBuilder__init_(var$5);
-    var$1 = jl_StringBuilder_append(var$5, var$1);
-    jl_AbstractStringBuilder_append(var$1, var$2);
-    jl_AbstractStringBuilder_append0(var$1, 32);
-    jl_StringBuilder_append(jl_StringBuilder_append(var$1, var$3), var$4);
-    $this.$description = jl_AbstractStringBuilder_toString(var$5);
-},
-cmcp_NightmarePower_atStartOfTurn = $this => {
-    let var$1, var$2, var$3;
-    var$1 = cmcac_MakeTempCardInHandAction__init_($this.$card27, $this.$amount);
-    var$2 = $this;
-    cmcp_AbstractPower_addToBot(var$2, var$1);
-    var$1 = new cmcac_RemoveSpecificPowerAction;
-    var$3 = $this.$owner;
-    cmcac_RemoveSpecificPowerAction__init_(var$1, var$3, var$3, $rt_s(4073));
-    cmcp_AbstractPower_addToBot(var$2, var$1);
-},
-cmcp_NightmarePower__clinit_ = () => {
-    let var$1;
-    cmcc_CardCrawlGame_$callClinit();
-    var$1 = cmcl_LocalizedStrings_getPowerStrings(cmcc_CardCrawlGame_languagePack, $rt_s(4073));
-    cmcp_NightmarePower_powerStrings = var$1;
-    cmcp_NightmarePower_NAME = var$1.$NAME0;
-    cmcp_NightmarePower_DESCRIPTIONS = var$1.$DESCRIPTIONS0;
-};
-function cmcvc_SanctityEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$x188 = 0.0;
-    a.$y205 = 0.0;
-    a.$vfxTimer6 = 0.0;
-    a.$count14 = 0;
-}
-let cmcvc_SanctityEffect_update = $this => {
-    let var$1, $i, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    a: {
-        var$1 = $this.$vfxTimer6 - cbg_Gdx_graphics.$deltaTime;
-        $this.$vfxTimer6 = var$1;
-        if (var$1 < 0.0) {
-            $this.$count14 = $this.$count14 - 1 | 0;
-            $this.$vfxTimer6 = cbgm_MathUtils_random(0.0, 0.019999999552965164);
-            $i = 0;
-            while (true) {
-                if ($i >= 3)
-                    break a;
-                cmcd_AbstractDungeon_$callClinit();
-                var$3 = cmcd_AbstractDungeon_effectsQueue;
-                var$4 = new cmcvc_LightRayFlyOutEffect;
-                var$5 = $this.$x188;
-                var$6 = $this.$y205;
-                var$7 = cbgg_Color__init_(1.0, 0.8999999761581421, 0.699999988079071, 0.0);
-                cmcv_AbstractGameEffect__init_(var$4);
-                cmch_ImageMaster_$callClinit();
-                var$4.$img116 = cmch_ImageMaster_GLOW_SPARK;
-                var$4.$rotation = cbgm_MathUtils_random1(360.0);
-                var$4.$scale = cbgm_MathUtils_random(1.0, 1.399999976158142);
-                var$4.$scaleXMod = cbgm_MathUtils_random(0.0, 1.5);
-                var$8 = var$4.$img116;
-                var$4.$x90 = var$5 - var$8.$packedWidth / 2.0;
-                var$4.$y102 = var$6 - var$8.$packedHeight / 2.0;
-                var$4.$duration = 2.0;
-                var$4.$color1 = var$7;
-                var$4.$renderBehind = cbgm_MathUtils_randomBoolean();
-                var$1 = cbgm_MathUtils_random(500.0, 1000.0);
-                cmcc_Settings_$callClinit();
-                var$9 = cmcc_Settings_scale;
-                var$1 = var$1 * var$9;
-                var$4.$speedStart2 = var$1;
-                var$4.$speedTarget5 = 1300.0 * var$9;
-                var$4.$speed8 = var$1;
-                if (!cbgm_MathUtils_randomBoolean())
-                    var$4.$flipper = 270.0;
-                else
-                    var$4.$flipper = 90.0;
-                var$7.$g = var$7.$g - cbgm_MathUtils_random1(0.10000000149011612);
-                var$7.$b = var$7.$b - cbgm_MathUtils_random1(0.20000000298023224);
-                var$7.$a = 0.0;
-                ju_ArrayList_add(var$3, var$4);
-                $i = $i + 1 | 0;
-            }
-        }
-    }
-    if ($this.$count14 <= 0)
-        $this.$isDone = 1;
-},
-cmcvc_SanctityEffect_render = ($this, $sb) => {
-    return;
-},
-cmcvc_SanctityEffect_dispose = $this => {
-    return;
-},
-cmcp_CollectPower = $rt_classWithoutFields(cmcp_AbstractPower),
-cmcp_CollectPower_powerStrings = null,
-cmcp_CollectPower_NAME = null,
-cmcp_CollectPower_DESCRIPTIONS = null,
-cmcp_CollectPower_$callClinit = () => {
-    cmcp_CollectPower_$callClinit = $rt_eraseClinit(cmcp_CollectPower);
-    cmcp_CollectPower__clinit_();
-},
-cmcp_CollectPower_stackPower = ($this, $stackAmount) => {
-    cmcp_AbstractPower_stackPower($this, $stackAmount);
-    if ($this.$amount >= 999)
-        $this.$amount = 999;
-},
-cmcp_CollectPower_updateDescription = $this => {
-    let var$1, var$2, var$3, var$4, var$5;
-    var$1 = $this.$amount;
-    if (var$1 == 1) {
-        cmcp_CollectPower_$callClinit();
-        $this.$description = cmcp_CollectPower_DESCRIPTIONS.data[0];
-    } else {
-        cmcp_CollectPower_$callClinit();
-        var$2 = cmcp_CollectPower_DESCRIPTIONS.data;
-        var$3 = var$2[1];
-        var$4 = var$2[2];
-        var$5 = new jl_StringBuilder;
-        jl_AbstractStringBuilder__init_(var$5);
-        var$3 = jl_StringBuilder_append(var$5, var$3);
-        jl_AbstractStringBuilder_append(var$3, var$1);
-        jl_StringBuilder_append(var$3, var$4);
-        $this.$description = jl_AbstractStringBuilder_toString(var$5);
-    }
-},
-cmcp_CollectPower_onEnergyRecharge = $this => {
-    let var$1, $card, var$3, var$4;
-    var$1 = $this;
-    cmcp_AbstractPower_flash(var$1);
-    $card = cmcct_Miracle__init_();
-    cmcct_Miracle_upgrade($card);
-    cmcp_AbstractPower_addToBot(var$1, cmcac_MakeTempCardInHandAction__init_0($card));
-    if ($this.$amount <= 1) {
-        $card = new cmcac_RemoveSpecificPowerAction;
-        var$3 = $this.$owner;
-        cmcac_RemoveSpecificPowerAction__init_($card, var$3, var$3, $rt_s(4302));
-        cmcp_AbstractPower_addToBot(var$1, $card);
-    } else {
-        $card = new cmcac_ReducePowerAction;
-        var$4 = $this.$owner;
-        cmcac_ReducePowerAction__init_($card, var$4, var$4, $rt_s(4302), 1);
-        cmcp_AbstractPower_addToBot(var$1, $card);
-    }
-},
-cmcp_CollectPower__clinit_ = () => {
-    let var$1;
-    cmcc_CardCrawlGame_$callClinit();
-    var$1 = cmcl_LocalizedStrings_getPowerStrings(cmcc_CardCrawlGame_languagePack, $rt_s(4302));
-    cmcp_CollectPower_powerStrings = var$1;
-    cmcp_CollectPower_NAME = var$1.$NAME0;
-    cmcp_CollectPower_DESCRIPTIONS = var$1.$DESCRIPTIONS0;
-},
-cmcad_RemoveAllOrbsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcad_RemoveAllOrbsAction_update = $this => {
-    while (true) {
-        cmcd_AbstractDungeon_$callClinit();
-        if (cmcc_AbstractPlayer_filledOrbCount(cmcd_AbstractDungeon_player) <= 0)
-            break;
-        cmcc_AbstractPlayer_removeNextOrb(cmcd_AbstractDungeon_player);
-    }
-    $this.$isDone0 = 1;
-},
-cmcad_EvokeAllOrbsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcad_EvokeAllOrbsAction_update = $this => {
-    let $i, var$2;
-    $i = 0;
-    while (true) {
-        cmcd_AbstractDungeon_$callClinit();
-        if ($i >= cmcd_AbstractDungeon_player.$orbs.$size0)
-            break;
-        var$2 = cmcad_EvokeOrbAction__init_(1);
-        cmca_AbstractGameAction_addToTop($this, var$2);
-        $i = $i + 1 | 0;
-    }
-    $this.$isDone0 = 1;
-};
 function cmcac_DiscardSpecificCardAction() {
     let a = this; cmca_AbstractGameAction.call(a);
     a.$targetCard1 = null;
@@ -272246,20 +272010,6 @@ let cmcac_DiscardSpecificCardAction_update = $this => {
         }
     }
     cmca_AbstractGameAction_tickDuration($this);
-},
-cmcac_InstantKillAction = $rt_classWithoutFields(cmca_AbstractGameAction),
-cmcac_InstantKillAction_update = $this => {
-    let var$1, var$2, var$3;
-    var$1 = $this.$target;
-    var$1.$currentHealth = 0;
-    cmcc_AbstractCreature_healthBarUpdatedEvent(var$1);
-    var$2 = $this.$target;
-    var$3 = new cmcc_DamageInfo;
-    var$1 = null;
-    cmcc_DamageInfo$DamageType_$callClinit();
-    cmcc_DamageInfo__init_1(var$3, var$1, 0, cmcc_DamageInfo$DamageType_HP_LOSS);
-    var$2.$damage(var$3);
-    $this.$isDone0 = 1;
 };
 function cmcvc_FlyingOrbEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -272422,6 +272172,141 @@ cmcvc_FlyingOrbEffect__clinit_ = () => {
     var$2 = 36.0 * var$1;
     cmcvc_FlyingOrbEffect_DST_THRESHOLD = var$2;
     cmcvc_FlyingOrbEffect_HOME_IN_THRESHOLD = var$2;
+},
+cmcp_CollectPower = $rt_classWithoutFields(cmcp_AbstractPower),
+cmcp_CollectPower_powerStrings = null,
+cmcp_CollectPower_NAME = null,
+cmcp_CollectPower_DESCRIPTIONS = null,
+cmcp_CollectPower_$callClinit = () => {
+    cmcp_CollectPower_$callClinit = $rt_eraseClinit(cmcp_CollectPower);
+    cmcp_CollectPower__clinit_();
+},
+cmcp_CollectPower_stackPower = ($this, $stackAmount) => {
+    cmcp_AbstractPower_stackPower($this, $stackAmount);
+    if ($this.$amount >= 999)
+        $this.$amount = 999;
+},
+cmcp_CollectPower_updateDescription = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    var$1 = $this.$amount;
+    if (var$1 == 1) {
+        cmcp_CollectPower_$callClinit();
+        $this.$description = cmcp_CollectPower_DESCRIPTIONS.data[0];
+    } else {
+        cmcp_CollectPower_$callClinit();
+        var$2 = cmcp_CollectPower_DESCRIPTIONS.data;
+        var$3 = var$2[1];
+        var$4 = var$2[2];
+        var$5 = new jl_StringBuilder;
+        jl_AbstractStringBuilder__init_(var$5);
+        var$3 = jl_StringBuilder_append(var$5, var$3);
+        jl_AbstractStringBuilder_append(var$3, var$1);
+        jl_StringBuilder_append(var$3, var$4);
+        $this.$description = jl_AbstractStringBuilder_toString(var$5);
+    }
+},
+cmcp_CollectPower_onEnergyRecharge = $this => {
+    let var$1, $card, var$3, var$4;
+    var$1 = $this;
+    cmcp_AbstractPower_flash(var$1);
+    $card = cmcct_Miracle__init_();
+    cmcct_Miracle_upgrade($card);
+    cmcp_AbstractPower_addToBot(var$1, cmcac_MakeTempCardInHandAction__init_0($card));
+    if ($this.$amount <= 1) {
+        $card = new cmcac_RemoveSpecificPowerAction;
+        var$3 = $this.$owner;
+        cmcac_RemoveSpecificPowerAction__init_($card, var$3, var$3, $rt_s(4302));
+        cmcp_AbstractPower_addToBot(var$1, $card);
+    } else {
+        $card = new cmcac_ReducePowerAction;
+        var$4 = $this.$owner;
+        cmcac_ReducePowerAction__init_($card, var$4, var$4, $rt_s(4302), 1);
+        cmcp_AbstractPower_addToBot(var$1, $card);
+    }
+},
+cmcp_CollectPower__clinit_ = () => {
+    let var$1;
+    cmcc_CardCrawlGame_$callClinit();
+    var$1 = cmcl_LocalizedStrings_getPowerStrings(cmcc_CardCrawlGame_languagePack, $rt_s(4302));
+    cmcp_CollectPower_powerStrings = var$1;
+    cmcp_CollectPower_NAME = var$1.$NAME0;
+    cmcp_CollectPower_DESCRIPTIONS = var$1.$DESCRIPTIONS0;
+};
+function cmcp_NightmarePower() {
+    cmcp_AbstractPower.call(this);
+    this.$card27 = null;
+}
+let cmcp_NightmarePower_powerStrings = null,
+cmcp_NightmarePower_NAME = null,
+cmcp_NightmarePower_DESCRIPTIONS = null,
+cmcp_NightmarePower_$callClinit = () => {
+    cmcp_NightmarePower_$callClinit = $rt_eraseClinit(cmcp_NightmarePower);
+    cmcp_NightmarePower__clinit_();
+},
+cmcp_NightmarePower__init_0 = ($this, $owner, $cardAmt, $copyMe) => {
+    cmcp_NightmarePower_$callClinit();
+    cmcp_AbstractPower__init_($this);
+    $this.$name0 = cmcp_NightmarePower_NAME;
+    $this.$ID = $rt_s(4073);
+    $this.$owner = $owner;
+    $this.$amount = $cardAmt;
+    cmcp_AbstractPower_loadRegion($this, $rt_s(7753));
+    $owner = $copyMe.$makeStatEquivalentCopy();
+    $this.$card27 = $owner;
+    cmcc_AbstractCard_resetAttributes($owner);
+    cmcp_NightmarePower_updateDescription($this);
+},
+cmcp_NightmarePower__init_ = (var_0, var_1, var_2) => {
+    let var_3 = new cmcp_NightmarePower();
+    cmcp_NightmarePower__init_0(var_3, var_0, var_1, var_2);
+    return var_3;
+},
+cmcp_NightmarePower_updateDescription = $this => {
+    let var$1, var$2, var$3, var$4, var$5;
+    cmcp_NightmarePower_$callClinit();
+    var$1 = cmcp_NightmarePower_DESCRIPTIONS.data[0];
+    var$2 = $this.$amount;
+    var$3 = cmch_FontHelper_colorString($this.$card27.$name2, $rt_s(3223));
+    var$4 = cmcp_NightmarePower_DESCRIPTIONS.data[1];
+    var$5 = new jl_StringBuilder;
+    jl_AbstractStringBuilder__init_(var$5);
+    var$1 = jl_StringBuilder_append(var$5, var$1);
+    jl_AbstractStringBuilder_append(var$1, var$2);
+    jl_AbstractStringBuilder_append0(var$1, 32);
+    jl_StringBuilder_append(jl_StringBuilder_append(var$1, var$3), var$4);
+    $this.$description = jl_AbstractStringBuilder_toString(var$5);
+},
+cmcp_NightmarePower_atStartOfTurn = $this => {
+    let var$1, var$2, var$3;
+    var$1 = cmcac_MakeTempCardInHandAction__init_($this.$card27, $this.$amount);
+    var$2 = $this;
+    cmcp_AbstractPower_addToBot(var$2, var$1);
+    var$1 = new cmcac_RemoveSpecificPowerAction;
+    var$3 = $this.$owner;
+    cmcac_RemoveSpecificPowerAction__init_(var$1, var$3, var$3, $rt_s(4073));
+    cmcp_AbstractPower_addToBot(var$2, var$1);
+},
+cmcp_NightmarePower__clinit_ = () => {
+    let var$1;
+    cmcc_CardCrawlGame_$callClinit();
+    var$1 = cmcl_LocalizedStrings_getPowerStrings(cmcc_CardCrawlGame_languagePack, $rt_s(4073));
+    cmcp_NightmarePower_powerStrings = var$1;
+    cmcp_NightmarePower_NAME = var$1.$NAME0;
+    cmcp_NightmarePower_DESCRIPTIONS = var$1.$DESCRIPTIONS0;
+},
+cmcac_InstantKillAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcac_InstantKillAction_update = $this => {
+    let var$1, var$2, var$3;
+    var$1 = $this.$target;
+    var$1.$currentHealth = 0;
+    cmcc_AbstractCreature_healthBarUpdatedEvent(var$1);
+    var$2 = $this.$target;
+    var$3 = new cmcc_DamageInfo;
+    var$1 = null;
+    cmcc_DamageInfo$DamageType_$callClinit();
+    cmcc_DamageInfo__init_1(var$3, var$1, 0, cmcc_DamageInfo$DamageType_HP_LOSS);
+    var$2.$damage(var$3);
+    $this.$isDone0 = 1;
 };
 function cmcv_WallopEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -272444,6 +272329,138 @@ cmcv_WallopEffect_render = ($this, $sb) => {
 },
 cmcv_WallopEffect_dispose = $this => {
     return;
+};
+function cmcvc_SanctityEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x188 = 0.0;
+    a.$y205 = 0.0;
+    a.$vfxTimer6 = 0.0;
+    a.$count14 = 0;
+}
+let cmcvc_SanctityEffect_update = $this => {
+    let var$1, $i, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    a: {
+        var$1 = $this.$vfxTimer6 - cbg_Gdx_graphics.$deltaTime;
+        $this.$vfxTimer6 = var$1;
+        if (var$1 < 0.0) {
+            $this.$count14 = $this.$count14 - 1 | 0;
+            $this.$vfxTimer6 = cbgm_MathUtils_random(0.0, 0.019999999552965164);
+            $i = 0;
+            while (true) {
+                if ($i >= 3)
+                    break a;
+                cmcd_AbstractDungeon_$callClinit();
+                var$3 = cmcd_AbstractDungeon_effectsQueue;
+                var$4 = new cmcvc_LightRayFlyOutEffect;
+                var$5 = $this.$x188;
+                var$6 = $this.$y205;
+                var$7 = cbgg_Color__init_(1.0, 0.8999999761581421, 0.699999988079071, 0.0);
+                cmcv_AbstractGameEffect__init_(var$4);
+                cmch_ImageMaster_$callClinit();
+                var$4.$img116 = cmch_ImageMaster_GLOW_SPARK;
+                var$4.$rotation = cbgm_MathUtils_random1(360.0);
+                var$4.$scale = cbgm_MathUtils_random(1.0, 1.399999976158142);
+                var$4.$scaleXMod = cbgm_MathUtils_random(0.0, 1.5);
+                var$8 = var$4.$img116;
+                var$4.$x90 = var$5 - var$8.$packedWidth / 2.0;
+                var$4.$y102 = var$6 - var$8.$packedHeight / 2.0;
+                var$4.$duration = 2.0;
+                var$4.$color1 = var$7;
+                var$4.$renderBehind = cbgm_MathUtils_randomBoolean();
+                var$1 = cbgm_MathUtils_random(500.0, 1000.0);
+                cmcc_Settings_$callClinit();
+                var$9 = cmcc_Settings_scale;
+                var$1 = var$1 * var$9;
+                var$4.$speedStart2 = var$1;
+                var$4.$speedTarget5 = 1300.0 * var$9;
+                var$4.$speed8 = var$1;
+                if (!cbgm_MathUtils_randomBoolean())
+                    var$4.$flipper = 270.0;
+                else
+                    var$4.$flipper = 90.0;
+                var$7.$g = var$7.$g - cbgm_MathUtils_random1(0.10000000149011612);
+                var$7.$b = var$7.$b - cbgm_MathUtils_random1(0.20000000298023224);
+                var$7.$a = 0.0;
+                ju_ArrayList_add(var$3, var$4);
+                $i = $i + 1 | 0;
+            }
+        }
+    }
+    if ($this.$count14 <= 0)
+        $this.$isDone = 1;
+},
+cmcvc_SanctityEffect_render = ($this, $sb) => {
+    return;
+},
+cmcvc_SanctityEffect_dispose = $this => {
+    return;
+};
+function cmcvc_RipAndTearEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$x25 = 0.0;
+    a.$y31 = 0.0;
+    a.$color21 = null;
+}
+let cmcvc_RipAndTearEffect_flipped = 0,
+cmcvc_RipAndTearEffect_$callClinit = () => {
+    cmcvc_RipAndTearEffect_$callClinit = $rt_eraseClinit(cmcvc_RipAndTearEffect);
+    cmcvc_RipAndTearEffect__clinit_();
+},
+cmcvc_RipAndTearEffect_update = $this => {
+    if (!cbgm_MathUtils_randomBoolean()) {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1182), cbgm_MathUtils_random(0.0, (-0.30000001192092896)));
+    } else {
+        cmcc_CardCrawlGame_$callClinit();
+        cmca_SoundMaster_playA(cmcc_CardCrawlGame_sound, $rt_s(1180), cbgm_MathUtils_random(0.0, (-0.30000001192092896)));
+    }
+    cmcvc_RipAndTearEffect_$callClinit();
+    if (cmcvc_RipAndTearEffect_flipped) {
+        cmcd_AbstractDungeon_$callClinit();
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 - 45.0, $this.$y31 - 45.0, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25, $this.$y31, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 + 40.0, $this.$y31 + 40.0, 150.0, (-150.0), (-135.0) + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+    } else {
+        cmcd_AbstractDungeon_$callClinit();
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 - 45.0, $this.$y31 + 45.0, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25, $this.$y31, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+        ju_ArrayList_add(cmcd_AbstractDungeon_effectsQueue, cmcvc_AnimatedSlashEffect__init_($this.$x25 + 45.0, $this.$y31 - 45.0, (-150.0), (-150.0), 135.0 + cbgm_MathUtils_random((-10.0), 10.0), $this.$color1, $this.$color21));
+    }
+    cmcvc_RipAndTearEffect_flipped = cmcvc_RipAndTearEffect_flipped ? 0 : 1;
+    $this.$isDone = 1;
+},
+cmcvc_RipAndTearEffect_render = ($this, $sb) => {
+    return;
+},
+cmcvc_RipAndTearEffect_dispose = $this => {
+    return;
+},
+cmcvc_RipAndTearEffect__clinit_ = () => {
+    cmcvc_RipAndTearEffect_flipped = 0;
+},
+cmcad_RemoveAllOrbsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcad_RemoveAllOrbsAction_update = $this => {
+    while (true) {
+        cmcd_AbstractDungeon_$callClinit();
+        if (cmcc_AbstractPlayer_filledOrbCount(cmcd_AbstractDungeon_player) <= 0)
+            break;
+        cmcc_AbstractPlayer_removeNextOrb(cmcd_AbstractDungeon_player);
+    }
+    $this.$isDone0 = 1;
+},
+cmcad_EvokeAllOrbsAction = $rt_classWithoutFields(cmca_AbstractGameAction),
+cmcad_EvokeAllOrbsAction_update = $this => {
+    let $i, var$2;
+    $i = 0;
+    while (true) {
+        cmcd_AbstractDungeon_$callClinit();
+        if ($i >= cmcd_AbstractDungeon_player.$orbs.$size0)
+            break;
+        var$2 = cmcad_EvokeOrbAction__init_(1);
+        cmca_AbstractGameAction_addToTop($this, var$2);
+        $i = $i + 1 | 0;
+    }
+    $this.$isDone0 = 1;
 };
 function jusi_SimpleStreamIterator$fetchIfNeeded$lambda$_4_0() {
     jl_Object.call(this);
@@ -272518,22 +272535,6 @@ let cmcac_SetDontTriggerAction_update = $this => {
     $this.$card30.$dontTriggerOnUseCard = $this.$trigger0;
     $this.$isDone0 = 1;
 };
-function cmcs_CardRewardScreen$completeVoting$lambda$_10_0() {
-    let a = this; jl_Object.call(a);
-    a.$_033 = null;
-    a.$_117 = 0;
-}
-let cmcs_CardRewardScreen$completeVoting$lambda$_10_0_accept = (var$0, var$1) => {
-    let var$2, var$3;
-    var$1 = var$0.$_033;
-    var$2 = var$0.$_117;
-    cmcs_CardRewardScreen_$callClinit();
-    var$1 = var$1.$options1.data[var$2].$displayName;
-    var$3 = new jl_StringBuilder;
-    jl_AbstractStringBuilder__init_(var$3);
-    jl_StringBuilder_append(jl_StringBuilder_append(var$3, $rt_s(7754)), var$1);
-    jl_AbstractStringBuilder_toString(var$3);
-};
 function cmcss_BossRelicSelectScreen$completeVoting$lambda$_18_0() {
     let a = this; jl_Object.call(a);
     a.$_017 = null;
@@ -272547,204 +272548,24 @@ let cmcss_BossRelicSelectScreen$completeVoting$lambda$_18_0_accept = (var$0, var
     var$1 = var$1.$options1.data[var$2].$displayName;
     var$3 = new jl_StringBuilder;
     jl_AbstractStringBuilder__init_(var$3);
-    jl_StringBuilder_append(jl_StringBuilder_append(var$3, $rt_s(7755)), var$1);
+    jl_StringBuilder_append(jl_StringBuilder_append(var$3, $rt_s(7754)), var$1);
     jl_AbstractStringBuilder_toString(var$3);
 };
-function cmcvs_DivinityStanceChangeParticle() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img86 = null;
-    a.$oX2 = 0.0;
-    a.$oY3 = 0.0;
-    a.$x242 = 0.0;
-    a.$y245 = 0.0;
-    a.$aV = 0.0;
-    a.$distOffset = 0.0;
-    a.$scaleOffset = 0.0;
+function cmcs_CardRewardScreen$completeVoting$lambda$_10_0() {
+    let a = this; jl_Object.call(a);
+    a.$_033 = null;
+    a.$_117 = 0;
 }
-let cmcvs_DivinityStanceChangeParticle__init_ = ($this, $color, $x, $y) => {
-    let var$4;
-    cmcv_AbstractGameEffect__init_($this);
-    cmch_ImageMaster_$callClinit();
-    $this.$img86 = cmch_ImageMaster_STRIKE_LINE;
-    $this.$startingDuration = 0.5;
-    $this.$duration = 0.5;
-    $this.$color1 = cbgg_Color_cpy($color);
-    $this.$rotation = cbgm_MathUtils_random1(360.0);
-    $x = $x - $this.$img86.$packedWidth / 2.0;
-    var$4 = cbgm_MathUtils_random((-10.0), 10.0);
-    cmcc_Settings_$callClinit();
-    $this.$oX2 = $x + var$4 * cmcc_Settings_scale;
-    $this.$oY3 = $y - $this.$img86.$packedHeight / 2.0 + cbgm_MathUtils_random((-10.0), 10.0) * cmcc_Settings_scale;
-    $this.$distOffset = cbgm_MathUtils_random(800.0, 1200.0);
-    $this.$renderBehind = 1;
-    $this.$aV = cbgm_MathUtils_random(50.0, 80.0);
-    $this.$scaleOffset = cbgm_MathUtils_random(4.0, 5.0);
-    $this.$aV = cbgm_MathUtils_random1(0.4000000059604645);
-},
-cmcvs_DivinityStanceChangeParticle__init_0 = (var_0, var_1, var_2) => {
-    let var_3 = new cmcvs_DivinityStanceChangeParticle();
-    cmcvs_DivinityStanceChangeParticle__init_(var_3, var_0, var_1, var_2);
-    return var_3;
-},
-cmcvs_DivinityStanceChangeParticle_update = $this => {
-    let var$1, var$2, var$3, var$4, var$5, var$6, var$7;
-    var$1 = $this.$aV;
-    if (var$1 > 0.0)
-        $this.$aV = var$1 - cbg_Gdx_graphics.$deltaTime;
-    else {
-        var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-        $this.$duration = var$2;
-        if (var$2 < 0.0)
-            $this.$isDone = 1;
-        else {
-            var$3 = $this.$oX2;
-            var$4 = cbgm_MathUtils_cosDeg($this.$rotation) * $this.$distOffset;
-            cbgm_Interpolation_$callClinit();
-            var$5 = cbgm_Interpolation_pow2In;
-            var$6 = $this.$duration * 2.0;
-            var$2 = var$4 * cbgm_Interpolation_apply(var$5, 0.019999999552965164, 0.949999988079071, var$6);
-            cmcc_Settings_$callClinit();
-            $this.$x242 = var$3 + var$2 * cmcc_Settings_scale;
-            var$2 = $this.$oY3;
-            var$1 = cbgm_MathUtils_sinDeg($this.$rotation) * $this.$distOffset;
-            var$5 = cbgm_Interpolation_pow3In;
-            var$4 = $this.$duration * 2.0;
-            var$1 = var$1 * cbgm_Interpolation_apply(var$5, 0.019999999552965164, 0.949999988079071, var$4);
-            var$6 = cmcc_Settings_scale;
-            $this.$y245 = var$2 + var$1 * var$6;
-            var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-            $this.$duration = var$2;
-            $this.$scale = $this.$scaleOffset * (var$2 + 0.10000000149011612) * var$6;
-            var$5 = $this.$color1;
-            var$7 = cbgm_Interpolation_pow3In;
-            var$2 = var$2 * 2.0;
-            var$5.$a = cbgm_Interpolation_apply(var$7, 0.0, 1.0, var$2);
-        }
-    }
-},
-cmcvs_DivinityStanceChangeParticle_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$img86;
-    var$3 = $this.$x242;
-    var$4 = $this.$y245;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvs_DivinityStanceChangeParticle_dispose = $this => {
-    return;
-};
-function cmcvs_WrathStanceChangeParticle() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img90 = null;
-    a.$x234 = 0.0;
-    a.$y239 = 0.0;
-    a.$delayTimer0 = 0.0;
-}
-let cmcvs_WrathStanceChangeParticle_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    var$1 = $this.$delayTimer0;
-    if (var$1 > 0.0)
-        $this.$delayTimer0 = var$1 - cbg_Gdx_graphics.$deltaTime;
-    else {
-        var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-        $this.$duration = var$2;
-        if (var$2 < 0.0)
-            $this.$isDone = 1;
-        else {
-            var$1 = $this.$startingDuration / 2.0;
-            if (!(var$2 > var$1)) {
-                var$3 = $this.$color1;
-                cbgm_Interpolation_$callClinit();
-                var$3.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.6000000238418579, var$2 / var$1);
-            } else {
-                var$3 = $this.$color1;
-                cbgm_Interpolation_$callClinit();
-                var$4 = cbgm_Interpolation_pow3In;
-                var$2 = (var$2 - var$1) / var$1;
-                var$3.$a = cbgm_Interpolation_apply(var$4, 0.6000000238418579, 0.0, var$2);
-            }
-        }
-    }
-},
-cmcvs_WrathStanceChangeParticle_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    if (!($this.$delayTimer0 > 0.0)) {
-        cbggg_SpriteBatch_setColor($sb, $this.$color1);
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-        var$2 = $this.$img90;
-        cmcd_AbstractDungeon_$callClinit();
-        var$3 = cmcd_AbstractDungeon_player.$hb.$cX + $this.$x234;
-        var$4 = $this.$y239;
-        var$5 = var$2.$packedWidth;
-        var$6 = var$5 / 2.0;
-        var$7 = var$2.$packedHeight;
-        cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(0.949999988079071, 1.0499999523162842), $this.$rotation);
-        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-    }
-},
-cmcvs_WrathStanceChangeParticle_dispose = $this => {
-    return;
-};
-function cmcvc_WaterSplashParticleEffect() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$img66 = null;
-    a.$x98 = 0.0;
-    a.$y58 = 0.0;
-    a.$vX50 = 0.0;
-    a.$vY18 = 0.0;
-    a.$floor14 = 0.0;
-}
-let cmcvc_WaterSplashParticleEffect_update = $this => {
-    let var$1, var$2, var$3, var$4, $test;
-    var$1 = $this.$vY18;
-    cmcc_Settings_$callClinit();
-    var$2 = 1000.0 * cmcc_Settings_scale;
-    var$3 = cbg_Gdx_graphics.$deltaTime;
-    var$2 = var$1 - var$2 * var$3;
-    $this.$vY18 = var$2;
-    var$4 = $this.$x98;
-    var$1 = $this.$vX50;
-    $this.$x98 = var$4 + var$1 * var$3;
-    $this.$y58 = $this.$y58 + var$2 * var$3;
-    $this.$rotation = cbgm_Vector2_angle(cbgm_Vector2__init_(var$1, var$2)) + 45.0;
-    $this.$scale = $this.$scale - cbg_Gdx_graphics.$deltaTime / 2.0;
-    if ($this.$y58 < $this.$floor14 && $this.$vY18 < 0.0 && $this.$duration > 0.20000000298023224)
-        $this.$duration = 0.20000000298023224;
-    var$4 = $this.$duration;
-    if (!(var$4 < 0.20000000298023224))
-        $this.$color1.$a = 1.0;
-    else {
-        $test = $this.$color1;
-        cbgm_Interpolation_$callClinit();
-        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$4 * 5.0);
-    }
-    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
-    $this.$duration = var$2;
-    if (var$2 < 0.0)
-        $this.$isDone = 1;
-},
-cmcvc_WaterSplashParticleEffect_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    var$2 = $this.$img66;
-    var$3 = $this.$x98;
-    var$4 = $this.$y58;
-    var$5 = var$2.$packedWidth;
-    var$6 = var$5 / 2.0;
-    var$7 = var$2.$packedHeight;
-    var$8 = var$7 / 2.0;
-    var$9 = $this.$scale;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * 0.5400000214576721, $this.$rotation);
-},
-cmcvc_WaterSplashParticleEffect_dispose = $this => {
-    return;
+let cmcs_CardRewardScreen$completeVoting$lambda$_10_0_accept = (var$0, var$1) => {
+    let var$2, var$3;
+    var$1 = var$0.$_033;
+    var$2 = var$0.$_117;
+    cmcs_CardRewardScreen_$callClinit();
+    var$1 = var$1.$options1.data[var$2].$displayName;
+    var$3 = new jl_StringBuilder;
+    jl_AbstractStringBuilder__init_(var$3);
+    jl_StringBuilder_append(jl_StringBuilder_append(var$3, $rt_s(7755)), var$1);
+    jl_AbstractStringBuilder_toString(var$3);
 };
 function cmcvc_RedFireBurstParticleEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -272904,10 +272725,273 @@ cmcvc_IceShatterEffect_render = ($this, $sb) => {
 cmcvc_IceShatterEffect_dispose = $this => {
     return;
 };
+function cmcvc_WaterSplashParticleEffect() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img66 = null;
+    a.$x98 = 0.0;
+    a.$y58 = 0.0;
+    a.$vX50 = 0.0;
+    a.$vY18 = 0.0;
+    a.$floor14 = 0.0;
+}
+let cmcvc_WaterSplashParticleEffect_update = $this => {
+    let var$1, var$2, var$3, var$4, $test;
+    var$1 = $this.$vY18;
+    cmcc_Settings_$callClinit();
+    var$2 = 1000.0 * cmcc_Settings_scale;
+    var$3 = cbg_Gdx_graphics.$deltaTime;
+    var$2 = var$1 - var$2 * var$3;
+    $this.$vY18 = var$2;
+    var$4 = $this.$x98;
+    var$1 = $this.$vX50;
+    $this.$x98 = var$4 + var$1 * var$3;
+    $this.$y58 = $this.$y58 + var$2 * var$3;
+    $this.$rotation = cbgm_Vector2_angle(cbgm_Vector2__init_(var$1, var$2)) + 45.0;
+    $this.$scale = $this.$scale - cbg_Gdx_graphics.$deltaTime / 2.0;
+    if ($this.$y58 < $this.$floor14 && $this.$vY18 < 0.0 && $this.$duration > 0.20000000298023224)
+        $this.$duration = 0.20000000298023224;
+    var$4 = $this.$duration;
+    if (!(var$4 < 0.20000000298023224))
+        $this.$color1.$a = 1.0;
+    else {
+        $test = $this.$color1;
+        cbgm_Interpolation_$callClinit();
+        $test.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 1.0, var$4 * 5.0);
+    }
+    var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+    $this.$duration = var$2;
+    if (var$2 < 0.0)
+        $this.$isDone = 1;
+},
+cmcvc_WaterSplashParticleEffect_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    var$2 = $this.$img66;
+    var$3 = $this.$x98;
+    var$4 = $this.$y58;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9 * 0.5400000214576721, $this.$rotation);
+},
+cmcvc_WaterSplashParticleEffect_dispose = $this => {
+    return;
+};
+function cmcvs_DivinityStanceChangeParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img86 = null;
+    a.$oX2 = 0.0;
+    a.$oY3 = 0.0;
+    a.$x242 = 0.0;
+    a.$y245 = 0.0;
+    a.$aV = 0.0;
+    a.$distOffset = 0.0;
+    a.$scaleOffset = 0.0;
+}
+let cmcvs_DivinityStanceChangeParticle__init_ = ($this, $color, $x, $y) => {
+    let var$4;
+    cmcv_AbstractGameEffect__init_($this);
+    cmch_ImageMaster_$callClinit();
+    $this.$img86 = cmch_ImageMaster_STRIKE_LINE;
+    $this.$startingDuration = 0.5;
+    $this.$duration = 0.5;
+    $this.$color1 = cbgg_Color_cpy($color);
+    $this.$rotation = cbgm_MathUtils_random1(360.0);
+    $x = $x - $this.$img86.$packedWidth / 2.0;
+    var$4 = cbgm_MathUtils_random((-10.0), 10.0);
+    cmcc_Settings_$callClinit();
+    $this.$oX2 = $x + var$4 * cmcc_Settings_scale;
+    $this.$oY3 = $y - $this.$img86.$packedHeight / 2.0 + cbgm_MathUtils_random((-10.0), 10.0) * cmcc_Settings_scale;
+    $this.$distOffset = cbgm_MathUtils_random(800.0, 1200.0);
+    $this.$renderBehind = 1;
+    $this.$aV = cbgm_MathUtils_random(50.0, 80.0);
+    $this.$scaleOffset = cbgm_MathUtils_random(4.0, 5.0);
+    $this.$aV = cbgm_MathUtils_random1(0.4000000059604645);
+},
+cmcvs_DivinityStanceChangeParticle__init_0 = (var_0, var_1, var_2) => {
+    let var_3 = new cmcvs_DivinityStanceChangeParticle();
+    cmcvs_DivinityStanceChangeParticle__init_(var_3, var_0, var_1, var_2);
+    return var_3;
+},
+cmcvs_DivinityStanceChangeParticle_update = $this => {
+    let var$1, var$2, var$3, var$4, var$5, var$6, var$7;
+    var$1 = $this.$aV;
+    if (var$1 > 0.0)
+        $this.$aV = var$1 - cbg_Gdx_graphics.$deltaTime;
+    else {
+        var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+        $this.$duration = var$2;
+        if (var$2 < 0.0)
+            $this.$isDone = 1;
+        else {
+            var$3 = $this.$oX2;
+            var$4 = cbgm_MathUtils_cosDeg($this.$rotation) * $this.$distOffset;
+            cbgm_Interpolation_$callClinit();
+            var$5 = cbgm_Interpolation_pow2In;
+            var$6 = $this.$duration * 2.0;
+            var$2 = var$4 * cbgm_Interpolation_apply(var$5, 0.019999999552965164, 0.949999988079071, var$6);
+            cmcc_Settings_$callClinit();
+            $this.$x242 = var$3 + var$2 * cmcc_Settings_scale;
+            var$2 = $this.$oY3;
+            var$1 = cbgm_MathUtils_sinDeg($this.$rotation) * $this.$distOffset;
+            var$5 = cbgm_Interpolation_pow3In;
+            var$4 = $this.$duration * 2.0;
+            var$1 = var$1 * cbgm_Interpolation_apply(var$5, 0.019999999552965164, 0.949999988079071, var$4);
+            var$6 = cmcc_Settings_scale;
+            $this.$y245 = var$2 + var$1 * var$6;
+            var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+            $this.$duration = var$2;
+            $this.$scale = $this.$scaleOffset * (var$2 + 0.10000000149011612) * var$6;
+            var$5 = $this.$color1;
+            var$7 = cbgm_Interpolation_pow3In;
+            var$2 = var$2 * 2.0;
+            var$5.$a = cbgm_Interpolation_apply(var$7, 0.0, 1.0, var$2);
+        }
+    }
+},
+cmcvs_DivinityStanceChangeParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7, var$8, var$9;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$img86;
+    var$3 = $this.$x242;
+    var$4 = $this.$y245;
+    var$5 = var$2.$packedWidth;
+    var$6 = var$5 / 2.0;
+    var$7 = var$2.$packedHeight;
+    var$8 = var$7 / 2.0;
+    var$9 = $this.$scale;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$8, var$5, var$7, var$9, var$9, $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvs_DivinityStanceChangeParticle_dispose = $this => {
+    return;
+};
+function cmcvs_WrathStanceChangeParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$img90 = null;
+    a.$x234 = 0.0;
+    a.$y239 = 0.0;
+    a.$delayTimer0 = 0.0;
+}
+let cmcvs_WrathStanceChangeParticle_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    var$1 = $this.$delayTimer0;
+    if (var$1 > 0.0)
+        $this.$delayTimer0 = var$1 - cbg_Gdx_graphics.$deltaTime;
+    else {
+        var$2 = $this.$duration - cbg_Gdx_graphics.$deltaTime;
+        $this.$duration = var$2;
+        if (var$2 < 0.0)
+            $this.$isDone = 1;
+        else {
+            var$1 = $this.$startingDuration / 2.0;
+            if (!(var$2 > var$1)) {
+                var$3 = $this.$color1;
+                cbgm_Interpolation_$callClinit();
+                var$3.$a = cbgm_Interpolation_apply(cbgm_Interpolation_fade, 0.0, 0.6000000238418579, var$2 / var$1);
+            } else {
+                var$3 = $this.$color1;
+                cbgm_Interpolation_$callClinit();
+                var$4 = cbgm_Interpolation_pow3In;
+                var$2 = (var$2 - var$1) / var$1;
+                var$3.$a = cbgm_Interpolation_apply(var$4, 0.6000000238418579, 0.0, var$2);
+            }
+        }
+    }
+},
+cmcvs_WrathStanceChangeParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    if (!($this.$delayTimer0 > 0.0)) {
+        cbggg_SpriteBatch_setColor($sb, $this.$color1);
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+        var$2 = $this.$img90;
+        cmcd_AbstractDungeon_$callClinit();
+        var$3 = cmcd_AbstractDungeon_player.$hb.$cX + $this.$x234;
+        var$4 = $this.$y239;
+        var$5 = var$2.$packedWidth;
+        var$6 = var$5 / 2.0;
+        var$7 = var$2.$packedHeight;
+        cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$4, var$6, var$7 / 2.0, var$5, var$7, $this.$scale * cbgm_MathUtils_random(2.9000000953674316, 3.0999999046325684), $this.$scale * cbgm_MathUtils_random(0.949999988079071, 1.0499999523162842), $this.$rotation);
+        cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+    }
+},
+cmcvs_WrathStanceChangeParticle_dispose = $this => {
+    return;
+};
 function cgxgtbw_WebPreloadApplicationListener$2() {
     jl_Object.call(this);
     this.$this$012 = null;
 }
+function cmcac_DarkOrbEvokeAction() {
+    let a = this; cmca_AbstractGameAction.call(a);
+    a.$info3 = null;
+    a.$muteSfx0 = 0;
+}
+let cmcac_DarkOrbEvokeAction_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    a: {
+        b: {
+            var$1 = $this;
+            if (cmca_AbstractGameAction_shouldCancelAction(var$1)) {
+                var$2 = $this.$info3.$type2;
+                cmcc_DamageInfo$DamageType_$callClinit();
+                if (var$2 !== cmcc_DamageInfo$DamageType_THORNS)
+                    break b;
+            }
+            var$2 = $this.$target;
+            if (var$2 !== null) {
+                if ($this.$duration0 === 0.10000000149011612) {
+                    var$3 = $this.$info3;
+                    var$3.$output = cmco_AbstractOrb_applyLockOn(var$2, var$3.$base);
+                    var$2 = $this.$info3;
+                    var$3 = var$2.$type2;
+                    cmcc_DamageInfo$DamageType_$callClinit();
+                    if (var$3 !== cmcc_DamageInfo$DamageType_THORNS) {
+                        var$2 = var$2.$owner0;
+                        if (!(!var$2.$isDying && !var$2.$halfDead)) {
+                            $this.$isDone0 = 1;
+                            return;
+                        }
+                    }
+                    cmcd_AbstractDungeon_$callClinit();
+                    var$2 = cmcd_AbstractDungeon_effectList;
+                    var$3 = new cmcvc_FlashAtkImgEffect;
+                    var$4 = $this.$target.$hb;
+                    cmcvc_FlashAtkImgEffect__init_0(var$3, var$4.$cX, var$4.$cY, $this.$attackEffect, $this.$muteSfx0);
+                    ju_ArrayList_add(var$2, var$3);
+                }
+                cmca_AbstractGameAction_tickDuration(var$1);
+                if (!$this.$isDone0)
+                    break a;
+                var$2 = $this.$attackEffect;
+                cmca_AbstractGameAction$AttackEffect_$callClinit();
+                if (var$2 === cmca_AbstractGameAction$AttackEffect_POISON) {
+                    var$2 = $this.$target.$tint;
+                    cbgg_Color_$callClinit();
+                    var$2.$color3 = cbgg_Color_cpy(cbgg_Color_CHARTREUSE);
+                    cmcv_TintEffect_changeColor0($this.$target.$tint, cbgg_Color_cpy(cbgg_Color_WHITE));
+                } else if (var$2 === cmca_AbstractGameAction$AttackEffect_FIRE) {
+                    var$2 = $this.$target.$tint;
+                    cbgg_Color_$callClinit();
+                    var$2.$color3 = cbgg_Color_cpy(cbgg_Color_RED);
+                    cmcv_TintEffect_changeColor0($this.$target.$tint, cbgg_Color_cpy(cbgg_Color_WHITE));
+                }
+                $this.$target.$damage($this.$info3);
+                if (cmcm_MonsterGroup_areMonstersBasicallyDead((cmcd_AbstractDungeon_getCurrRoom()).$monsters0))
+                    cmca_GameActionManager_clearPostCombatActions(cmcd_AbstractDungeon_actionManager);
+                cmcc_Settings_$callClinit();
+                if (cmcc_Settings_FAST_MODE)
+                    break a;
+                cmca_AbstractGameAction_addToTop(var$1, cmcau_WaitAction__init_(0.10000000149011612));
+                break a;
+            }
+        }
+        $this.$isDone0 = 1;
+    }
+};
 function cmcvc_FrostOrbActivateEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$x92 = 0.0;
@@ -273073,73 +273157,6 @@ cmcvc_DarkOrbActivateEffect_render = ($this, $sb) => {
 },
 cmcvc_DarkOrbActivateEffect_dispose = $this => {
     return;
-};
-function cmcac_DarkOrbEvokeAction() {
-    let a = this; cmca_AbstractGameAction.call(a);
-    a.$info3 = null;
-    a.$muteSfx0 = 0;
-}
-let cmcac_DarkOrbEvokeAction_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    a: {
-        b: {
-            var$1 = $this;
-            if (cmca_AbstractGameAction_shouldCancelAction(var$1)) {
-                var$2 = $this.$info3.$type2;
-                cmcc_DamageInfo$DamageType_$callClinit();
-                if (var$2 !== cmcc_DamageInfo$DamageType_THORNS)
-                    break b;
-            }
-            var$2 = $this.$target;
-            if (var$2 !== null) {
-                if ($this.$duration0 === 0.10000000149011612) {
-                    var$3 = $this.$info3;
-                    var$3.$output = cmco_AbstractOrb_applyLockOn(var$2, var$3.$base);
-                    var$2 = $this.$info3;
-                    var$3 = var$2.$type2;
-                    cmcc_DamageInfo$DamageType_$callClinit();
-                    if (var$3 !== cmcc_DamageInfo$DamageType_THORNS) {
-                        var$2 = var$2.$owner0;
-                        if (!(!var$2.$isDying && !var$2.$halfDead)) {
-                            $this.$isDone0 = 1;
-                            return;
-                        }
-                    }
-                    cmcd_AbstractDungeon_$callClinit();
-                    var$2 = cmcd_AbstractDungeon_effectList;
-                    var$3 = new cmcvc_FlashAtkImgEffect;
-                    var$4 = $this.$target.$hb;
-                    cmcvc_FlashAtkImgEffect__init_0(var$3, var$4.$cX, var$4.$cY, $this.$attackEffect, $this.$muteSfx0);
-                    ju_ArrayList_add(var$2, var$3);
-                }
-                cmca_AbstractGameAction_tickDuration(var$1);
-                if (!$this.$isDone0)
-                    break a;
-                var$2 = $this.$attackEffect;
-                cmca_AbstractGameAction$AttackEffect_$callClinit();
-                if (var$2 === cmca_AbstractGameAction$AttackEffect_POISON) {
-                    var$2 = $this.$target.$tint;
-                    cbgg_Color_$callClinit();
-                    var$2.$color3 = cbgg_Color_cpy(cbgg_Color_CHARTREUSE);
-                    cmcv_TintEffect_changeColor0($this.$target.$tint, cbgg_Color_cpy(cbgg_Color_WHITE));
-                } else if (var$2 === cmca_AbstractGameAction$AttackEffect_FIRE) {
-                    var$2 = $this.$target.$tint;
-                    cbgg_Color_$callClinit();
-                    var$2.$color3 = cbgg_Color_cpy(cbgg_Color_RED);
-                    cmcv_TintEffect_changeColor0($this.$target.$tint, cbgg_Color_cpy(cbgg_Color_WHITE));
-                }
-                $this.$target.$damage($this.$info3);
-                if (cmcm_MonsterGroup_areMonstersBasicallyDead((cmcd_AbstractDungeon_getCurrRoom()).$monsters0))
-                    cmca_GameActionManager_clearPostCombatActions(cmcd_AbstractDungeon_actionManager);
-                cmcc_Settings_$callClinit();
-                if (cmcc_Settings_FAST_MODE)
-                    break a;
-                cmca_AbstractGameAction_addToTop(var$1, cmcau_WaitAction__init_(0.10000000149011612));
-                break a;
-            }
-        }
-        $this.$isDone0 = 1;
-    }
 };
 function cmcv_TorchHeadFireEffect() {
     let a = this; cmcv_AbstractGameEffect.call(a);
@@ -273346,6 +273363,49 @@ function jt_DateFormatElement$TrieNodeBuilder() {
     a.$sibling = null;
 }
 let cgxgtbwa_TeaAssetManifest = $rt_classWithoutFields();
+function cmcvc_PlasmaOrbActivateParticle() {
+    let a = this; cmcv_AbstractGameEffect.call(a);
+    a.$effectDuration6 = 0.0;
+    a.$x144 = 0.0;
+    a.$y154 = 0.0;
+    a.$sX10 = 0.0;
+    a.$sY13 = 0.0;
+    a.$tX8 = 0.0;
+    a.$tY10 = 0.0;
+    a.$img126 = null;
+}
+let cmcvc_PlasmaOrbActivateParticle_update = $this => {
+    let var$1, var$2, var$3, var$4;
+    cbgm_Interpolation_$callClinit();
+    var$1 = cbgm_Interpolation_swing;
+    var$2 = $this.$sX10;
+    var$3 = $this.$tX8;
+    var$4 = $this.$duration;
+    $this.$x144 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
+    var$1 = cbgm_Interpolation_swing;
+    var$2 = $this.$sY13;
+    var$3 = $this.$tY10;
+    var$4 = $this.$duration;
+    $this.$y154 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
+    cmcv_AbstractGameEffect_update($this);
+},
+cmcvc_PlasmaOrbActivateParticle_render = ($this, $sb) => {
+    let var$2, var$3, var$4, var$5, var$6, var$7;
+    cbggg_SpriteBatch_setColor($sb, $this.$color1);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
+    var$2 = $this.$img126;
+    var$3 = $this.$x144;
+    var$4 = var$2.$packedWidth;
+    var$5 = var$4 / 2.0;
+    var$3 = var$3 - var$5;
+    var$6 = $this.$y154 - var$5;
+    var$7 = var$2.$packedHeight;
+    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$6, var$5, var$7 / 2.0, var$4, var$7, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.399999976158142), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.399999976158142), $this.$rotation);
+    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
+},
+cmcvc_PlasmaOrbActivateParticle_dispose = $this => {
+    return;
+};
 function cmcvc_DarkOrbActivateParticle() {
     let a = this; cmcv_AbstractGameEffect.call(a);
     a.$x197 = 0.0;
@@ -273496,49 +273556,6 @@ cmcvc_FrostOrbActivateParticle_render = ($this, $sb) => {
     cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
 },
 cmcvc_FrostOrbActivateParticle_dispose = $this => {
-    return;
-};
-function cmcvc_PlasmaOrbActivateParticle() {
-    let a = this; cmcv_AbstractGameEffect.call(a);
-    a.$effectDuration6 = 0.0;
-    a.$x144 = 0.0;
-    a.$y154 = 0.0;
-    a.$sX10 = 0.0;
-    a.$sY13 = 0.0;
-    a.$tX8 = 0.0;
-    a.$tY10 = 0.0;
-    a.$img126 = null;
-}
-let cmcvc_PlasmaOrbActivateParticle_update = $this => {
-    let var$1, var$2, var$3, var$4;
-    cbgm_Interpolation_$callClinit();
-    var$1 = cbgm_Interpolation_swing;
-    var$2 = $this.$sX10;
-    var$3 = $this.$tX8;
-    var$4 = $this.$duration;
-    $this.$x144 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
-    var$1 = cbgm_Interpolation_swing;
-    var$2 = $this.$sY13;
-    var$3 = $this.$tY10;
-    var$4 = $this.$duration;
-    $this.$y154 = cbgm_Interpolation_apply(var$1, var$2, var$3, var$4);
-    cmcv_AbstractGameEffect_update($this);
-},
-cmcvc_PlasmaOrbActivateParticle_render = ($this, $sb) => {
-    let var$2, var$3, var$4, var$5, var$6, var$7;
-    cbggg_SpriteBatch_setColor($sb, $this.$color1);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 1);
-    var$2 = $this.$img126;
-    var$3 = $this.$x144;
-    var$4 = var$2.$packedWidth;
-    var$5 = var$4 / 2.0;
-    var$3 = var$3 - var$5;
-    var$6 = $this.$y154 - var$5;
-    var$7 = var$2.$packedHeight;
-    cbggg_SpriteBatch_draw0($sb, var$2, var$3, var$6, var$5, var$7 / 2.0, var$4, var$7, $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.399999976158142), $this.$scale * cbgm_MathUtils_random(0.699999988079071, 1.399999976158142), $this.$rotation);
-    cbggg_SpriteBatch_setBlendFunction($sb, 770, 771);
-},
-cmcvc_PlasmaOrbActivateParticle_dispose = $this => {
     return;
 };
 function cmcp_StasisPower() {
@@ -275953,9 +275970,9 @@ cmcc_CardQueueItem, "CardQueueItem", 10, jl_Object, [], 1, 0, 0, 0,
 cmcsc_CustomModeCharacterButton, "CustomModeCharacterButton", 41, jl_Object, [], 1, 0, 0, 0,
 jl_Thread$start$lambda$_4_0, 0, jl_Object, [otp_PlatformRunnable], 1, 0, 0, ["$run", $rt_wrapFunction0(jl_Thread$start$lambda$_4_0_run)],
 ju_IdentityHashMap$HashEntry, "IdentityHashMap$HashEntry", 128, ju_MapEntry, [], 0, 0, 0, 0,
-jnci_AsciiDecoder, 0, jnci_BufferedDecoder, [], 1, 0, 0, ["$arrayDecode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_AsciiDecoder_arrayDecode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
-jnci_Iso8859Decoder, 0, jnci_BufferedDecoder, [], 1, 0, 0, ["$arrayDecode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_Iso8859Decoder_arrayDecode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
 jnci_UTF16Decoder, 0, jnci_BufferedDecoder, [], 1, 0, 0, ["$arrayDecode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_UTF16Decoder_arrayDecode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
+jnci_Iso8859Decoder, 0, jnci_BufferedDecoder, [], 1, 0, 0, ["$arrayDecode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_Iso8859Decoder_arrayDecode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
+jnci_AsciiDecoder, 0, jnci_BufferedDecoder, [], 1, 0, 0, ["$arrayDecode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_AsciiDecoder_arrayDecode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
 cmcsm_EarlyAccessPopup, 0, jl_Object, [], 1, 0, () => cmcsm_EarlyAccessPopup_$callClinit(), 0,
 cmcsm_MainMenuPanelButton, "MainMenuPanelButton", 38, jl_Object, [], 1, 0, () => cmcsm_MainMenuPanelButton_$callClinit(), 0,
 cmcsm_MainMenuPanelButton$PanelColor, 0, jl_Enum, [], 65553, 0, () => cmcsm_MainMenuPanelButton$PanelColor_$callClinit(), 0,
@@ -276019,9 +276036,9 @@ ju_Base64$Encoder, 0, jl_Object, [], 1, 0, 0, 0,
 ji_ByteArrayInputStream, 0, ji_InputStream, [], 1, 0, 0, ["$close", $rt_wrapFunction0(ji_ByteArrayInputStream_close)],
 cmcd_AbstractDungeon$1, 0, jl_Object, [], 32768, 0, () => cmcd_AbstractDungeon$1_$callClinit(), 0,
 cmcv_PlayerTurnEffect, "PlayerTurnEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_PlayerTurnEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_PlayerTurnEffect_update), "$render0", $rt_wrapFunction1(cmcv_PlayerTurnEffect_render), "$dispose", $rt_wrapFunction0(cmcv_PlayerTurnEffect_dispose)],
-jnci_AsciiEncoder, 0, jnci_BufferedEncoder, [], 1, 0, 0, ["$arrayEncode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_AsciiEncoder_arrayEncode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
-jnci_UTF16Encoder, 0, jnci_BufferedEncoder, [], 1, 0, 0, ["$arrayEncode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_UTF16Encoder_arrayEncode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
 jnci_Iso8859Encoder, 0, jnci_BufferedEncoder, [], 1, 0, 0, ["$arrayEncode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_Iso8859Encoder_arrayEncode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
+jnci_UTF16Encoder, 0, jnci_BufferedEncoder, [], 1, 0, 0, ["$arrayEncode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_UTF16Encoder_arrayEncode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
+jnci_AsciiEncoder, 0, jnci_BufferedEncoder, [], 1, 0, 0, ["$arrayEncode", function(var_1, var_2, var_3, var_4, var_5, var_6, var_7) { return jnci_AsciiEncoder_arrayEncode(this, var_1, var_2, var_3, var_4, var_5, var_6, var_7); }],
 cmcup_BottomBgPanel$Mode, 0, jl_Enum, [], 65553, 0, () => cmcup_BottomBgPanel$Mode_$callClinit(), 0,
 cmcau_NewQueueCardAction, "NewQueueCardAction", 90, cmca_AbstractGameAction, [], 1, 0, () => cmcau_NewQueueCardAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcau_NewQueueCardAction_update)],
 otji_JSWrapper$JSTransparentInt, 0, jl_Object, [otj_JSObject], 1024, 0, 0, 0,
@@ -276207,21 +276224,21 @@ cmcvc_DeckPoofEffect, "DeckPoofEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0
 cmcvc_HbBlockBrokenEffect, "HbBlockBrokenEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_HbBlockBrokenEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_HbBlockBrokenEffect_update), "$render0", $rt_wrapFunction1(cmcvc_HbBlockBrokenEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_HbBlockBrokenEffect_dispose)],
 cmcvc_BlockedWordEffect, "BlockedWordEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_BlockedWordEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_BlockedWordEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BlockedWordEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BlockedWordEffect_dispose)],
 cmcac_SetMoveAction, "SetMoveAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_SetMoveAction_update)],
-cmca_ClearCardQueueAction, "ClearCardQueueAction", 84, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmca_ClearCardQueueAction_update)],
-cmcaa_ShoutAction, "ShoutAction", 89, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcaa_ShoutAction_update)],
-cmcaa_VFXAction, "VFXAction", 89, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcaa_VFXAction_update)],
-cmcvc_IntenseZoomEffect, "IntenseZoomEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IntenseZoomEffect_update), "$render0", $rt_wrapFunction1(cmcvc_IntenseZoomEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_IntenseZoomEffect_dispose)],
-cmcac_ChangeStateAction, "ChangeStateAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_ChangeStateAction_update)],
 cmcau_TextAboveCreatureAction, "TextAboveCreatureAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_TextAboveCreatureAction_update)],
 cmcau_TextAboveCreatureAction$TextType, 0, jl_Enum, [], 65553, 0, () => cmcau_TextAboveCreatureAction$TextType_$callClinit(), 0,
-cmcau_SFXAction, "SFXAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_SFXAction_update)],
-cmcac_RemoveSpecificPowerAction, "RemoveSpecificPowerAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_RemoveSpecificPowerAction_update)],
+cmca_ClearCardQueueAction, "ClearCardQueueAction", 84, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmca_ClearCardQueueAction_update)],
+cmcaa_ShoutAction, "ShoutAction", 89, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcaa_ShoutAction_update)],
+cmcac_ChangeStateAction, "ChangeStateAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_ChangeStateAction_update)],
+cmcaa_VFXAction, "VFXAction", 89, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcaa_VFXAction_update)],
+cmcvc_IntenseZoomEffect, "IntenseZoomEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IntenseZoomEffect_update), "$render0", $rt_wrapFunction1(cmcvc_IntenseZoomEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_IntenseZoomEffect_dispose)],
+cmcac_SpawnMonsterAction, "SpawnMonsterAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_SpawnMonsterAction_update)],
 cmcau_HideHealthBarAction, "HideHealthBarAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_HideHealthBarAction_update)],
 cmcac_SuicideAction, "SuicideAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_SuicideAction_update)],
+cmcac_EscapeAction, "EscapeAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_EscapeAction_update)],
+cmcac_RemoveSpecificPowerAction, "RemoveSpecificPowerAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_RemoveSpecificPowerAction_update)],
 cmcvc_InflameEffect, "InflameEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_InflameEffect_update), "$render0", $rt_wrapFunction1(cmcvc_InflameEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_InflameEffect_dispose)],
 cmcv_SpeechBubble, "SpeechBubble", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_SpeechBubble_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_SpeechBubble_update), "$render0", $rt_wrapFunction1(cmcv_SpeechBubble_render), "$dispose", $rt_wrapFunction0(cmcv_SpeechBubble_dispose)],
-cmcac_EscapeAction, "EscapeAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_EscapeAction_update)],
-cmcac_SpawnMonsterAction, "SpawnMonsterAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_SpawnMonsterAction_update)],
+cmcau_SFXAction, "SFXAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_SFXAction_update)],
 cbga_Sound, 0, jl_Object, [cbgu_Disposable], 1537, 0, 0, 0,
 cgxgtbwwh_HowlSound, 0, jl_Object, [cbga_Sound], 1, 0, 0, 0,
 cmcm_MonsterInfo, "MonsterInfo", 66, jl_Object, [jl_Comparable], 1, 0, () => cmcm_MonsterInfo_$callClinit(), ["$compareTo1", $rt_wrapFunction1(cmcm_MonsterInfo_compareTo)],
@@ -276449,8 +276466,8 @@ cmcau_WaitAction, "WaitAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$upd
 cmceb_SpireHeart, "SpireHeart", 53, cmce_AbstractEvent, [], 1, 0, () => cmceb_SpireHeart_$callClinit(), ["$update0", $rt_wrapFunction0(cmceb_SpireHeart_update), "$buttonEffect", $rt_wrapFunction1(cmceb_SpireHeart_buttonEffect), "$render0", $rt_wrapFunction1(cmceb_SpireHeart_render), "$dispose", $rt_wrapFunction0(cmceb_SpireHeart_dispose)],
 cmcrc_BossChest, 0, cmcrc_AbstractChest, [], 1, 0, () => cmcrc_BossChest_$callClinit(), ["$open", $rt_wrapFunction1(cmcrc_BossChest_open)],
 cbgu_OrderedMap$OrderedMapEntries, 0, cbgu_ObjectMap$Entries, [], 1, 0, 0, ["$reset0", $rt_wrapFunction0(cbgu_OrderedMap$OrderedMapEntries_reset), "$next0", $rt_wrapFunction0(cbgu_OrderedMap$OrderedMapEntries_next), "$next", $rt_wrapFunction0(cbgu_OrderedMap$OrderedMapEntries_next0)],
-cbgu_JsonValue$PrettyPrintSettings, 0, jl_Object, [], 1, 0, 0, 0,
 cbgu_JsonValue$JsonIterator, 0, jl_Object, [ju_Iterator, jl_Iterable], 1, 0, 0, ["$hasNext", $rt_wrapFunction0(cbgu_JsonValue$JsonIterator_hasNext), "$next", $rt_wrapFunction0(cbgu_JsonValue$JsonIterator_next)],
+cbgu_JsonValue$PrettyPrintSettings, 0, jl_Object, [], 1, 0, 0, 0,
 cesa_SkeletonAttachment, 0, cesa_Attachment, [], 1, 0, 0, 0,
 otcit_DateTimeZoneBuilder$Transition, "DateTimeZoneBuilder$Transition", 146, jl_Object, [], 16, 0, 0, 0,
 cbg_Input$Keys, 0, jl_Object, [], 1, 0, 0, 0,
@@ -276468,10 +276485,10 @@ cbg_Net$HttpResponse, 0, jl_Object, [], 1537, 0, 0, 0,
 cgxgtbw_WebNet$1$1, 0, jl_Object, [cbg_Net$HttpResponse], 0, 0, 0, 0,
 cmcac_ReducePowerAction, "ReducePowerAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_ReducePowerAction_update)],
 cbgur_ClassReflection, 0, jl_Object, [], 17, 0, 0, 0,
-cmcv_FallingDustEffect, "FallingDustEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_FallingDustEffect_update), "$render0", $rt_wrapFunction1(cmcv_FallingDustEffect_render), "$dispose", $rt_wrapFunction0(cmcv_FallingDustEffect_dispose)],
-cmcvs_CeilingDustCloudEffect, "CeilingDustCloudEffect", 25, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_CeilingDustCloudEffect_update), "$render0", $rt_wrapFunction1(cmcvs_CeilingDustCloudEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_CeilingDustCloudEffect_dispose)],
 cmcv_ExhaustBlurEffect, "ExhaustBlurEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_ExhaustBlurEffect_update), "$render0", $rt_wrapFunction1(cmcv_ExhaustBlurEffect_render), "$dispose", $rt_wrapFunction0(cmcv_ExhaustBlurEffect_dispose)],
 cmcv_ExhaustEmberEffect, "ExhaustEmberEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_ExhaustEmberEffect_update), "$render0", $rt_wrapFunction1(cmcv_ExhaustEmberEffect_render), "$dispose", $rt_wrapFunction0(cmcv_ExhaustEmberEffect_dispose)],
+cmcv_FallingDustEffect, "FallingDustEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_FallingDustEffect_update), "$render0", $rt_wrapFunction1(cmcv_FallingDustEffect_render), "$dispose", $rt_wrapFunction0(cmcv_FallingDustEffect_dispose)],
+cmcvs_CeilingDustCloudEffect, "CeilingDustCloudEffect", 25, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_CeilingDustCloudEffect_update), "$render0", $rt_wrapFunction1(cmcvs_CeilingDustCloudEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_CeilingDustCloudEffect_dispose)],
 cmcv_RainingGoldEffect, "RainingGoldEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_RainingGoldEffect_update), "$render0", $rt_wrapFunction1(cmcv_RainingGoldEffect_render), "$dispose", $rt_wrapFunction0(cmcv_RainingGoldEffect_dispose)],
 cmcv_DiscardGlowEffect, "DiscardGlowEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_DiscardGlowEffect_update), "$render4", $rt_wrapFunction3(cmcv_DiscardGlowEffect_render), "$dispose", $rt_wrapFunction0(cmcv_DiscardGlowEffect_dispose), "$render0", $rt_wrapFunction1(cmcv_DiscardGlowEffect_render0)],
 cmcau_UseCardAction, "UseCardAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_UseCardAction_update)],
@@ -276590,14 +276607,14 @@ cmcs_ShopScreen$1, 0, jl_Object, [], 32768, 0, () => cmcs_ShopScreen$1_$callClin
 cmcac_LoseHPAction, "LoseHPAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_LoseHPAction_update)],
 cmcau_RemoveDebuffsAction, "RemoveDebuffsAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_RemoveDebuffsAction_update)],
 cmcv_TouchPickupGold, "TouchPickupGold", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_TouchPickupGold_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_TouchPickupGold_update), "$render0", $rt_wrapFunction1(cmcv_TouchPickupGold_render), "$dispose", $rt_wrapFunction0(cmcv_TouchPickupGold_dispose)],
-cmcau_RestoreRetainedCardsAction, "RestoreRetainedCardsAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_RestoreRetainedCardsAction_update)],
-cmcac_DiscardAction, "DiscardAction", 87, cmca_AbstractGameAction, [], 1, 0, () => cmcac_DiscardAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcac_DiscardAction_update)],
 cmcac_EndTurnAction, "EndTurnAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_EndTurnAction_update)],
-cmcac_MonsterStartTurnAction, "MonsterStartTurnAction", 87, cmca_AbstractGameAction, [], 1, 0, () => cmcac_MonsterStartTurnAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcac_MonsterStartTurnAction_update)]]);
+cmcac_MonsterStartTurnAction, "MonsterStartTurnAction", 87, cmca_AbstractGameAction, [], 1, 0, () => cmcac_MonsterStartTurnAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcac_MonsterStartTurnAction_update)],
+cmcau_RestoreRetainedCardsAction, "RestoreRetainedCardsAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_RestoreRetainedCardsAction_update)],
+cmcac_DiscardAction, "DiscardAction", 87, cmca_AbstractGameAction, [], 1, 0, () => cmcac_DiscardAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcac_DiscardAction_update)]]);
 $rt_metadata([cmcv_RelicAboveCreatureEffect, "RelicAboveCreatureEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_RelicAboveCreatureEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_RelicAboveCreatureEffect_update), "$render0", $rt_wrapFunction1(cmcv_RelicAboveCreatureEffect_render), "$dispose", $rt_wrapFunction0(cmcv_RelicAboveCreatureEffect_dispose)],
+cmcvc_MoveNameEffect, "MoveNameEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_MoveNameEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_MoveNameEffect_update), "$render0", $rt_wrapFunction1(cmcvc_MoveNameEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_MoveNameEffect_dispose)],
 cmcau_ShowCardAndPoofAction, "ShowCardAndPoofAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_ShowCardAndPoofAction_update)],
 cmcau_ShowCardAction, "ShowCardAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_ShowCardAction_update)],
-cmcvc_MoveNameEffect, "MoveNameEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_MoveNameEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_MoveNameEffect_update), "$render0", $rt_wrapFunction1(cmcvc_MoveNameEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_MoveNameEffect_dispose)],
 cmcv_GainPennyEffect, "GainPennyEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_GainPennyEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_GainPennyEffect_update), "$render0", $rt_wrapFunction1(cmcv_GainPennyEffect_render), "$dispose", $rt_wrapFunction0(cmcv_GainPennyEffect_dispose)],
 cmcvc_CampfireBurningEffect, "CampfireBurningEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireBurningEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireBurningEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireBurningEffect_dispose)],
 cmcvc_CampfireEndingBurningEffect, "CampfireEndingBurningEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireEndingBurningEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireEndingBurningEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireEndingBurningEffect_dispose)],
@@ -276932,14 +276949,14 @@ cmcac_ExhaustSpecificCardAction, "ExhaustSpecificCardAction", 87, cmca_AbstractG
 cmcau_ExhaustAllEtherealAction, "ExhaustAllEtherealAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_ExhaustAllEtherealAction_update)],
 jusi_StreamOverSpliterator$AdapterAction, 0, jl_Object, [juf_Consumer], 0, 0, 0, 0,
 cbggg_PixmapPacker$Page$1, "PixmapPacker$Page$1", 116, cbgg_Texture, [], 0, 0, 0, ["$dispose", $rt_wrapFunction0(cbggg_PixmapPacker$Page$1_dispose)],
-cmcv_ShineLinesEffect, "ShineLinesEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_ShineLinesEffect_update), "$render0", $rt_wrapFunction1(cmcv_ShineLinesEffect_render), "$dispose", $rt_wrapFunction0(cmcv_ShineLinesEffect_dispose)],
-cmcvc_FlyingSpikeEffect, "FlyingSpikeEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FlyingSpikeEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlyingSpikeEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlyingSpikeEffect_dispose)],
 cmcvc_FlameParticleEffect, "FlameParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FlameParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlameParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlameParticleEffect_dispose)],
-cmcvc_IntenseZoomParticle, "IntenseZoomParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IntenseZoomParticle_update), "$render0", $rt_wrapFunction1(cmcvc_IntenseZoomParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_IntenseZoomParticle_dispose)],
+cmcvc_FlyingSpikeEffect, "FlyingSpikeEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FlyingSpikeEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlyingSpikeEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlyingSpikeEffect_dispose)],
 cmcv_DarkSmokePuffEffect, "DarkSmokePuffEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_DarkSmokePuffEffect_update), "$render0", $rt_wrapFunction1(cmcv_DarkSmokePuffEffect_render), "$dispose", $rt_wrapFunction0(cmcv_DarkSmokePuffEffect_dispose)],
 cmcvc_SmokingEmberEffect, "SmokingEmberEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_SmokingEmberEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SmokingEmberEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SmokingEmberEffect_dispose)],
-cmcvc_SmokeBlurEffect, "SmokeBlurEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_SmokeBlurEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SmokeBlurEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SmokeBlurEffect_dispose)],
+cmcv_ShineLinesEffect, "ShineLinesEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_ShineLinesEffect_update), "$render0", $rt_wrapFunction1(cmcv_ShineLinesEffect_render), "$dispose", $rt_wrapFunction0(cmcv_ShineLinesEffect_dispose)],
 cmcv_GainGoldTextEffect, "GainGoldTextEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_GainGoldTextEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_GainGoldTextEffect_update), "$render0", $rt_wrapFunction1(cmcv_GainGoldTextEffect_render), "$dispose", $rt_wrapFunction0(cmcv_GainGoldTextEffect_dispose)],
+cmcvc_IntenseZoomParticle, "IntenseZoomParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IntenseZoomParticle_update), "$render0", $rt_wrapFunction1(cmcvc_IntenseZoomParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_IntenseZoomParticle_dispose)],
+cmcvc_SmokeBlurEffect, "SmokeBlurEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_SmokeBlurEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SmokeBlurEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SmokeBlurEffect_dispose)],
 cmcau_RegenAction, "RegenAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_RegenAction_update)],
 cmcvc_ShowCardAndAddToDrawPileEffect, "ShowCardAndAddToDrawPileEffect", 26, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_ShowCardAndAddToDrawPileEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_ShowCardAndAddToDrawPileEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ShowCardAndAddToDrawPileEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ShowCardAndAddToDrawPileEffect_dispose)],
 cmcvc_ShowCardAndAddToDiscardEffect, "ShowCardAndAddToDiscardEffect", 26, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_ShowCardAndAddToDiscardEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_ShowCardAndAddToDiscardEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ShowCardAndAddToDiscardEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ShowCardAndAddToDiscardEffect_dispose)],
@@ -276951,54 +276968,54 @@ cmcs_CalmStance, 0, cmcs_AbstractStance, [], 1, 0, () => cmcs_CalmStance_$callCl
 cmcs_WrathStance, 0, cmcs_AbstractStance, [], 1, 0, () => cmcs_WrathStance_$callClinit(), ["$atDamageGive", $rt_wrapFunction2(cmcs_WrathStance_atDamageGive), "$atDamageReceive", $rt_wrapFunction2(cmcs_WrathStance_atDamageReceive), "$updateAnimation", $rt_wrapFunction0(cmcs_WrathStance_updateAnimation), "$onEnterStance", $rt_wrapFunction0(cmcs_WrathStance_onEnterStance), "$onExitStance", $rt_wrapFunction0(cmcs_WrathStance_onExitStance), "$stopIdleSfx", $rt_wrapFunction0(cmcs_WrathStance_stopIdleSfx)],
 cmcs_DivinityStance, 0, cmcs_AbstractStance, [], 1, 0, () => cmcs_DivinityStance_$callClinit(), ["$updateAnimation", $rt_wrapFunction0(cmcs_DivinityStance_updateAnimation), "$atStartOfTurn", $rt_wrapFunction0(cmcs_DivinityStance_atStartOfTurn), "$atDamageGive", $rt_wrapFunction2(cmcs_DivinityStance_atDamageGive), "$onEnterStance", $rt_wrapFunction0(cmcs_DivinityStance_onEnterStance), "$onExitStance", $rt_wrapFunction0(cmcs_DivinityStance_onExitStance), "$stopIdleSfx", $rt_wrapFunction0(cmcs_DivinityStance_stopIdleSfx)],
 cmcv_FastDarkSmoke, "FastDarkSmoke", 21, jl_Object, [], 1, 0, 0, 0,
+cmcvc_CampfireLiftEffect, "CampfireLiftEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireLiftEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireLiftEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireLiftEffect_dispose)],
+cmcvc_CampfireSmithEffect, "CampfireSmithEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_CampfireSmithEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_CampfireSmithEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireSmithEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireSmithEffect_dispose)],
 cmcvc_CampfireSleepEffect, "CampfireSleepEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_CampfireSleepEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_CampfireSleepEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireSleepEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireSleepEffect_dispose)],
 cmcvc_CampfireSleepScreenCoverEffect, "CampfireSleepScreenCoverEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireSleepScreenCoverEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireSleepScreenCoverEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireSleepScreenCoverEffect_dispose)],
-cmcvc_CampfireLiftEffect, "CampfireLiftEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireLiftEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireLiftEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireLiftEffect_dispose)],
-cmcvc_CampfireDigEffect, "CampfireDigEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireDigEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireDigEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireDigEffect_dispose)],
-cmcvc_CampfireSmithEffect, "CampfireSmithEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_CampfireSmithEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_CampfireSmithEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireSmithEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireSmithEffect_dispose)],
 cmcvc_CampfireTokeEffect, "CampfireTokeEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_CampfireTokeEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_CampfireTokeEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireTokeEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireTokeEffect_dispose)],
+cmcvc_CampfireDigEffect, "CampfireDigEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireDigEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireDigEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireDigEffect_dispose)],
 cmcvc_CampfireRecallEffect, "CampfireRecallEffect", 23, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_CampfireRecallEffect_update), "$render0", $rt_wrapFunction1(cmcvc_CampfireRecallEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_CampfireRecallEffect_dispose)],
 cmcvs_CalmParticleEffect, "CalmParticleEffect", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_CalmParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvs_CalmParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_CalmParticleEffect_dispose)],
 cmcvs_StanceAuraEffect, "StanceAuraEffect", 24, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvs_StanceAuraEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvs_StanceAuraEffect_update), "$render0", $rt_wrapFunction1(cmcvs_StanceAuraEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_StanceAuraEffect_dispose)],
 cmcvs_WrathParticleEffect, "WrathParticleEffect", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_WrathParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvs_WrathParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_WrathParticleEffect_dispose)],
 cmcvs_StanceChangeParticleGenerator, "StanceChangeParticleGenerator", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_StanceChangeParticleGenerator_update), "$render0", $rt_wrapFunction1(cmcvs_StanceChangeParticleGenerator_render), "$dispose", $rt_wrapFunction0(cmcvs_StanceChangeParticleGenerator_dispose)],
 cmcvs_DivinityParticleEffect, "DivinityParticleEffect", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_DivinityParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvs_DivinityParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_DivinityParticleEffect_dispose)],
-cmcvc_HemokinesisParticle, "HemokinesisParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_HemokinesisParticle_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_HemokinesisParticle_update), "$render0", $rt_wrapFunction1(cmcvc_HemokinesisParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_HemokinesisParticle_dispose)],
-cmcvc_WobblyLineEffect, "WobblyLineEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WobblyLineEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WobblyLineEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WobblyLineEffect_dispose)],
-cmcvc_VerticalAuraParticle, "VerticalAuraParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_VerticalAuraParticle_update), "$render0", $rt_wrapFunction1(cmcvc_VerticalAuraParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_VerticalAuraParticle_dispose)],
 cmcvc_WaterDropEffect, "WaterDropEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WaterDropEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WaterDropEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WaterDropEffect_dispose)],
-cmcvc_IronWaveParticle, "IronWaveParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IronWaveParticle_update), "$render0", $rt_wrapFunction1(cmcvc_IronWaveParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_IronWaveParticle_dispose)],
-cmcvs_TorchParticleXLEffect, "TorchParticleXLEffect", 25, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvs_TorchParticleXLEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvs_TorchParticleXLEffect_update), "$render0", $rt_wrapFunction1(cmcvs_TorchParticleXLEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_TorchParticleXLEffect_dispose)],
 cmcvc_BlurWaveChaoticEffect, "BlurWaveChaoticEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_BlurWaveChaoticEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BlurWaveChaoticEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BlurWaveChaoticEffect_dispose)],
 cmcvc_BlurWaveNormalEffect, "BlurWaveNormalEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_BlurWaveNormalEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BlurWaveNormalEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BlurWaveNormalEffect_dispose)],
 cmcvc_BlurWaveAdditiveEffect, "BlurWaveAdditiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_BlurWaveAdditiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BlurWaveAdditiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BlurWaveAdditiveEffect_dispose)],
+cmcvc_IronWaveParticle, "IronWaveParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IronWaveParticle_update), "$render0", $rt_wrapFunction1(cmcvc_IronWaveParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_IronWaveParticle_dispose)],
+cmcvc_WobblyLineEffect, "WobblyLineEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WobblyLineEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WobblyLineEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WobblyLineEffect_dispose)],
+cmcvc_VerticalAuraParticle, "VerticalAuraParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_VerticalAuraParticle_update), "$render0", $rt_wrapFunction1(cmcvc_VerticalAuraParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_VerticalAuraParticle_dispose)],
+cmcvc_HemokinesisParticle, "HemokinesisParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_HemokinesisParticle_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_HemokinesisParticle_update), "$render0", $rt_wrapFunction1(cmcvc_HemokinesisParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_HemokinesisParticle_dispose)],
+cmcvs_TorchParticleXLEffect, "TorchParticleXLEffect", 25, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvs_TorchParticleXLEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvs_TorchParticleXLEffect_update), "$render0", $rt_wrapFunction1(cmcvs_TorchParticleXLEffect_render), "$dispose", $rt_wrapFunction0(cmcvs_TorchParticleXLEffect_dispose)],
+cmcvc_RedFireballEffect, "RedFireballEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_RedFireballEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RedFireballEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RedFireballEffect_dispose)],
 cmcv_FireBurstParticleEffect, "FireBurstParticleEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_FireBurstParticleEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_FireBurstParticleEffect_update), "$render0", $rt_wrapFunction1(cmcv_FireBurstParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcv_FireBurstParticleEffect_dispose)],
 cmcvc_GiantFireEffect, "GiantFireEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_GiantFireEffect_update), "$render0", $rt_wrapFunction1(cmcvc_GiantFireEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_GiantFireEffect_dispose)],
-cmcvc_RedFireballEffect, "RedFireballEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_RedFireballEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RedFireballEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RedFireballEffect_dispose)],
-cmcau_EstablishmentPowerAction, "EstablishmentPowerAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_EstablishmentPowerAction_update)],
-cmcau_RetainCardsAction, "RetainCardsAction", 88, cmca_AbstractGameAction, [], 1, 0, () => cmcau_RetainCardsAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcau_RetainCardsAction_update)],
-cmcvc_OmegaFlashEffect, "OmegaFlashEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_OmegaFlashEffect_update), "$render0", $rt_wrapFunction1(cmcvc_OmegaFlashEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_OmegaFlashEffect_dispose)],
-cmcvc_WindyParticleEffect, "WindyParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WindyParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WindyParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WindyParticleEffect_dispose)],
-cmcvc_BloodShotParticleEffect, "BloodShotParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_BloodShotParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BloodShotParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BloodShotParticleEffect_dispose)],
-cmcvc_ImpactSparkEffect, "ImpactSparkEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_ImpactSparkEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_ImpactSparkEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ImpactSparkEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ImpactSparkEffect_dispose)],
+cmcv_CollectorStakeEffect, "CollectorStakeEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_CollectorStakeEffect_update), "$render0", $rt_wrapFunction1(cmcv_CollectorStakeEffect_render), "$dispose", $rt_wrapFunction0(cmcv_CollectorStakeEffect_dispose)],
+cmcvc_RoomTintEffect, "RoomTintEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_RoomTintEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RoomTintEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RoomTintEffect_dispose)],
 cmcvc_FlyingDaggerEffect, "FlyingDaggerEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FlyingDaggerEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlyingDaggerEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlyingDaggerEffect_dispose)],
-cmcvc_WebLineEffect, "WebLineEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WebLineEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WebLineEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WebLineEffect_dispose)],
-cmcvc_WebParticleEffect, "WebParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WebParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WebParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WebParticleEffect_dispose)],
-cmcvc_FallingIceEffect, "FallingIceEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FallingIceEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FallingIceEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FallingIceEffect_dispose)],
-cmcvc_ThrowShivEffect, "ThrowShivEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_ThrowShivEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ThrowShivEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ThrowShivEffect_dispose)],
-cmcvc_SwirlyBloodEffect, "SwirlyBloodEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_SwirlyBloodEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_SwirlyBloodEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SwirlyBloodEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SwirlyBloodEffect_dispose)],
-cmcvc_ThirdEyeParticleEffect, "ThirdEyeParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_ThirdEyeParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ThirdEyeParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ThirdEyeParticleEffect_dispose)],
 cmcv_SpotlightEffect, "SpotlightEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_SpotlightEffect_update), "$render0", $rt_wrapFunction1(cmcv_SpotlightEffect_render), "$dispose", $rt_wrapFunction0(cmcv_SpotlightEffect_dispose)],
 cmcv_PetalEffect, "PetalEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_PetalEffect_update), "$render0", $rt_wrapFunction1(cmcv_PetalEffect_render), "$dispose", $rt_wrapFunction0(cmcv_PetalEffect_dispose)],
+cmcvc_SwirlyBloodEffect, "SwirlyBloodEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_SwirlyBloodEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_SwirlyBloodEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SwirlyBloodEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SwirlyBloodEffect_dispose)],
+cmcvc_WindyParticleEffect, "WindyParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WindyParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WindyParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WindyParticleEffect_dispose)],
+cmcvc_BloodShotParticleEffect, "BloodShotParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_BloodShotParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_BloodShotParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_BloodShotParticleEffect_dispose)],
 cmcv_ShineSparkleEffect, "ShineSparkleEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_ShineSparkleEffect_update), "$render0", $rt_wrapFunction1(cmcv_ShineSparkleEffect_render), "$dispose", $rt_wrapFunction0(cmcv_ShineSparkleEffect_dispose)],
 cmcvc_AdditiveSlashImpactEffect, "AdditiveSlashImpactEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_AdditiveSlashImpactEffect_update), "$render0", $rt_wrapFunction1(cmcvc_AdditiveSlashImpactEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_AdditiveSlashImpactEffect_dispose)],
+cmcvc_FallingIceEffect, "FallingIceEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FallingIceEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FallingIceEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FallingIceEffect_dispose)],
+cmcvc_ThrowShivEffect, "ThrowShivEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_ThrowShivEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ThrowShivEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ThrowShivEffect_dispose)],
+cmcvc_WebLineEffect, "WebLineEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WebLineEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WebLineEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WebLineEffect_dispose)],
+cmcvc_WebParticleEffect, "WebParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WebParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WebParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WebParticleEffect_dispose)],
+cmcvc_ImpactSparkEffect, "ImpactSparkEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_ImpactSparkEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_ImpactSparkEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ImpactSparkEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ImpactSparkEffect_dispose)],
+cmcvc_ThirdEyeParticleEffect, "ThirdEyeParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_ThirdEyeParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_ThirdEyeParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_ThirdEyeParticleEffect_dispose)],
 cmcvc_EmptyStanceParticleEffect, "EmptyStanceParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_EmptyStanceParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_EmptyStanceParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_EmptyStanceParticleEffect_dispose)],
-cmcv_CollectorStakeEffect, "CollectorStakeEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_CollectorStakeEffect_update), "$render0", $rt_wrapFunction1(cmcv_CollectorStakeEffect_render), "$dispose", $rt_wrapFunction0(cmcv_CollectorStakeEffect_dispose)],
-cmcvc_RoomTintEffect, "RoomTintEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_RoomTintEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RoomTintEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RoomTintEffect_dispose)]]);
-$rt_metadata([cmcp_DoubleDamagePower, "DoubleDamagePower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_DoubleDamagePower_$callClinit(), ["$atEndOfRound", $rt_wrapFunction0(cmcp_DoubleDamagePower_atEndOfRound), "$updateDescription0", $rt_wrapFunction0(cmcp_DoubleDamagePower_updateDescription), "$atDamageGive", $rt_wrapFunction2(cmcp_DoubleDamagePower_atDamageGive)],
+cmcvc_TimeWarpTurnEndEffect, "TimeWarpTurnEndEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_TimeWarpTurnEndEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_TimeWarpTurnEndEffect_update), "$render0", $rt_wrapFunction1(cmcvc_TimeWarpTurnEndEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_TimeWarpTurnEndEffect_dispose)],
+cmcau_EstablishmentPowerAction, "EstablishmentPowerAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_EstablishmentPowerAction_update)],
+cmcau_RetainCardsAction, "RetainCardsAction", 88, cmca_AbstractGameAction, [], 1, 0, () => cmcau_RetainCardsAction_$callClinit(), ["$update0", $rt_wrapFunction0(cmcau_RetainCardsAction_update)]]);
+$rt_metadata([cmcvc_OmegaFlashEffect, "OmegaFlashEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_OmegaFlashEffect_update), "$render0", $rt_wrapFunction1(cmcvc_OmegaFlashEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_OmegaFlashEffect_dispose)],
+cmcp_DoubleDamagePower, "DoubleDamagePower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_DoubleDamagePower_$callClinit(), ["$atEndOfRound", $rt_wrapFunction0(cmcp_DoubleDamagePower_atEndOfRound), "$updateDescription0", $rt_wrapFunction0(cmcp_DoubleDamagePower_updateDescription), "$atDamageGive", $rt_wrapFunction2(cmcp_DoubleDamagePower_atDamageGive)],
 cmcau_LoseEnergyAction, "LoseEnergyAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_LoseEnergyAction_update)],
 cmcp_MayhemPower$1, "MayhemPower$1", 82, cmca_AbstractGameAction, [], 0, 0, 0, ["$update0", $rt_wrapFunction0(cmcp_MayhemPower$1_update)],
-cmcvc_TimeWarpTurnEndEffect, "TimeWarpTurnEndEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_TimeWarpTurnEndEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_TimeWarpTurnEndEffect_update), "$render0", $rt_wrapFunction1(cmcvc_TimeWarpTurnEndEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_TimeWarpTurnEndEffect_dispose)],
 jusi_MappingStreamImpl$wrap$lambda$_1_0, 0, jl_Object, [juf_Predicate], 1, 0, 0, ["$test", $rt_wrapFunction1(jusi_MappingStreamImpl$wrap$lambda$_1_0_test)],
 jl_Thread$SleepHandler$interrupted$lambda$_1_1, 0, jl_Object, [otp_PlatformRunnable], 1, 0, 0, ["$run", $rt_wrapFunction0(jl_Thread$SleepHandler$interrupted$lambda$_1_1_run)],
 cmcac_DamageRandomEnemyAction, "DamageRandomEnemyAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_DamageRandomEnemyAction_update)],
@@ -277012,48 +277029,48 @@ cmcad_LightningOrbPassiveAction, "LightningOrbPassiveAction", 86, cmca_AbstractG
 cmcad_LightningOrbEvokeAction, "LightningOrbEvokeAction", 86, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcad_LightningOrbEvokeAction_update)],
 cmcv_FastSmokeParticle, "FastSmokeParticle", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_FastSmokeParticle_update), "$render0", $rt_wrapFunction1(cmcv_FastSmokeParticle_render), "$dispose", $rt_wrapFunction0(cmcv_FastSmokeParticle_dispose)],
 cmcvc_FlashIntentParticle, "FlashIntentParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_FlashIntentParticle_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_FlashIntentParticle_update), "$render4", $rt_wrapFunction3(cmcvc_FlashIntentParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_FlashIntentParticle_dispose), "$render0", $rt_wrapFunction1(cmcvc_FlashIntentParticle_render0)],
+cmcvc_LightningOrbPassiveEffect, "LightningOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_LightningOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_LightningOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_LightningOrbPassiveEffect_dispose)],
+cmcvc_DarkOrbPassiveEffect, "DarkOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_DarkOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_DarkOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_DarkOrbPassiveEffect_dispose)],
 cmcvc_PlasmaOrbPassiveEffect, "PlasmaOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_PlasmaOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_PlasmaOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_PlasmaOrbPassiveEffect_dispose)],
 cmcvc_FrostOrbPassiveEffect, "FrostOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FrostOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FrostOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FrostOrbPassiveEffect_dispose)],
-cmcvc_DarkOrbPassiveEffect, "DarkOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_DarkOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_DarkOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_DarkOrbPassiveEffect_dispose)],
-cmcvc_LightningOrbPassiveEffect, "LightningOrbPassiveEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_LightningOrbPassiveEffect_update), "$render0", $rt_wrapFunction1(cmcvc_LightningOrbPassiveEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_LightningOrbPassiveEffect_dispose)],
 cmcv_EnemyTurnEffect, "EnemyTurnEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, () => cmcv_EnemyTurnEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcv_EnemyTurnEffect_update), "$render0", $rt_wrapFunction1(cmcv_EnemyTurnEffect_render), "$dispose", $rt_wrapFunction0(cmcv_EnemyTurnEffect_dispose)],
 cmcau_UnlimboAction, "UnlimboAction", 90, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_UnlimboAction_update)],
-cmcvc_RipAndTearEffect, "RipAndTearEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_RipAndTearEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_RipAndTearEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RipAndTearEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RipAndTearEffect_dispose)],
 cmch_GetAllInBattleInstances, 0, jl_Object, [], 1, 0, 0, 0,
-cmcp_NightmarePower, "NightmarePower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_NightmarePower_$callClinit(), ["$updateDescription0", $rt_wrapFunction0(cmcp_NightmarePower_updateDescription), "$atStartOfTurn", $rt_wrapFunction0(cmcp_NightmarePower_atStartOfTurn)],
-cmcvc_SanctityEffect, "SanctityEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_SanctityEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SanctityEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SanctityEffect_dispose)],
+cmcac_DiscardSpecificCardAction, "DiscardSpecificCardAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_DiscardSpecificCardAction_update)],
+cmcvc_FlyingOrbEffect, "FlyingOrbEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_FlyingOrbEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_FlyingOrbEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlyingOrbEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlyingOrbEffect_dispose)],
 cmcp_CollectPower, "CollectPower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_CollectPower_$callClinit(), ["$stackPower", $rt_wrapFunction1(cmcp_CollectPower_stackPower), "$updateDescription0", $rt_wrapFunction0(cmcp_CollectPower_updateDescription), "$onEnergyRecharge", $rt_wrapFunction0(cmcp_CollectPower_onEnergyRecharge)],
+cmcp_NightmarePower, "NightmarePower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_NightmarePower_$callClinit(), ["$updateDescription0", $rt_wrapFunction0(cmcp_NightmarePower_updateDescription), "$atStartOfTurn", $rt_wrapFunction0(cmcp_NightmarePower_atStartOfTurn)],
+cmcac_InstantKillAction, "InstantKillAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_InstantKillAction_update)],
+cmcv_WallopEffect, "WallopEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_WallopEffect_update), "$render0", $rt_wrapFunction1(cmcv_WallopEffect_render), "$dispose", $rt_wrapFunction0(cmcv_WallopEffect_dispose)],
+cmcvc_SanctityEffect, "SanctityEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_SanctityEffect_update), "$render0", $rt_wrapFunction1(cmcvc_SanctityEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_SanctityEffect_dispose)],
+cmcvc_RipAndTearEffect, "RipAndTearEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_RipAndTearEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_RipAndTearEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RipAndTearEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RipAndTearEffect_dispose)],
 cmcad_RemoveAllOrbsAction, "RemoveAllOrbsAction", 86, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcad_RemoveAllOrbsAction_update)],
 cmcad_EvokeAllOrbsAction, "EvokeAllOrbsAction", 86, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcad_EvokeAllOrbsAction_update)],
-cmcac_DiscardSpecificCardAction, "DiscardSpecificCardAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_DiscardSpecificCardAction_update)],
-cmcac_InstantKillAction, "InstantKillAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_InstantKillAction_update)],
-cmcvc_FlyingOrbEffect, "FlyingOrbEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_FlyingOrbEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_FlyingOrbEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FlyingOrbEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FlyingOrbEffect_dispose)],
-cmcv_WallopEffect, "WallopEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_WallopEffect_update), "$render0", $rt_wrapFunction1(cmcv_WallopEffect_render), "$dispose", $rt_wrapFunction0(cmcv_WallopEffect_dispose)],
 jusi_SimpleStreamIterator$fetchIfNeeded$lambda$_4_0, 0, jl_Object, [juf_Predicate], 1, 0, 0, ["$test", $rt_wrapFunction1(jusi_SimpleStreamIterator$fetchIfNeeded$lambda$_4_0_test)],
 cmcvc_LightRayFlyOutEffect, "LightRayFlyOutEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_LightRayFlyOutEffect_update), "$render0", $rt_wrapFunction1(cmcvc_LightRayFlyOutEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_LightRayFlyOutEffect_dispose)],
 cmcac_SetDontTriggerAction, "SetDontTriggerAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_SetDontTriggerAction_update)],
-cmcs_CardRewardScreen$completeVoting$lambda$_10_0, 0, jl_Object, [juf_Consumer], 1, 0, 0, ["$accept", $rt_wrapFunction1(cmcs_CardRewardScreen$completeVoting$lambda$_10_0_accept)],
 cmcss_BossRelicSelectScreen$completeVoting$lambda$_18_0, 0, jl_Object, [juf_Consumer], 1, 0, 0, ["$accept", $rt_wrapFunction1(cmcss_BossRelicSelectScreen$completeVoting$lambda$_18_0_accept)],
-cmcvs_DivinityStanceChangeParticle, "DivinityStanceChangeParticle", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_DivinityStanceChangeParticle_update), "$render0", $rt_wrapFunction1(cmcvs_DivinityStanceChangeParticle_render), "$dispose", $rt_wrapFunction0(cmcvs_DivinityStanceChangeParticle_dispose)],
-cmcvs_WrathStanceChangeParticle, "WrathStanceChangeParticle", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_WrathStanceChangeParticle_update), "$render0", $rt_wrapFunction1(cmcvs_WrathStanceChangeParticle_render), "$dispose", $rt_wrapFunction0(cmcvs_WrathStanceChangeParticle_dispose)],
-cmcvc_WaterSplashParticleEffect, "WaterSplashParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WaterSplashParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WaterSplashParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WaterSplashParticleEffect_dispose)],
+cmcs_CardRewardScreen$completeVoting$lambda$_10_0, 0, jl_Object, [juf_Consumer], 1, 0, 0, ["$accept", $rt_wrapFunction1(cmcs_CardRewardScreen$completeVoting$lambda$_10_0_accept)],
 cmcvc_RedFireBurstParticleEffect, "RedFireBurstParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_RedFireBurstParticleEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_RedFireBurstParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_RedFireBurstParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_RedFireBurstParticleEffect_dispose)],
 cmcvc_IceShatterEffect, "IceShatterEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_IceShatterEffect_update), "$render0", $rt_wrapFunction1(cmcvc_IceShatterEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_IceShatterEffect_dispose)],
+cmcvc_WaterSplashParticleEffect, "WaterSplashParticleEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_WaterSplashParticleEffect_update), "$render0", $rt_wrapFunction1(cmcvc_WaterSplashParticleEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_WaterSplashParticleEffect_dispose)],
+cmcvs_DivinityStanceChangeParticle, "DivinityStanceChangeParticle", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_DivinityStanceChangeParticle_update), "$render0", $rt_wrapFunction1(cmcvs_DivinityStanceChangeParticle_render), "$dispose", $rt_wrapFunction0(cmcvs_DivinityStanceChangeParticle_dispose)],
+cmcvs_WrathStanceChangeParticle, "WrathStanceChangeParticle", 24, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvs_WrathStanceChangeParticle_update), "$render0", $rt_wrapFunction1(cmcvs_WrathStanceChangeParticle_render), "$dispose", $rt_wrapFunction0(cmcvs_WrathStanceChangeParticle_dispose)],
 cgxgtbw_WebPreloadApplicationListener$2, 0, jl_Object, [cgxgtbwa_AssetLoaderListener], 0, 0, 0, ["$onFailure", $rt_wrapFunction1(cgxgtbwa_AssetLoaderListener_onFailure)],
+cmcac_DarkOrbEvokeAction, "DarkOrbEvokeAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_DarkOrbEvokeAction_update)],
 cmcvc_FrostOrbActivateEffect, "FrostOrbActivateEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FrostOrbActivateEffect_update), "$render0", $rt_wrapFunction1(cmcvc_FrostOrbActivateEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_FrostOrbActivateEffect_dispose)],
 cmcvc_LightningOrbActivateEffect, "LightningOrbActivateEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, () => cmcvc_LightningOrbActivateEffect_$callClinit(), ["$update0", $rt_wrapFunction0(cmcvc_LightningOrbActivateEffect_update), "$render0", $rt_wrapFunction1(cmcvc_LightningOrbActivateEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_LightningOrbActivateEffect_dispose)],
 cmcvc_PlasmaOrbActivateEffect, "PlasmaOrbActivateEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateEffect_update), "$render0", $rt_wrapFunction1(cmcvc_PlasmaOrbActivateEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateEffect_dispose)],
-cmcvc_DarkOrbActivateEffect, "DarkOrbActivateEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_DarkOrbActivateEffect_update), "$render0", $rt_wrapFunction1(cmcvc_DarkOrbActivateEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_DarkOrbActivateEffect_dispose)],
-cmcac_DarkOrbEvokeAction, "DarkOrbEvokeAction", 87, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcac_DarkOrbEvokeAction_update)]]);
+cmcvc_DarkOrbActivateEffect, "DarkOrbActivateEffect", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_DarkOrbActivateEffect_update), "$render0", $rt_wrapFunction1(cmcvc_DarkOrbActivateEffect_render), "$dispose", $rt_wrapFunction0(cmcvc_DarkOrbActivateEffect_dispose)]]);
 $rt_metadata([cmcv_TorchHeadFireEffect, "TorchHeadFireEffect", 21, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcv_TorchHeadFireEffect_update), "$render0", $rt_wrapFunction1(cmcv_TorchHeadFireEffect_render), "$dispose", $rt_wrapFunction0(cmcv_TorchHeadFireEffect_dispose)],
 cmcau_ApplyStasisAction, "ApplyStasisAction", 88, cmca_AbstractGameAction, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcau_ApplyStasisAction_update)],
 jt_DateFormatElement$TrieNode, "DateFormatElement$TrieNode", 136, jl_Object, [], 0, 0, 0, 0,
 jt_DateFormatElement$TrieBuilder, 0, jl_Object, [], 0, 0, 0, 0,
 jt_DateFormatElement$TrieNodeBuilder, "DateFormatElement$TrieNodeBuilder", 136, jl_Object, [], 0, 0, 0, 0,
 cgxgtbwa_TeaAssetManifest, 0, jl_Object, [], 1, 0, 0, 0,
+cmcvc_PlasmaOrbActivateParticle, "PlasmaOrbActivateParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateParticle_update), "$render0", $rt_wrapFunction1(cmcvc_PlasmaOrbActivateParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateParticle_dispose)],
 cmcvc_DarkOrbActivateParticle, "DarkOrbActivateParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_DarkOrbActivateParticle_update), "$render0", $rt_wrapFunction1(cmcvc_DarkOrbActivateParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_DarkOrbActivateParticle_dispose)],
 cmcvc_FrostOrbActivateParticle, "FrostOrbActivateParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_FrostOrbActivateParticle_update), "$render0", $rt_wrapFunction1(cmcvc_FrostOrbActivateParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_FrostOrbActivateParticle_dispose)],
-cmcvc_PlasmaOrbActivateParticle, "PlasmaOrbActivateParticle", 22, cmcv_AbstractGameEffect, [], 1, 0, 0, ["$update0", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateParticle_update), "$render0", $rt_wrapFunction1(cmcvc_PlasmaOrbActivateParticle_render), "$dispose", $rt_wrapFunction0(cmcvc_PlasmaOrbActivateParticle_dispose)],
 cmcp_StasisPower, "StasisPower", 82, cmcp_AbstractPower, [], 1, 0, () => cmcp_StasisPower_$callClinit(), ["$updateDescription0", $rt_wrapFunction0(cmcp_StasisPower_updateDescription), "$onDeath", $rt_wrapFunction0(cmcp_StasisPower_onDeath)],
 juf_ToIntFunction, 0, jl_Object, [], 1537, 0, 0, 0,
 jt_DateFormatElement$TrieBuilder$build$lambda$_3_0, 0, jl_Object, [juf_ToIntFunction], 1, 0, 0, 0,
@@ -277431,8 +277448,8 @@ $rt_stringPool(["Can\'t enter monitor from another thread synchronously", "Can\'
 "colorless/skill/wrath", "colorless/skill/calm", "ExhaustAction", "Ritual", "ritual", "HIGH_SCORE", "FASTEST_WIN", "CONSECUTIVE_WINS", "AVG_FLOOR", "AVG_SCORE", "SPIRE_LEVEL", "Lift Option", "Toke Option", "Dig Option", "COMMON_RELIC", "UNCOMMON_RELIC", "RARE_RELIC", "DiscardAction", "BetaArtUnlockEffect", "TEN_PERCENT_HP_LOSS", "NO_GOLD", "PERCENT_DAMAGE", "RANDOM_COLORLESS_2", "THREE_CARDS", "ONE_RANDOM_RARE_CARD", "REMOVE_CARD", "UPGRADE_CARD", "RANDOM_COLORLESS", "TRANSFORM_CARD", "THREE_SMALL_POTIONS",
 "RANDOM_COMMON_RELIC", "TEN_PERCENT_HP_BONUS", "HUNDRED_GOLD", "THREE_ENEMY_KILL", "REMOVE_TWO", "TRANSFORM_TWO_CARDS", "ONE_RARE_RELIC", "THREE_RARE_CARDS", "TWO_FIFTY_GOLD", "TWENTY_PERCENT_HP_BONUS", "BOSS_RELIC", "Thievery", "thievery", "modeShift", "flight", "barricade", "Malleable", "malleable", "Painful Stabs", "painfulStabs", "Minion", "minion", "Fading", "fading", "Life Link", "regrow", "Generic Strength Up Power", "stasis", "Slow", "slow", "128/time", "curiosity", "BeatOfDeath", "beat", "Curl Up",
 "closeUp", "Angry", "Confusion", "confusion", "Dark", "combat/weightyImpact", "DualWieldAction", "ExhumeAction", "combat/biteTop", "combat/biteBot", "DiscardPileToTopOfDeckAction", "ADDITIVE", "CHAOTIC", "OpeningAction", "combat/lightning", "PutOnDeckAction", "combat/flask", "Next Turn Block", "defenseNext", "Energized", "energized_green", "CopyAction", "Double Damage", "doubleDamage", "Draw Card", "carddraw", "SetupAction", "RecycleAction", "ReprogramAction", "[E] ", "WishAction", "ForethoughtAction", "SkillFromDeckToHandAction",
-"AttackFromDeckToHandAction", "128/curiosity", "frail", "INCORRECTLY ATTEMPTED TO CHANNEL GREMLIN.", "BronzeOrb", "images/monsters/theCity/automaton/orb.png", "TorchHead", "images/monsters/theCity/torchHead/skeleton.atlas", "images/monsters/theCity/torchHead/skeleton.json", "constricted", "GainGoldTextEffect", "sharpHide", "CampfireSleepEffect", "CampfireSmithEffect", "CampfireTokeEffect", "RetainCardsAction", "128/omega", "combat/stake", "combat/orbFlareOuter", "combat/orbFlareInner", "nightmare", "Voting on card ended... chose ",
-"Voting on relic ended... chose ", "Stasis"]);
+"AttackFromDeckToHandAction", "128/curiosity", "frail", "INCORRECTLY ATTEMPTED TO CHANNEL GREMLIN.", "BronzeOrb", "images/monsters/theCity/automaton/orb.png", "TorchHead", "images/monsters/theCity/torchHead/skeleton.atlas", "images/monsters/theCity/torchHead/skeleton.json", "constricted", "GainGoldTextEffect", "sharpHide", "CampfireSmithEffect", "CampfireSleepEffect", "CampfireTokeEffect", "combat/stake", "RetainCardsAction", "128/omega", "combat/orbFlareOuter", "combat/orbFlareInner", "nightmare", "Voting on relic ended... chose ",
+"Voting on card ended... chose ", "Stasis"]);
 jl_String.prototype.toString = function() {
     return $rt_ustr(this);
 };

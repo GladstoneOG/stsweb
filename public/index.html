@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Slay the Spire Web · 1–6P Co-op &amp; Seed Race</title>
+  <title>Slay the Spire · Web Co-op Edition</title>
   <link rel="icon" href="data:," />
   <style>
     @font-face {
@@ -78,10 +78,16 @@
     #sts-boot-overlay {
       position: fixed;
       inset: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 50;
-      background:
-        radial-gradient(ellipse at 50% 42%, rgba(18, 22, 34, 0.42) 0%, rgba(7, 9, 13, 0.92) 78%),
-        url("/ui-assets/title-bg.jpg") center / cover no-repeat;
+      background-color: var(--bg-void);
+      background-image:
+        radial-gradient(ellipse at 50% 42%, rgba(18, 22, 34, 0.38) 0%, rgba(7, 9, 13, 0.86) 82%),
+        url("/ui-assets/title-bg.jpg");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -551,40 +557,40 @@
   <!-- Authentic STS Boot Progress Overlay -->
   <div id="sts-boot-overlay">
     <img class="sts-boot-crest" src="/ui-assets/logo-eng.png" alt="Slay the Spire" />
-    <div class="sts-boot-sub">Online 1–6P Co-op, Seed Race &amp; Cloud Save Edition</div>
+    <div class="sts-boot-sub">Web Co-op Edition</div>
     <div class="sts-boot-panel">
       <div class="sts-boot-bar"><div id="sts-boot-bar-fill"></div></div>
-      <div id="sts-boot-msg">Awakening the Spire...</div>
+      <div id="sts-boot-msg">Loading...</div>
     </div>
   </div>
 
   <!-- Auto-Hiding, Draggable Floating HUD (Defaults Left Edge) -->
   <div id="sts-hud-zone" class="awake">
-    <div id="sts-hud-tab" title="Hover for Spire Net (F2) · Drag to move">◆</div>
+    <div id="sts-hud-tab" title="Multiplayer (F2)">◆</div>
     <div id="sts-hud-pill">
-      <span id="sts-hud-grip" title="Drag to relocate HUD">⋮⋮</span>
-      <span id="sts-hud-room" class="sts-badge">Solo · F2</span>
+      <span id="sts-hud-grip" title="Drag to move">⋮⋮</span>
+      <span id="sts-hud-room" class="sts-badge">Solo</span>
       <button id="sts-hud-invite" class="sts-pill-btn" style="display:none">Invite</button>
-      <button id="sts-hud-open" class="sts-pill-btn">Spire Net (F2)</button>
+      <button id="sts-hud-open" class="sts-pill-btn">Co-op (F2)</button>
       <button id="sts-hud-fs" class="sts-pill-btn" title="Fullscreen (F11)">FS</button>
     </div>
   </div>
 
-  <!-- F2 Spire Net Overlay -->
+  <!-- F2 Multiplayer Overlay -->
   <div id="sts-modal-backdrop" hidden>
     <div id="sts-modal-shell">
       <div class="sts-modal-banner">
-        <span class="sts-modal-banner-text">SPIRE NET</span>
+        <span class="sts-modal-banner-text">MULTIPLAYER</span>
       </div>
       <div id="sts-modal" role="dialog" aria-modal="true">
         <div id="sts-account-bar" class="sts-account-strip"></div>
         <div class="sts-tabs-row">
           <div class="sts-tabs">
-            <button class="sts-tab-btn active" data-tab="lobby">Co-op &amp; Seed Race</button>
-            <button class="sts-tab-btn" data-tab="saves">Account &amp; Saves</button>
+            <button class="sts-tab-btn active" data-tab="lobby">Multiplayer</button>
+            <button class="sts-tab-btn" data-tab="saves">Saves</button>
             <button class="sts-tab-btn" data-tab="settings">Settings</button>
           </div>
-          <button id="sts-modal-close" class="sts-btn small danger" style="margin-bottom:6px">Close (Esc)</button>
+          <button id="sts-modal-close" class="sts-btn small danger" style="margin-bottom:6px">Close</button>
         </div>
         <div id="sts-modal-body"></div>
       </div>

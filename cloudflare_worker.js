@@ -1041,8 +1041,8 @@ export class StsRoomDO extends DurableObject {
     if (sockets.length === 0 || idleMs >= ROOM_INACTIVITY_TTL_MS - 1000) {
       for (const sock of sockets) {
         try {
-          sock.send(JSON.stringify({ type: "ERROR", message: "Room dissolved after 1 minute of inactivity." }));
-          sock.close(4000, "Room dissolved due to inactivity");
+          sock.send(JSON.stringify({ type: "ERROR", message: "Room closed due to inactivity." }));
+          sock.close(4000, "Room closed due to inactivity");
         } catch (_) {}
       }
       const hub = this.env.LOBBY_HUB.get(this.env.LOBBY_HUB.idFromName("global-sts-hub"));

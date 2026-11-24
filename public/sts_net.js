@@ -314,7 +314,7 @@
         state.players = [];
         state.isHost = false;
         state.runState = "LOBBY";
-        state.error = ev.reason || "Room dissolved after 1m of inactivity.";
+        state.error = ev.reason || "Room closed due to inactivity.";
         incomingQueue.push(JSON.stringify({ type: "LOCAL_DISCONNECTED" }));
         try {
           const u = new URL(window.location.href);
@@ -335,7 +335,7 @@
     };
 
     ws.onerror = () => {
-      state.error = "Unable to reach WebSocket server.";
+      state.error = "Connection failed.";
       notify();
     };
   }

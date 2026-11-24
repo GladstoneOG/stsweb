@@ -20,6 +20,7 @@ import argparse
 import glob
 import gzip
 import hashlib
+import io
 import json
 import os
 import struct
@@ -203,13 +204,21 @@ def write_pack(prefix: str, entries: list[tuple[str, bytes]]) -> dict:
 
 
 def extract_web_ui_assets(zf: zipfile.ZipFile) -> int:
+    from PIL import Image
+
     os.makedirs(UI_ASSETS_DIR, exist_ok=True)
     extracted = 0
     for jar_path, out_name in WEB_UI_ASSET_MAP.items():
         data = zf.read(jar_path)
         out_path = os.path.join(UI_ASSETS_DIR, out_name)
-        with open(out_path, "wb") as uf:
-            uf.write(data)
+        if out_name == "title-bg.jpg":
+            with Image.open(io.BytesIO(data)) as im:
+                # Crop interior of title/title.jpg jpg/sky (2..1921, 2..1470), avoiding black atlas border
+                cropped = im.crop((4, 4, 1920, 1468)).convert("RGB")
+                cropped.save(out_path, format="JPEG", quality=92, optimize=True)
+        else:
+            with open(out_path, "wb") as uf:
+                uf.write(data)
         extracted += 1
     print(f"[assets] Extracted {extracted} authentic STS UI fonts/textures to {UI_ASSETS_DIR}.")
     return extracted
