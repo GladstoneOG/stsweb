@@ -580,6 +580,19 @@ wss.on("connection", (ws, req, url) => {
         ws.send(JSON.stringify({ type: "PONG", ts: Date.now() }));
         return;
 
+      case "LEAVE_ROOM":
+        r.sockets.delete(ws);
+        player.connected = false;
+        if (r.state === "LOBBY" && r.hostId === player.playerId) {
+          const nextHost = Array.from(r.players.values()).find((p) => p.connected);
+          if (nextHost) r.hostId = nextHost.playerId;
+        }
+        try { ws.close(1000, "Leave room"); } catch (_) {}
+        broadcastRoom(r, buildRoomSyncPayload(r));
+        evaluateMapBarrier(r);
+        evaluateEndTurnBarrier(r);
+        return;
+
       case "SET_CHAR":
         if (typeof msg.charClass === "string") player.charClass = msg.charClass.slice(0, 24);
         if (typeof msg.ready === "boolean") player.ready = msg.ready;

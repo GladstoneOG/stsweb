@@ -532,10 +532,12 @@ export class StsRoomDO extends DurableObject {
     }
   }
 
-  reconcileConnectedPlayers() {
+  reconcileConnectedPlayers(excludeWs = null) {
     const meta = this.getMeta();
     const liveIds = new Set();
     for (const sock of this.ctx.getWebSockets()) {
+      if (sock === excludeWs) continue;
+      if (typeof sock.readyState === "number" && sock.readyState !== 1) continue;
       const att = sock.deserializeAttachment();
       if (att && att.playerId) liveIds.add(att.playerId);
     }
@@ -551,35 +553,37 @@ export class StsRoomDO extends DurableObject {
     return { meta, players, connectedPlayers };
   }
 
-  syncLobbyHub(force = true) {
-    const { meta, players, connectedPlayers } = this.reconcileConnectedPlayers();
+  syncLobbyHub(force = true, excludeWs = null) {
+    const { meta, players, connectedPlayers } = this.reconcileConnectedPlayers(excludeWs);
     const hub = this.env.LOBBY_HUB.get(this.env.LOBBY_HUB.idFromName("global-sts-hub"));
     if (!meta || connectedPlayers.length === 0 || meta.state === "ENDED") {
       if (meta) {
-        this.ctx.waitUntil(hub.removeRoom(meta.code));
+        const p = hub.removeRoom(meta.code);
+        this.ctx.waitUntil(p);
+        return p;
       }
-      return;
+      return Promise.resolve();
     }
     const now = Date.now();
     if (!force && this._lastHubSyncAt && now - this._lastHubSyncAt < 20000) {
-      return;
+      return Promise.resolve();
     }
     this._lastHubSyncAt = now;
     const host = connectedPlayers.find((p) => p.player_id === meta.host_id) || connectedPlayers[0] || players[0];
-    this.ctx.waitUntil(
-      hub.upsertRoom({
-        code: meta.code,
-        hostName: host ? host.name : "Player",
-        mode: meta.mode,
-        ascension: meta.ascension,
-        playerCount: connectedPlayers.length,
-        maxPlayers: MAX_PLAYERS_PER_ROOM,
-        state: meta.state,
-        floorNum: meta.floor_num,
-        actNum: meta.act_num,
-        joinable: connectedPlayers.length < MAX_PLAYERS_PER_ROOM,
-      })
-    );
+    const p = hub.upsertRoom({
+      code: meta.code,
+      hostName: host ? host.name : "Player",
+      mode: meta.mode,
+      ascension: meta.ascension,
+      playerCount: connectedPlayers.length,
+      maxPlayers: MAX_PLAYERS_PER_ROOM,
+      state: meta.state,
+      floorNum: meta.floor_num,
+      actNum: meta.act_num,
+      joinable: connectedPlayers.length < MAX_PLAYERS_PER_ROOM,
+    });
+    this.ctx.waitUntil(p);
+    return p;
   }
 
   touchRoomActivity(now = Date.now(), forceHubSync = false) {
@@ -765,6 +769,27 @@ export class StsRoomDO extends DurableObject {
       case "PING": {
         this.touchRoomActivity(now, false);
         ws.send(JSON.stringify({ type: "PONG", ts: now }));
+        return;
+      }
+
+      case "LEAVE_ROOM": {
+        this.ctx.storage.sql.exec("UPDATE players SET connected = 0, last_seen = ? WHERE player_id = ?", now, att.playerId);
+        if (meta.state === "LOBBY" && meta.host_id === att.playerId) {
+          const nextHost = this.ctx.storage.sql
+            .exec("SELECT player_id FROM players WHERE connected = 1 AND player_id != ? ORDER BY slot ASC LIMIT 1", att.playerId)
+            .toArray()[0];
+          if (nextHost) {
+            this.ctx.storage.sql.exec("UPDATE room_meta SET host_id = ? WHERE id = 1", nextHost.player_id);
+          }
+        }
+        try {
+          ws.close(1000, "Leave room");
+        } catch (_) {}
+        this.broadcast(this.buildRoomSyncPayload(), ws);
+        this.evaluateMapBarrier();
+        this.evaluateEndTurnBarrier();
+        await this.syncLobbyHub(true, ws);
+        this.scheduleCleanupAlarm(now);
         return;
       }
 
@@ -972,8 +997,11 @@ export class StsRoomDO extends DurableObject {
     }
   }
 
-  async webSocketClose(ws) {
+  async webSocketClose(ws, code, reason) {
     const att = ws.deserializeAttachment();
+    try {
+      ws.close(code || 1000, reason || "Closed");
+    } catch (_) {}
     if (!att) return;
     const meta = this.getMeta();
     if (!meta) return;
@@ -982,17 +1010,17 @@ export class StsRoomDO extends DurableObject {
 
     if (meta.state === "LOBBY" && meta.host_id === att.playerId) {
       const nextHost = this.ctx.storage.sql
-        .exec("SELECT player_id FROM players WHERE connected = 1 ORDER BY slot ASC LIMIT 1")
+        .exec("SELECT player_id FROM players WHERE connected = 1 AND player_id != ? ORDER BY slot ASC LIMIT 1", att.playerId)
         .toArray()[0];
       if (nextHost) {
         this.ctx.storage.sql.exec("UPDATE room_meta SET host_id = ? WHERE id = 1", nextHost.player_id);
       }
     }
 
-    this.broadcast(this.buildRoomSyncPayload());
+    this.broadcast(this.buildRoomSyncPayload(), ws);
     this.evaluateMapBarrier();
     this.evaluateEndTurnBarrier();
-    this.syncLobbyHub(true);
+    await this.syncLobbyHub(true, ws);
     this.scheduleCleanupAlarm();
   }
 

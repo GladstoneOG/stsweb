@@ -348,7 +348,12 @@
       reconnectTimer = null;
     }
     if (ws) {
-      try { ws.close(1000, "Leave room"); } catch (_) {}
+      try {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: "LEAVE_ROOM" }));
+        }
+        ws.close(1000, "Leave room");
+      } catch (_) {}
       ws = null;
     }
     closeAllRtc();
