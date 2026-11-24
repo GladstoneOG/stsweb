@@ -1,0 +1,27 @@
+# Local toolchain cache & extracted game jars
+tools/.cache/
+node_modules/
+.wrangler/
+.dev.vars
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Gradle & build outputs
+java/.gradle/
+java/build/
+java/**/build/
+java/.kotlin/
+
+# Decompiled proprietary vanilla STS sources (regenerated locally via `npm run decompile`)
+java/core/src/main/java/com/esotericsoftware/
+java/core/src/main/java/com/megacrit/cardcrawl/
+!java/core/src/main/java/com/megacrit/cardcrawl/coop/
+!java/core/src/main/java/com/megacrit/cardcrawl/coop/**
+!java/core/src/main/java/com/megacrit/cardcrawl/web/
+!java/core/src/main/java/com/megacrit/cardcrawl/web/**
+java/core/src/main/java/de/
+
+# Large optional debug source maps (keep deployable static bundle cleanly under size caps)
+public/app.js.map

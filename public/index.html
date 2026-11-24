@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Slay the Spire Web · 1–6P Co-op &amp; Seed Race</title>
+  <link rel="icon" href="data:," />
+  <style>
+    @font-face {
+      font-family: "Kreon";
+      src: url("/ui-assets/Kreon-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kreon";
+      src: url("/ui-assets/Kreon-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "ZillaSlabItalic";
+      src: url("/ui-assets/ZillaSlab-RegularItalic.otf") format("opentype");
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    :root {
+      --bg-void: #07090d;
+      --stone-dark: rgba(20, 25, 34, 0.96);
+      --stone-card: rgba(29, 36, 48, 0.90);
+      --stone-deep: rgba(11, 14, 21, 0.84);
+      --brass: #c9a45c;
+      --brass-dim: rgba(201, 164, 92, 0.38);
+      --cream: #fff6e2;
+      --muted: #b5ad9c;
+      --gold: #f6c953;
+      --crimson: #c62828;
+      --teal: #3fb8a6;
+      --emerald: #48c78e;
+      --sky: #65bfff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: var(--cream);
+      font-family: "Kreon", Georgia, serif;
+      user-select: none;
+    }
+
+    #stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    #canvas {
+      display: block;
+      outline: none;
+    }
+
+    /* ========================================================================
+       Authentic Slay the Spire Boot Loading Screen
+       ======================================================================== */
+    #sts-boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background:
+        radial-gradient(ellipse at 50% 42%, rgba(18, 22, 34, 0.42) 0%, rgba(7, 9, 13, 0.92) 78%),
+        url("/ui-assets/title-bg.jpg") center / cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, auto;
+      transition: opacity 0.45s ease;
+    }
+    #sts-boot-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+    .sts-boot-crest {
+      width: min(360px, 72vw);
+      height: auto;
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.85));
+      margin-bottom: 10px;
+      animation: stsFloat 4.2s ease-in-out infinite;
+    }
+    @keyframes stsFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .sts-boot-sub {
+      font-family: "ZillaSlabItalic", Georgia, serif;
+      font-size: 18px;
+      color: #e7dcc4;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+
+    .sts-boot-panel {
+      width: min(490px, 88vw);
+      padding: 18px 22px;
+      background: linear-gradient(180deg, rgba(25, 31, 42, 0.93), rgba(14, 18, 26, 0.96));
+      border: 2px solid #8a7040;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.85), inset 0 0 20px rgba(0, 0, 0, 0.55), var(--shadow);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .sts-boot-bar {
+      width: 100%;
+      height: 18px;
+      border-radius: 999px;
+      background: #140b0e;
+      border: 2px solid #725d36;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      padding: 2px;
+    }
+    #sts-boot-bar-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ef5350 0%, #b71c1c 65%, #7f1010 100%);
+      box-shadow: 0 0 10px rgba(239, 83, 80, 0.5);
+      transition: width 0.2s ease;
+    }
+    #sts-boot-msg {
+      margin-top: 10px;
+      font-size: 16px;
+      color: var(--gold);
+      text-shadow: 0 2px 4px #000;
+      letter-spacing: 0.02em;
+    }
+
+    /* ========================================================================
+       Relocatable & Auto-Hiding STS Stone HUD Pill (Defaults to Left Edge)
+       ======================================================================== */
+    #sts-hud-zone {
+      position: fixed;
+      z-index: 35;
+      left: 10px;
+      top: 44%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      margin: -6px;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, auto;
+    }
+    #sts-hud-zone[data-hidden="true"] { display: none !important; }
+
+    #sts-hud-tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 44px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(35, 42, 54, 0.92), rgba(20, 24, 33, 0.94));
+      border: 1.5px solid rgba(201, 164, 92, 0.55);
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+      opacity: 0.28;
+      transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+      cursor: grab;
+      flex-shrink: 0;
+    }
+    #sts-hud-zone:hover #sts-hud-tab,
+    #sts-hud-zone.awake #sts-hud-tab,
+    #sts-hud-zone.dragging #sts-hud-tab {
+      opacity: 0;
+      width: 0;
+      border-width: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    #sts-hud-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(42, 49, 61, 0.95), rgba(22, 27, 36, 0.96)),
+        url("/ui-assets/top-bar.png") center / cover no-repeat;
+      border: 2px solid #967945;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.8), 0 10px 26px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-8px) scale(0.97);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      white-space: nowrap;
+    }
+
+    #sts-hud-zone:hover #sts-hud-pill,
+    #sts-hud-zone.awake #sts-hud-pill,
+    #sts-hud-zone.dragging #sts-hud-pill {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0) scale(1);
+    }
+
+    #sts-hud-grip {
+      cursor: grab;
+      color: var(--brass);
+      font-size: 14px;
+      letter-spacing: -1px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      opacity: 0.85;
+      touch-action: none;
+    }
+    #sts-hud-grip:active { cursor: grabbing; }
+    #sts-hud-grip:hover { background: rgba(255, 255, 255, 0.08); opacity: 1; }
+
+    .sts-badge {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 5px;
+      background: rgba(9, 12, 18, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--cream);
+      text-shadow: 0 1px 2px #000;
+    }
+    .sts-badge.online {
+      background: rgba(24, 78, 57, 0.72);
+      border-color: var(--emerald);
+      color: #b9f6ca;
+    }
+    .sts-badge.warn {
+      background: rgba(120, 74, 15, 0.78);
+      border-color: var(--gold);
+      color: #ffe082;
+    }
+
+    .sts-pill-btn {
+      appearance: none;
+      font-family: "Kreon", Georgia, serif;
+      border: 1.5px solid #8a7040;
+      background: linear-gradient(180deg, #33434d, #1f2a31);
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 5px;
+      text-shadow: 0 1px 2px #000;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sts-pill-btn:hover {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, #435e6b, #293c46);
+      color: var(--gold);
+    }
+
+    /* ========================================================================
+       Spire Net Modal (F2) — Authentic Carved Stone & Parchment Aesthetic
+       ======================================================================== */
+    #sts-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(5, 7, 11, 0.78);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px 16px;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, auto;
+    }
+    #sts-modal-backdrop[hidden] { display: none; }
+
+    #sts-modal-shell {
+      position: relative;
+      width: min(880px, 95vw);
+      max-height: 87vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sts-modal-banner {
+      position: relative;
+      z-index: 2;
+      align-self: center;
+      width: min(520px, 86%);
+      height: 68px;
+      margin-bottom: -20px;
+      background: url("/ui-assets/select-banner.png") center / 100% 100% no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 10px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85));
+    }
+    .sts-modal-banner-text {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      text-shadow: 0 2px 4px #000, 0 0 10px rgba(0, 0, 0, 0.9);
+    }
+
+    #sts-modal {
+      width: 100%;
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(56, 68, 86, 0.35), transparent 60%),
+        linear-gradient(180deg, #1b222e 0%, #121720 100%);
+      border: 2.5px solid #967945;
+      box-shadow:
+        0 0 0 2px #080a0f,
+        inset 0 0 28px rgba(0, 0, 0, 0.7),
+        var(--shadow);
+      border-radius: 10px;
+      padding-top: 20px;
+      overflow: hidden;
+    }
+
+    .sts-account-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 8px 18px;
+      background: rgba(9, 12, 18, 0.62);
+      border-bottom: 1px solid rgba(201, 164, 92, 0.22);
+      font-size: 14px;
+    }
+
+    .sts-tabs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px 0;
+      background: rgba(14, 18, 26, 0.72);
+      border-bottom: 2px solid rgba(201, 164, 92, 0.25);
+    }
+    .sts-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .sts-tab-btn {
+      appearance: none;
+      font-family: "Kreon", Georgia, serif;
+      border: 1.5px solid transparent;
+      border-bottom: none;
+      border-radius: 7px 7px 0 0;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 8px 16px 9px;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sts-tab-btn:hover { color: var(--cream); background: rgba(255, 255, 255, 0.06); }
+    .sts-tab-btn.active {
+      color: var(--gold);
+      background: rgba(34, 42, 56, 0.95);
+      border-color: rgba(201, 164, 92, 0.45);
+    }
+
+    #sts-modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      user-select: text;
+    }
+
+    .sts-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 14px;
+    }
+    .sts-card {
+      background: linear-gradient(180deg, rgba(31, 38, 51, 0.92), rgba(20, 25, 34, 0.95));
+      border: 1.5px solid rgba(201, 164, 92, 0.34);
+      box-shadow: inset 0 1px 0 rgba(255, 246, 226, 0.08), 0 8px 20px rgba(0, 0, 0, 0.45);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .sts-card h3 {
+      margin: 0 0 12px;
+      font-size: 19px;
+      color: var(--gold);
+      text-shadow: 0 2px 3px #000;
+      letter-spacing: 0.02em;
+    }
+
+    .sts-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .sts-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; font-size: 14px; color: var(--muted); }
+
+    #sts-modal input[type="text"],
+    #sts-modal input[type="password"],
+    #sts-modal input[type="number"],
+    #sts-modal select {
+      font-family: "Kreon", Georgia, serif;
+      background: rgba(9, 11, 16, 0.92);
+      color: var(--cream);
+      border: 1.5px solid #594b31;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 15px;
+      outline: none;
+    }
+    #sts-modal input:focus, #sts-modal select:focus { border-color: var(--gold); }
+    .sts-select-sm { padding: 4px 8px !important; font-size: 14px !important; }
+
+    .sts-btn {
+      appearance: none;
+      font-family: "Kreon", Georgia, serif;
+      border: 1.5px solid #7c673f;
+      background: linear-gradient(180deg, #323c4a, #1d232c);
+      color: var(--cream);
+      border-radius: 6px;
+      padding: 8px 15px;
+      font-size: 15px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px #000;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sts-btn:hover { filter: brightness(1.14); border-color: var(--gold); }
+    .sts-btn.primary {
+      background: linear-gradient(180deg, #2b6f6a, #194542);
+      border-color: #79d4c4;
+      color: #fffbe8;
+    }
+    .sts-btn.gold {
+      background: linear-gradient(180deg, #c78b26, #8f5c10);
+      border-color: #ffe08a;
+      color: #fffbe8;
+    }
+    .sts-btn.success {
+      background: linear-gradient(180deg, #277851, #194e35);
+      border-color: #7ee2ab;
+      color: #e6ffef;
+    }
+    .sts-btn.danger {
+      background: linear-gradient(180deg, #8e2424, #591313);
+      border-color: #ea7878;
+      color: #ffe8e8;
+    }
+    .sts-btn.small { padding: 5px 10px; font-size: 13px; }
+    .sts-btn.full { width: 100%; }
+
+    .sts-room-list, .sts-player-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .sts-room-row, .sts-player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 7px;
+      background: rgba(11, 14, 21, 0.72);
+      border: 1px solid rgba(201, 164, 92, 0.24);
+    }
+    .sts-player-row.offline { opacity: 0.55; }
+    .sts-player-ident, .sts-player-meta { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+    .sts-char-icon { width: 28px; height: 28px; border-radius: 5px; border: 1.5px solid rgba(255, 255, 255, 0.25); object-fit: cover; }
+    .sts-ico { width: 18px; height: 18px; vertical-align: -3px; }
+
+    .sts-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--cream);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .sts-tag.gold { background: rgba(246, 201, 83, 0.18); border-color: rgba(246, 201, 83, 0.5); color: #ffe082; }
+    .sts-tag.green { background: rgba(72, 199, 142, 0.2); border-color: rgba(72, 199, 142, 0.5); color: #b9f6ca; }
+    .sts-tag.red { background: rgba(198, 40, 40, 0.28); border-color: rgba(239, 83, 80, 0.5); color: #ffcdd2; }
+
+    .sts-muted { font-size: 14px; color: var(--muted); }
+    .sts-italic { font-family: "ZillaSlabItalic", Georgia, serif; font-size: 14px; color: #d8ceb7; }
+    .sts-empty { font-size: 15px; color: var(--muted); padding: 14px 0; text-align: center; }
+
+    .sts-alert {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 7px;
+      font-size: 14px;
+      background: rgba(34, 78, 86, 0.36);
+      border: 1px solid rgba(101, 191, 255, 0.4);
+      color: #d6f1ff;
+    }
+    .sts-alert.error {
+      background: rgba(120, 24, 34, 0.36);
+      border-color: rgba(239, 83, 80, 0.5);
+      color: #ffd8dc;
+    }
+
+    .sts-dropzone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 76px;
+      padding: 12px;
+      border: 1.5px dashed rgba(246, 201, 83, 0.45);
+      border-radius: 7px;
+      background: rgba(246, 201, 83, 0.05);
+      color: #fce39a;
+      font-size: 14px;
+      cursor: url("/ui-assets/cursor-gold.png") 6 4, pointer;
+    }
+    .sts-dropzone.dragover { background: rgba(246, 201, 83, 0.14); border-color: var(--gold); }
+    .sts-check { display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer; }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <div id="stage">
+    <canvas id="canvas" tabindex="0"></canvas>
+  </div>
+
+  <!-- Authentic STS Boot Progress Overlay -->
+  <div id="sts-boot-overlay">
+    <img class="sts-boot-crest" src="/ui-assets/logo-eng.png" alt="Slay the Spire" />
+    <div class="sts-boot-sub">Online 1–6P Co-op, Seed Race &amp; Cloud Save Edition</div>
+    <div class="sts-boot-panel">
+      <div class="sts-boot-bar"><div id="sts-boot-bar-fill"></div></div>
+      <div id="sts-boot-msg">Awakening the Spire...</div>
+    </div>
+  </div>
+
+  <!-- Auto-Hiding, Draggable Floating HUD (Defaults Left Edge) -->
+  <div id="sts-hud-zone" class="awake">
+    <div id="sts-hud-tab" title="Hover for Spire Net (F2) · Drag to move">◆</div>
+    <div id="sts-hud-pill">
+      <span id="sts-hud-grip" title="Drag to relocate HUD">⋮⋮</span>
+      <span id="sts-hud-room" class="sts-badge">Solo · F2</span>
+      <button id="sts-hud-invite" class="sts-pill-btn" style="display:none">Invite</button>
+      <button id="sts-hud-open" class="sts-pill-btn">Spire Net (F2)</button>
+      <button id="sts-hud-fs" class="sts-pill-btn" title="Fullscreen (F11)">FS</button>
+    </div>
+  </div>
+
+  <!-- F2 Spire Net Overlay -->
+  <div id="sts-modal-backdrop" hidden>
+    <div id="sts-modal-shell">
+      <div class="sts-modal-banner">
+        <span class="sts-modal-banner-text">SPIRE NET</span>
+      </div>
+      <div id="sts-modal" role="dialog" aria-modal="true">
+        <div id="sts-account-bar" class="sts-account-strip"></div>
+        <div class="sts-tabs-row">
+          <div class="sts-tabs">
+            <button class="sts-tab-btn active" data-tab="lobby">Co-op &amp; Seed Race</button>
+            <button class="sts-tab-btn" data-tab="saves">Account &amp; Saves</button>
+            <button class="sts-tab-btn" data-tab="settings">Settings</button>
+          </div>
+          <button id="sts-modal-close" class="sts-btn small danger" style="margin-bottom:6px">Close (Esc)</button>
+        </div>
+        <div id="sts-modal-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/relay_config.js"></script>
+  <script src="/asset_loader.js"></script>
+  <script src="/sts_net.js"></script>
+  <script src="/sts_ui.js"></script>
+  <script src="/app.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      if (window.StsAssetLoader) window.StsAssetLoader.start();
+      if (typeof main === "function") main();
+    });
+  </script>
+</body>
+</html>

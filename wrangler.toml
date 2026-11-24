@@ -1,0 +1,28 @@
+#:schema node_modules/wrangler/config-schema.json
+# Worker URL : https://stsweb.johansans999.workers.dev
+# GitHub     : https://github.com/GladstoneOG/stsweb
+name = "stsweb"
+main = "cloudflare_worker.js"
+compatibility_date = "2026-04-07"
+workers_dev = true
+
+[observability]
+enabled = true
+
+[observability.traces]
+enabled = true
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*", "/ws"]
+
+[durable_objects]
+bindings = [
+  { name = "LOBBY_HUB", class_name = "StsLobbyHub" },
+  { name = "ROOM_DO", class_name = "StsRoomDO" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["StsLobbyHub", "StsRoomDO"]

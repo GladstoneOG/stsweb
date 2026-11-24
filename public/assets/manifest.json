@@ -1,0 +1,67 @@
+{
+  "format": "STSPK01",
+  "version": "ad855c5a02e2",
+  "generatedAt": 1795487212,
+  "packs": {
+    "boot": {
+      "name": "boot",
+      "sha256": "2d4e0ba2d8ca20705e7e5e5939ba62280bac38ae6f3ac9b84954c8b9e60aaff5",
+      "compressedSize": 84532180,
+      "uncompressedSize": 90336473,
+      "fileCount": 1951,
+      "chunkSizeLimit": 16777216,
+      "chunks": [
+        "/assets/boot.part00.bin",
+        "/assets/boot.part01.bin",
+        "/assets/boot.part02.bin",
+        "/assets/boot.part03.bin",
+        "/assets/boot.part04.bin",
+        "/assets/boot.part05.bin"
+      ]
+    },
+    "acts": {
+      "name": "acts",
+      "sha256": "e1f81f980bfd149ca3388ac52c1b291157b9e47a08620e09704591c7c9fb005c",
+      "compressedSize": 30594673,
+      "uncompressedSize": 39903567,
+      "fileCount": 1092,
+      "chunkSizeLimit": 16777216,
+      "chunks": [
+        "/assets/acts.part00.bin",
+        "/assets/acts.part01.bin"
+      ]
+    }
+  },
+  "musicCount": 29,
+  "musicFiles": [
+    "/audio/music/SOTE_Shrine_v2.ogg",
+    "/audio/music/STS_ALTLevel_v1.ogg",
+    "/audio/music/STS_Act4_BGM_v2.ogg",
+    "/audio/music/STS_Boss1MindBloom_v1.ogg",
+    "/audio/music/STS_Boss1_NewMix_v1.ogg",
+    "/audio/music/STS_Boss2_NewMix_v1.ogg",
+    "/audio/music/STS_Boss3_NewMix_v1.ogg",
+    "/audio/music/STS_Boss4_v6.ogg",
+    "/audio/music/STS_BossVictoryStinger_1_v3_MUSIC.ogg",
+    "/audio/music/STS_BossVictoryStinger_2_v3_MUSIC.ogg",
+    "/audio/music/STS_BossVictoryStinger_3_v3_MUSIC.ogg",
+    "/audio/music/STS_BossVictoryStinger_4_v3_MUSIC.ogg",
+    "/audio/music/STS_Credits_v5.ogg",
+    "/audio/music/STS_DeathStinger_1_v3_MUSIC.ogg",
+    "/audio/music/STS_DeathStinger_2_v3_MUSIC.ogg",
+    "/audio/music/STS_DeathStinger_3_v3_MUSIC.ogg",
+    "/audio/music/STS_DeathStinger_4_v3_MUSIC.ogg",
+    "/audio/music/STS_EliteBoss_NewMix_v1.ogg",
+    "/audio/music/STS_EndingStinger_v1.ogg",
+    "/audio/music/STS_Level1-2_v2.ogg",
+    "/audio/music/STS_Level1_NewMix_v1.ogg",
+    "/audio/music/STS_Level2-2_v2.ogg",
+    "/audio/music/STS_Level2_NewMix_v1.ogg",
+    "/audio/music/STS_Level3-2_v2.ogg",
+    "/audio/music/STS_Level3_v2.ogg",
+    "/audio/music/STS_MenuTheme_NewMix_v1.ogg",
+    "/audio/music/STS_Merchant_NewMix_v1.ogg",
+    "/audio/music/STS_Merchant_v2.ogg",
+    "/audio/music/STS_Shrine_NewMix_v1.ogg"
+  ]
+}

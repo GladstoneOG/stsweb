@@ -1,0 +1,39 @@
+{
+  "name": "stsweb",
+  "version": "1.0.0",
+  "description": "Slay the Spire Browser Port (gdx-teavm) with 1-6P Online Co-op, Seed Race, and Cloudflare SQLite Durable Objects",
+  "homepage": "https://stsweb.johansans999.workers.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GladstoneOG/stsweb.git"
+  },
+  "main": "server.js",
+  "scripts": {
+    "setup": "python tools/setup_tools.py",
+    "build:assets": "python tools/build_assets.py",
+    "decompile": "python tools/decompile_and_patch.py",
+    "build:java": "python tools/run_gradle.py :web:gdx_teavm_web_js_build syncWebDist",
+    "build:all": "npm run build:assets && npm run build:java",
+    "start": "node server.js",
+    "cf:dev": "npx wrangler dev --ip 127.0.0.1 --port 8788",
+    "cf:deploy": "npx wrangler deploy"
+  },
+  "keywords": [
+    "slay-the-spire",
+    "libgdx",
+    "teavm",
+    "webgl",
+    "multiplayer",
+    "co-op",
+    "cloudflare-workers",
+    "durable-objects",
+    "sqlite"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.167.0"
+  }
+}
